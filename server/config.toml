@@ -1,0 +1,22 @@
+[server]
+address = ":8000"
+
+[jwt]
+signing-key = "11"
+expires-time = ""
+
+[database]
+driver = "mysql"
+[database.mysql]
+dsn = "root:root@tcp(localhost:3306)/gdmin?charset=utf8&parseTime=True&loc=Local&timeout=5000ms"
+table-prefix = "sys_"
+singular-table = true
+max-idle-count = 2
+max-open-conns = 8
+
+[redis]
+addr = "localhost:6379"
+db = 0
+max-active-conns = 200
+min-idle-conns = 2
+max-idle-conns = 10

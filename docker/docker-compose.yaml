@@ -1,0 +1,38 @@
+version: "5.0"
+name: compose-gdmin
+services:
+  mysql:
+    image: mysql:8.2.0
+    ports:
+      - "3306:3306"
+    container_name: mysql
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - gdmin-net
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Asia/Shanghai
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+  redis:
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+    container_name: redis
+    networks:
+      - gdmin-net
+    volumes:
+      - redis_data:/data
+    command: redis-server
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  gdmin-net:
+    driver: bridge
