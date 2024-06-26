@@ -5,4 +5,5 @@ type Config struct {
 	Server
 	Database
 	Redis
+	Zap
 }

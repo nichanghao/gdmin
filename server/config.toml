@@ -1,6 +1,14 @@
 [server]
 address = ":8000"
 
+[zap]
+level = "debug"
+filename = "logs/server.log"
+max-size = 100
+max-backups = 50
+max-age = 7
+compress = false
+
 [jwt]
 signing-key = "11"
 expires-time = ""

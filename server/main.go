@@ -11,6 +11,9 @@ func main() {
 	// 初始化配置文件
 	initialize.InitViper()
 
+	// 初始化日志组件
+	initialize.InitZap()
+
 	// 初始化 redis
 	initialize.InitRedis()
 
