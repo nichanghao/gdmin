@@ -11,7 +11,7 @@ compress = false
 
 [jwt]
 signing-key = "11"
-expires-time = ""
+expires-time = 3600
 
 [database]
 driver = "mysql"

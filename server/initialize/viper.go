@@ -7,11 +7,21 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 	"log"
+	"os"
 )
 
 func InitViper() {
+	// 获取环境变量
+	env := os.Getenv("APP_ENV")
+
+	log.Println("The currently active environment `APP_ENV` is: ", env)
+
 	// 设置配置文件名
-	viper.SetConfigName("config")
+	if env == "" {
+		viper.SetConfigName("config")
+	} else {
+		viper.SetConfigName("config." + env)
+	}
 	// 设置配置文件类型
 	viper.SetConfigType("toml")
 	// 添加配置文件路径

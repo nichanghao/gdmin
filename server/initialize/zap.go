@@ -34,8 +34,9 @@ func InitZap() {
 
 	// 创建 Logger
 	logger := zap.New(core)
-	global.LOG = logger
 
+	// 替换zap日志对象
+	zap.ReplaceGlobals(logger)
 }
 
 func parseZapLevel(logLevel string) (level zapcore.Level) {

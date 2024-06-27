@@ -2,5 +2,6 @@ package config
 
 type JWT struct {
 	SigningKey  string `mapstructure:"signing-key"`  // jwt签名
-	ExpiresTime string `mapstructure:"expires-time"` // 过期时间
+	ExpiresTime int64  `mapstructure:"expires-time"` // 过期时间
+	Issuer      string `mapstructure:"issuer"`       // 签发者
 }
