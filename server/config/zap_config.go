@@ -1,6 +1,7 @@
 package config
 
 type Zap struct {
+	Path       string // 日志路径
 	Filename   string // 日志文件名
 	Level      string // 日志级别
 	MaxSize    int    `mapstructure:"max-size"`    // 单个日志文件最大大小，单位：M

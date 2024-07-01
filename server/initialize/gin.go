@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"gitee.com/nichanghao/gdmin/middleware"
 	"gitee.com/nichanghao/gdmin/web/router"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,6 +11,7 @@ func InitGin() *gin.Engine {
 
 	engine := gin.New()
 
+	engine.Use(middleware.GlobalErrorHandler())
 	// 异常处理
 	engine.Use(gin.Recovery())
 

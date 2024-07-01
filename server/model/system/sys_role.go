@@ -1,6 +1,6 @@
 package system
 
-import "gitee.com/nichanghao/gdmin/common"
+import "gitee.com/nichanghao/gdmin/model/common"
 
 type SysRole struct {
 	Id   uint64 `gorm:"primarykey;comment:角色ID"`       // 角色ID

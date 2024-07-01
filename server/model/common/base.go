@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// BaseDO 基础模型
 type BaseDO struct {
 	ModifyTime time.Time      `gorm:"comment:修改时间"`
 	ModifyUser string         `gorm:"comment:修改人"`

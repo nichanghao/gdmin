@@ -3,7 +3,8 @@ address = ":8000"
 
 [zap]
 level = "debug"
-filename = "logs/server.log"
+path = "logs"
+filename = "server.log"
 max-size = 100
 max-backups = 50
 max-age = 7
@@ -17,7 +18,7 @@ expires-time = 3600
 driver = "mysql"
 [database.mysql]
 dsn = "root:root@tcp(localhost:3306)/gdmin?charset=utf8&parseTime=True&loc=Local&timeout=5000ms"
-table-prefix = "sys_"
+table-prefix = ""
 singular-table = true
 max-idle-count = 2
 max-open-conns = 8
