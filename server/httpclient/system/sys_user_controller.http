@@ -1,8 +1,13 @@
-# 用户登录
-POST {{host}}/sys/user/login
+### 用户登录
+POST {{host}}/login
 Content-Type: application/json
 
 {
     "username": "admin",
     "password": "123456"
 }
+
+### 用户列表
+#GET {{host}}/sys/user/list
+#Content-Type: application/json
+#Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlcm5hbWUiOiJhZG1pbiIsIk5pY2tOYW1lIjoiYWRtaW4iLCJleHAiOjE3MTk4OTIxMTd9.-m7O9ecthGqAC9QVEhqkRztTuX58mDYw6hzeWfrTi1c

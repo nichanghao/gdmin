@@ -1,9 +1,14 @@
 package common
 
+// token相关异常
 var (
-	ErrPassWdNonMatched = NewBusErr(10001, "用户名或密码错误！")
+	ErrTokenExpired = NewBusErr(10001, "token已过期！")
 
-	ErrTokenExpired = NewBusErr(10002, "token已过期！")
+	ErrTokenIllegal = NewBusErr(10002, "illegal token！")
+)
+
+var (
+	ErrPassWdNonMatched = NewBusErr(20001, "用户名或密码错误！")
 )
 
 // BusinessError 自定义业务异常

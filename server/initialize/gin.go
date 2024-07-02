@@ -4,7 +4,6 @@ import (
 	"gitee.com/nichanghao/gdmin/middleware"
 	"gitee.com/nichanghao/gdmin/web/router"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func InitGin() *gin.Engine {
@@ -15,16 +14,15 @@ func InitGin() *gin.Engine {
 	// 异常处理
 	engine.Use(gin.Recovery())
 
+	// 公开路由，不需要jwt鉴权和casbin权限控制
 	baseGroup := engine.Group("")
-	{
-		// 健康检查
-		baseGroup.GET("/health", func(c *gin.Context) {
-			c.JSON(http.StatusOK, "ok")
-		})
-	}
+	router.Base.InitRouter(baseGroup)
 
-	// 初始化用户相关路由
-	router.SysUser.InitRouter(baseGroup)
+	// 私有路由，需要权限控制
+	privateGroup := engine.Group("")
+	privateGroup.Use(middleware.JwtAuth())
+	// 初始化路由
+	router.Private.InitRouter(privateGroup)
 
 	return engine
 

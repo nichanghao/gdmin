@@ -15,7 +15,7 @@ var (
 type jwtUtil struct {
 }
 
-func (jwtUtils *jwtUtil) GenerateToken(userClaims *common.UserClaims) (string, error) {
+func (*jwtUtil) GenerateToken(userClaims *common.UserClaims) (string, error) {
 	jwtCfg := &global.Config.JWT
 
 	claims := common.JWTClaims{
@@ -30,7 +30,7 @@ func (jwtUtils *jwtUtil) GenerateToken(userClaims *common.UserClaims) (string, e
 
 }
 
-func (jwtUtils *jwtUtil) ValidateToken(tokenStr string) (*common.UserClaims, error) {
+func (*jwtUtil) ValidateToken(tokenStr string) (*common.UserClaims, error) {
 
 	// https://pkg.go.dev/github.com/golang-jwt/jwt/v5#example-Parse-Hmac
 	token, err := jwt.ParseWithClaims(tokenStr, &common.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
