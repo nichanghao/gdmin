@@ -1,4 +1,4 @@
 ## 获取菜单树
 GET {{host}}/sys/menu/tree
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6MSwiVXNlcm5hbWUiOiJhZG1pbiIsIk5pY2tOYW1lIjoiYWRtaW4iLCJleHAiOjE3MTk4OTIxMTd9.-m7O9ecthGqAC9QVEhqkRztTuX58mDYw6hzeWfrTi1c
+Authorization: {{token}}

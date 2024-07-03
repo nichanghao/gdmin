@@ -3,6 +3,7 @@ package system
 import (
 	"gitee.com/nichanghao/gdmin/service"
 	"gitee.com/nichanghao/gdmin/utils"
+	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,10 @@ func (*SysMenuController) GetMenuTree(c *gin.Context) {
 		return
 	}
 
-	service.SysMenu.GetMenuTreeByUserId(claims.ID)
+	if menuTrees, err2 := service.SysMenu.GetMenuTreeByUserId(claims.ID); err2 != nil {
+		_ = c.Error(err2)
+	} else {
+		response.OkWithData(menuTrees, c)
+	}
 
 }
