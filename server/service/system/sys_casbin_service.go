@@ -39,6 +39,16 @@ func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint6
 
 }
 
+func (casbinService *SysCasbinService) DeletePermissionByMenuId(menuId uint64) error {
+
+	_, err := global.Enforcer.RemoveFilteredPolicy(3, strconv.FormatUint(menuId, 10))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (*SysCasbinService) getCasbinUserStr(userId uint64) string {
 	return userPrefix + strconv.FormatUint(userId, 10)
 }

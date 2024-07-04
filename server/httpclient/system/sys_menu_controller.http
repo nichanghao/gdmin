@@ -1,4 +1,44 @@
-## 获取菜单树
+### 获取菜单树
 GET {{host}}/sys/menu/tree
 Content-Type: application/json
 Authorization: {{token}}
+
+
+### 添加菜单
+POST {{host}}/sys/menu/add
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "title": "用户管理",
+    "resource": "",
+    "action": "",
+    "type": 1,
+    "sort": 1,
+    "parentId": 1,
+    "component": "user"
+}
+
+
+### 修改菜单
+PUT {{host}}/sys/menu/edit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "Id": 10001,
+  "title": "用户管理",
+  "resource": "",
+  "action": "",
+  "type": 1,
+  "sort": 1,
+  "parentId": 1,
+  "component": "user"
+}
+
+
+### 删除菜单
+DELETE {{host}}/sys/menu/delete?id=10001
+Content-Type: application/json
+Authorization: {{token}}
+

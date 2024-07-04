@@ -3,6 +3,8 @@ package system
 import (
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
+	"gitee.com/nichanghao/gdmin/model/common"
+	"gorm.io/gorm"
 )
 
 type SysMenuService struct {
@@ -24,6 +26,49 @@ func (service *SysMenuService) GetMenuTreeByUserId(userId uint64) ([]*model.SysM
 	}
 
 	return service.buildMenuTree(menus), nil
+
+}
+
+func (*SysMenuService) AddMenu(menu *model.SysMenu) (uint64, error) {
+
+	if err := global.GormDB.Create(menu).Error; err != nil {
+		return 0, err
+	}
+
+	return menu.Id, nil
+}
+
+func (*SysMenuService) EditMenu(menu *model.SysMenu) (uint64, error) {
+
+	if err := global.GormDB.Where("id =?", menu.Id).Updates(menu).Error; err != nil {
+		return 0, err
+	}
+
+	return menu.Id, nil
+}
+
+func (*SysMenuService) DeleteMenu(menuId uint64) error {
+
+	var count int64
+	if err := global.GormDB.Model(&model.SysMenu{}).Where("parent_id = ?", menuId).Count(&count).Error; err != nil {
+		return err
+	}
+	if count > 0 {
+		return common.NewNoticeBusErr("菜单下有子菜单，不能被删除")
+	}
+
+	return global.GormDB.Transaction(func(tx *gorm.DB) error {
+		// 删除casbin权限
+		if err := CasbinService.DeletePermissionByMenuId(menuId); err != nil {
+			return err
+		}
+
+		// 删除菜单
+		if err := global.GormDB.Delete(&model.SysMenu{}, menuId).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 
 }
 

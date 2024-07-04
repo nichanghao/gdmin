@@ -22,5 +22,9 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 	sysMenuGroup := group.Group("/sys/menu")
 	{
 		sysMenuGroup.GET("tree", controller.SysMenu.GetMenuTree)
+		sysMenuGroup.POST("add", controller.SysMenu.AddMenu)
+		sysMenuGroup.PUT("edit", controller.SysMenu.EditMenu)
+		sysMenuGroup.DELETE("delete", controller.SysMenu.DeleteMenu)
+
 	}
 }
