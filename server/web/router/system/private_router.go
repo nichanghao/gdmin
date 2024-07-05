@@ -27,4 +27,14 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 		sysMenuGroup.DELETE("delete", controller.SysMenu.DeleteMenu)
 
 	}
+
+	// 角色相关路由
+	sysRoleGroup := group.Group("/sys/role")
+	{
+		sysRoleGroup.POST("page", controller.SysRole.PageRoles)
+		sysRoleGroup.POST("add", controller.SysRole.AddRole)
+		sysRoleGroup.PUT("edit", controller.SysRole.EditRole)
+		sysRoleGroup.DELETE("delete", controller.SysRole.DeleteRole)
+
+	}
 }

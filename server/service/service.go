@@ -6,4 +6,6 @@ var (
 	SysUser = &system.SysUserService{}
 
 	SysMenu = &system.SysMenuService{}
+
+	SysRole = &system.SysRoleService{}
 )

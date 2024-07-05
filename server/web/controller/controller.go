@@ -6,4 +6,6 @@ var (
 	SysUser = &system.SysUserController{}
 
 	SysMenu = &system.SysMenuController{}
+
+	SysRole = &system.SysRoleController{}
 )

@@ -6,4 +6,8 @@ type (
 	SysUserLogin = system.SysUserLoginReq
 
 	SysMenuReq = system.SysMenuReq
+
+	SysRolePageReq = system.SysRolePageReq
+
+	SysRoleReq = system.SysRoleReq
 )
