@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model/common"
 	"github.com/golang-jwt/jwt/v5"
@@ -38,16 +37,13 @@ func (*jwtUtil) ValidateToken(tokenStr string) (*common.UserClaims, error) {
 	})
 
 	if err != nil {
-		if errors.Is(err, jwt.ErrTokenExpired) {
-			return nil, common.ErrTokenExpired
-		}
-		return nil, err
+		return nil, common.NewTokenAuthErr("token 已过期！")
 	}
 
 	if jwtClaims, ok := token.Claims.(*common.JWTClaims); ok && token.Valid {
 		return &jwtClaims.UserClaims, nil
 	}
 
-	return nil, errors.New("invalid token")
+	return nil, common.NewTokenAuthErr("invalid token")
 
 }

@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fmt"
+	"gitee.com/nichanghao/gdmin/initialize"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,6 +10,7 @@ func CasbinAuth() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		fmt.Println(c.HandlerName())
+		permission := initialize.PermissionRouter[c.HandlerName()]
+
 	}
 }

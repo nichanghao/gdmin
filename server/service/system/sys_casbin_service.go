@@ -32,7 +32,7 @@ func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint6
 	}
 
 	for i := range policies {
-		menuIds = append(menuIds, policies[i][3])
+		menuIds = append(menuIds, policies[i][2])
 	}
 
 	return menuIds, nil
@@ -41,7 +41,7 @@ func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint6
 
 func (casbinService *SysCasbinService) DeletePermissionByMenuId(menuId uint64) error {
 
-	_, err := global.Enforcer.RemoveFilteredPolicy(3, strconv.FormatUint(menuId, 10))
+	_, err := global.Enforcer.RemoveFilteredPolicy(2, strconv.FormatUint(menuId, 10))
 	if err != nil {
 		return err
 	}

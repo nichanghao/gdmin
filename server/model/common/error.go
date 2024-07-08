@@ -1,20 +1,17 @@
 package common
 
-// token相关异常
 var (
-	ErrTokenExpired = NewBusErr(10001, "token已过期！")
-
-	ErrTokenIllegal = NewBusErr(10002, "illegal token！")
+	ErrIllegalParameter = NewBusErr(20001, "请求参数错误！")
 )
 
-var (
-	ErrPassWdNonMatched = NewBusErr(20001, "用户名或密码错误！")
+const (
 
-	ErrIllegalParameter = NewBusErr(20002, "请求参数错误！")
+	// NoticeCode 前端统一弹框提示的code码
+	NoticeCode = 201
+
+	// TokenAuthErrCode token异常code，需要重定向至登录页面
+	TokenAuthErrCode = 401
 )
-
-// 前端统一弹框提示的code码
-const noticeCode = 201
 
 // BusinessError 自定义业务异常
 type BusinessError struct {
@@ -31,7 +28,14 @@ func NewBusErr(code int, message string) *BusinessError {
 
 func NewNoticeBusErr(message string) *BusinessError {
 	return &BusinessError{
-		Code:    noticeCode,
+		Code:    NoticeCode,
+		Message: message,
+	}
+}
+
+func NewTokenAuthErr(message string) *BusinessError {
+	return &BusinessError{
+		Code:    TokenAuthErrCode,
 		Message: message,
 	}
 }

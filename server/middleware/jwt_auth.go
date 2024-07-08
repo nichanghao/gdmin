@@ -14,14 +14,14 @@ func JwtAuth() gin.HandlerFunc {
 
 		authorization := c.GetHeader("Authorization")
 		if authorization == "" {
-			_ = c.Error(common.ErrTokenIllegal)
+			_ = c.Error(common.NewTokenAuthErr("invalid token"))
 			c.Abort()
 			return
 		}
 
 		arr := strings.SplitN(authorization, " ", 2)
 		if len(arr) != 2 || arr[0] != "Bearer" {
-			_ = c.Error(common.ErrTokenIllegal)
+			_ = c.Error(common.NewTokenAuthErr("invalid token"))
 			c.Abort()
 			return
 		}

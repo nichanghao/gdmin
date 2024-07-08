@@ -22,7 +22,7 @@ func (userService *SysUserService) Login(user *model.SysUser) (*response.SysUser
 
 	// 校验密码
 	if ok := utils.BCRYPT.CheckPasswordHash(user.Password, userRes.Password); !ok {
-		return nil, common.ErrPassWdNonMatched
+		return nil, common.NewNoticeBusErr("用户名或密码错误！")
 	}
 
 	// 生成token
