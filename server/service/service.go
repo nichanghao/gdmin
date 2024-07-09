@@ -8,4 +8,6 @@ var (
 	SysMenu = &system.SysMenuService{}
 
 	SysRole = &system.SysRoleService{}
+
+	SysCasbin = &system.SysCasbinService{}
 )

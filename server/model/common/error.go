@@ -1,6 +1,7 @@
 package common
 
 var (
+	ErrPermissionDenied = NewNoticeBusErr("权限不足，请联系管理员分配权限！")
 	ErrIllegalParameter = NewBusErr(20001, "请求参数错误！")
 )
 

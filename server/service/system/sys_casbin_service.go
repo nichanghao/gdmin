@@ -21,7 +21,7 @@ type SysCasbinService struct{}
 // GetPermissionMenuIdsByUserId 获取用户菜单权限
 func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint64) ([]string, error) {
 
-	policies, err := global.Enforcer.GetImplicitPermissionsForUser(casbinService.getCasbinUserStr(userId))
+	policies, err := global.Enforcer.GetImplicitPermissionsForUser(casbinService.GetCasbinUserStr(userId))
 	menuIds := make([]string, 0, len(policies))
 
 	if err != nil {
@@ -39,6 +39,7 @@ func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint6
 
 }
 
+// DeletePermissionByMenuId 删除菜单权限
 func (casbinService *SysCasbinService) DeletePermissionByMenuId(menuId uint64) error {
 
 	_, err := global.Enforcer.RemoveFilteredPolicy(2, strconv.FormatUint(menuId, 10))
@@ -49,6 +50,23 @@ func (casbinService *SysCasbinService) DeletePermissionByMenuId(menuId uint64) e
 	return nil
 }
 
-func (*SysCasbinService) getCasbinUserStr(userId uint64) string {
+func (casbinService *SysCasbinService) GetPermissionByUserId(userId uint64) (map[string]any, error) {
+
+	policies, err := global.Enforcer.GetImplicitPermissionsForUser(casbinService.GetCasbinUserStr(userId))
+
+	permissionSet := make(map[string]any, len(policies))
+	if err != nil {
+		return permissionSet, err
+	}
+
+	for i := range policies {
+		permissionSet[policies[i][1]] = struct{}{}
+	}
+
+	return permissionSet, nil
+
+}
+
+func (*SysCasbinService) GetCasbinUserStr(userId uint64) string {
 	return userPrefix + strconv.FormatUint(userId, 10)
 }

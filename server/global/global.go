@@ -22,4 +22,7 @@ var (
 
 	// Enforcer 全局Casbin权限管理器
 	Enforcer *casbin.CachedEnforcer
+
+	// PermissionRouter 权限路由表
+	PermissionRouter = make(map[string]string, 256)
 )

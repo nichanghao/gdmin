@@ -35,18 +35,41 @@
           </el-col>
         </el-row>
       </el-form-item>
+
+      <el-form-item>
+        <el-button :loading="loginLoading" style="width: 100%;" type="primary" @click="handleLogin">登陆</el-button>
+      </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive, ref } from 'vue'
+import * as LoginApi from '@/api/login'
 
 const loginFormData = reactive({
-  name: '',
-  region: '',
-  rememberMe: ''
+  name: 'admin',
+  region: '123456',
+  rememberMe: undefined
 });
+
+// 加载状态
+const loginLoading = ref(false);
+
+// 登录方法
+const handleLogin = async () => {
+  loginLoading.value = true;
+
+  try{
+    const res = await LoginApi.login(loginFormData)
+
+  } finally {
+    loginLoading.value = false;
+  }
+
+}
+
+
 </script>
 
 <style scoped></style>

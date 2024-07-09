@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
-const request: AxiosInstance = axios.create({
+const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   // 超时时间10s，单位是毫秒
   timeout: 10000,
@@ -12,7 +12,7 @@ const request: AxiosInstance = axios.create({
 let whiteSet:Set<string> = new Set(['/login'])
 
 // 请求拦截器
-request.interceptors.request.use((config) => {
+axiosInstance.interceptors.request.use((config) => {
 
   let isToken = true
   if (config.url && whiteSet.has(config.url)) {
@@ -32,7 +32,7 @@ request.interceptors.request.use((config) => {
 
 
 // 响应拦截器
-request.interceptors.response.use((res) => {
+axiosInstance.interceptors.response.use((res) => {
   if (!res) {
     // 未响应时
     throw new Error('Network Error')
@@ -42,3 +42,54 @@ request.interceptors.response.use((res) => {
 }, (error) => {
 
 })
+
+
+const request = (option: any) => {
+  const { url, method, params, data, headersType, responseType, ...config } = option
+  return axiosInstance({
+    url: url,
+    method,
+    params,
+    data,
+    ...config,
+    responseType: responseType,
+    headers: {
+      'Content-Type': headersType || 'application/json'
+    }
+  })
+}
+
+
+
+
+export default {
+  get: async <T = any>(option: any) => {
+    const res = await request({ method: 'GET', ...option })
+    return res.data as unknown as T
+  },
+  post: async <T = any>(option: any) => {
+    const res = await request({ method: 'POST', ...option })
+    return res.data as unknown as T
+  },
+  postOriginal: async (option: any) => {
+    const res = await request({ method: 'POST', ...option })
+    return res
+  },
+  delete: async <T = any>(option: any) => {
+    const res = await request({ method: 'DELETE', ...option })
+    return res.data as unknown as T
+  },
+  put: async <T = any>(option: any) => {
+    const res = await request({ method: 'PUT', ...option })
+    return res.data as unknown as T
+  },
+  download: async <T = any>(option: any) => {
+    const res = await request({ method: 'GET', responseType: 'blob', ...option })
+    return res as unknown as Promise<T>
+  },
+  upload: async <T = any>(option: any) => {
+    option.headersType = 'multipart/form-data'
+    const res = await request({ method: 'POST', ...option })
+    return res as unknown as Promise<T>
+  }
+}
