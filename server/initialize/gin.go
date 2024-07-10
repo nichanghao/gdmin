@@ -13,6 +13,8 @@ func InitGin() *gin.Engine {
 	engine.Use(middleware.GlobalErrorHandler())
 	// panic 处理
 	engine.Use(gin.Recovery())
+	// 跨域
+	engine.Use(middleware.Cors())
 
 	// 公开路由组，不需要jwt鉴权和casbin权限控制
 	baseGroup := engine.Group("")

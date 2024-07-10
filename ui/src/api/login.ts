@@ -7,6 +7,6 @@ export type UserLoginVO = {
   }
 
 // 登录
-export const login = (data: UnwrapNestedRefs<{ name: string; rememberMe: undefined; region: string }> & {}) => {
+export const login = (data: UserLoginVO) => {
     return request.post({ url: '/login', data })
   }

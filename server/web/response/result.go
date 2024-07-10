@@ -54,5 +54,5 @@ func FailWithResult(data interface{}, message string, c *gin.Context) {
 }
 
 func FailWithBusErr(busErr *error2.BusinessError, c *gin.Context) {
-	Result(http.StatusBadRequest, busErr.Code, nil, busErr.Error(), c)
+	Result(http.StatusOK, busErr.Code, nil, busErr.Error(), c)
 }

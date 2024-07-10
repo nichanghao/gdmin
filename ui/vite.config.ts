@@ -3,6 +3,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
+import ElementPlus from 'unplugin-element-plus/vite'
 
 import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 
@@ -17,6 +18,7 @@ const pathSrc = path.resolve(__dirname, 'src')
 export default defineConfig({
     plugins: [
         vue(),
+        ElementPlus({}),
         // element-plus 按需导入
         AutoImport({
             // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)

@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -13,7 +13,6 @@ let whiteSet:Set<string> = new Set(['/login'])
 
 // 请求拦截器
 axiosInstance.interceptors.request.use((config) => {
-console.log(axiosInstance.defaults.baseURL)
   let isToken = true
   if (config.url && whiteSet.has(config.url)) {
     isToken = false
@@ -32,14 +31,38 @@ console.log(axiosInstance.defaults.baseURL)
 
 
 // 响应拦截器
-axiosInstance.interceptors.response.use((res) => {
+axiosInstance.interceptors.response.use((res: AxiosResponse<any>) => {
   if (!res) {
     // 未响应时
     throw new Error('Network Error')
   }
 
+  const {code , msg} = res.data
+  if (code == 201) {
+  // 提示消息
+    ElMessage.error(msg)
+  } else if (code == 401) {
+    // token失效
+    // 已经在登录页面
+    if (window.location.href.includes('login?redirect=')) {
+      return Promise.reject('token失效')
+    }
+
+    ElMessageBox.confirm('登录信息已过期，请重新登录', '提示', {
+      showCancelButton: false,
+      closeOnClickModal: false,
+      showClose: false,
+      confirmButtonText: '确定',
+      type: 'warning'
+    }).then(() => {
+     window.location.href = window.location.href
+      
+    })
+  }
+
   return res
 }, (error) => {
+  console.log('response error: ', error)
 
 })
 

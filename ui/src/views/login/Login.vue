@@ -7,7 +7,7 @@
       style="max-width: 600px; margin: 40vh auto"
     >
       <el-form-item>
-        <el-input v-model="loginForm.FormData.name" placeholder="请输入用户名">
+        <el-input v-model="loginForm.FormData.username" placeholder="请输入用户名">
           <template #prefix>
             <i-ep-user />
           </template>
@@ -15,7 +15,7 @@
       </el-form-item>
       <el-form-item>
         <el-input
-          v-model="loginForm.FormData.region"
+          v-model="loginForm.FormData.password"
           type="password"
           placeholder="请输入密码"
           show-password
@@ -46,11 +46,13 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import * as LoginApi from '@/api/login'
+import * as AuthUtils from '@/utils/auth'
+
 
 const loginForm = reactive({
   FormData: {
-    name: 'admin',
-    region: '123456',
+    username: 'admin',
+    password: '123456',
     rememberMe: undefined
   }
 });
@@ -64,6 +66,11 @@ const handleLogin = async () => {
 
   try{
     const res = await LoginApi.login(loginForm.FormData)
+    if (!res || res.code !== 200) {
+      return
+    }
+    console.log(res)
+    AuthUtils.setToken(res.data.token)
 
   } finally {
     loginLoading.value = false;
@@ -74,4 +81,5 @@ const handleLogin = async () => {
 
 </script>
 
-<style scoped></style>
+<style scoped></style>import { ElMessage } from 'element-plus';
+

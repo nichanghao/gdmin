@@ -18,7 +18,7 @@ func (userService *SysUserService) Login(user *model.SysUser) (*response.SysUser
 	var userRes *model.SysUser
 
 	if err := global.GormDB.Where("username = ?", user.Username).First(&userRes).Error; err != nil {
-		return nil, err
+		return nil, common.NewNoticeBusErr("用户名或密码错误！")
 	}
 
 	// 校验密码
