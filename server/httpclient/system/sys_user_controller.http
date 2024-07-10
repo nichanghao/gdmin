@@ -7,6 +7,14 @@ Content-Type: application/json
     "password": "123456"
 }
 
-### 用户列表
-#GET {{host}}/sys/user/list
-#Content-Type: application/json
+### 编辑用户
+PUT {{host}}/sys/user/edit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "id": 1,
+    "nickname": "admin",
+    "email": "admin@localhost",
+    "phone": "13800138000"
+}

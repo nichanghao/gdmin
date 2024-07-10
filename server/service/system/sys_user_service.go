@@ -5,6 +5,7 @@ import (
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/model/common"
 	"gitee.com/nichanghao/gdmin/utils"
+	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 )
 
@@ -34,4 +35,38 @@ func (userService *SysUserService) Login(user *model.SysUser) (*response.SysUser
 	}
 
 	return &response.SysUserLoginResp{Token: token, UserInfo: userRes}, nil
+}
+
+// PageUsers 分页查询用户列表
+func (userService *SysUserService) PageUsers(req *request.SysUserPageReq) ([]*model.SysUser, error) {
+	tx := global.GormDB.Model(&model.SysUser{}).Limit(req.Limit).Offset(req.Offset)
+	if req.Username != "" {
+		tx.Where("username LIKE ?", "%"+req.Username+"%")
+	}
+	if req.Nickname != "" {
+		tx.Where("nickname LIKE ?", "%"+req.Nickname+"%")
+	}
+	if req.Phone != "" {
+		tx.Where("phone LIKE ?", "%"+req.Phone+"%")
+	}
+	if req.Email != "" {
+		tx.Where("email LIKE ?", "%"+req.Email+"%")
+	}
+	var userList []*model.SysUser
+
+	if err := tx.Find(&userList).Error; err != nil {
+		return userList, err
+	}
+
+	return userList, nil
+}
+
+// EditUser 编辑用户
+func (userService *SysUserService) EditUser(user *model.SysUser) error {
+
+	if err := global.GormDB.Model(user).Select("nickname", "phone", "email").Updates(user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

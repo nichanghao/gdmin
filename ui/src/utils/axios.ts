@@ -13,7 +13,7 @@ let whiteSet:Set<string> = new Set(['/login'])
 
 // 请求拦截器
 axiosInstance.interceptors.request.use((config) => {
-
+console.log(axiosInstance.defaults.baseURL)
   let isToken = true
   if (config.url && whiteSet.has(config.url)) {
     isToken = false

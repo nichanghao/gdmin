@@ -12,7 +12,6 @@ func init() {
 	// 初始化权限路由
 	{
 		addPermissionRouter(controller.SysMenu.AddMenu, "sys:menu:add")
-		addPermissionRouter(controller.SysMenu.GetMenuTree, "sys:menu:tree")
 		addPermissionRouter(controller.SysMenu.EditMenu, "sys:menu:edit")
 		addPermissionRouter(controller.SysMenu.DeleteMenu, "sys:menu:delete")
 	}

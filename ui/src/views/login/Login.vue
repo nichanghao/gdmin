@@ -3,11 +3,11 @@
     <el-form
       label-position="left"
       label-width="auto"
-      :model="loginFormData"
+      :model="loginForm.FormData"
       style="max-width: 600px; margin: 40vh auto"
     >
       <el-form-item>
-        <el-input v-model="loginFormData.name" placeholder="请输入用户名">
+        <el-input v-model="loginForm.FormData.name" placeholder="请输入用户名">
           <template #prefix>
             <i-ep-user />
           </template>
@@ -15,7 +15,7 @@
       </el-form-item>
       <el-form-item>
         <el-input
-          v-model="loginFormData.region"
+          v-model="loginForm.FormData.region"
           type="password"
           placeholder="请输入密码"
           show-password
@@ -28,7 +28,7 @@
       <el-form-item>
         <el-row justify="space-between" style="width: 100%">
           <el-col :span="8">
-            <el-checkbox v-model="loginFormData.rememberMe" label="记住我"></el-checkbox>
+            <el-checkbox v-model="loginForm.FormData.rememberMe" label="记住我"></el-checkbox>
           </el-col>
           <el-col :offset="6" :span="8">
             <el-link style="float: right" type="primary">忘记密码？</el-link>
@@ -47,10 +47,12 @@
 import { reactive, ref } from 'vue'
 import * as LoginApi from '@/api/login'
 
-const loginFormData = reactive({
-  name: 'admin',
-  region: '123456',
-  rememberMe: undefined
+const loginForm = reactive({
+  FormData: {
+    name: 'admin',
+    region: '123456',
+    rememberMe: undefined
+  }
 });
 
 // 加载状态
@@ -61,7 +63,7 @@ const handleLogin = async () => {
   loginLoading.value = true;
 
   try{
-    const res = await LoginApi.login(loginFormData)
+    const res = await LoginApi.login(loginForm.FormData)
 
   } finally {
     loginLoading.value = false;

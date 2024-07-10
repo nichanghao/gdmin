@@ -28,7 +28,7 @@ func CasbinAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		if enforce, err := global.Enforcer.Enforce(service.SysCasbin.GetCasbinUserStr(userClaims.ID), permission); err != nil || !enforce {
+		if enforce, err2 := global.Enforcer.Enforce(service.SysCasbin.GetCasbinUserStr(userClaims.ID), permission); err2 != nil || !enforce {
 			_ = c.Error(common.ErrPermissionDenied)
 			c.Abort()
 		} else {

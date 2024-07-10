@@ -6,4 +6,6 @@ var (
 	Base = &system.BaseRouter{}
 
 	Private = &system.PrivateRouter{}
+
+	Owner = &system.OwnerRouter{}
 )

@@ -14,8 +14,8 @@ import (
 
 type SysMenuController struct{}
 
-// GetMenuTree 获取菜单树
-func (*SysMenuController) GetMenuTree(c *gin.Context) {
+// GetOwnerMenuTree 获取菜单树
+func (*SysMenuController) GetOwnerMenuTree(c *gin.Context) {
 
 	claims, err := utils.CLAIMS.GetUserClaims(c)
 	if err != nil {
