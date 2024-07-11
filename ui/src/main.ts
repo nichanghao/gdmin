@@ -1,14 +1,13 @@
-// import './assets/main.css'
+import { createApp } from 'vue'
+import { setupStore } from '@/stores'
+import App from './App.vue'
+import router from './router'
 
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
+const app = createApp(App)
 
-import App from './App.vue';
-import router from './router';
+// 使用 pinia 状态管理
+setupStore(app)
 
-const app = createApp(App);
+app.use(router)
 
-app.use(createPinia());
-app.use(router);
-
-app.mount('#app');
+app.mount('#app')

@@ -14,6 +14,8 @@ import path from 'path'
 
 const pathSrc = path.resolve(__dirname, 'src')
 
+const pathTypes = path.resolve(__dirname, 'types')
+
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
@@ -30,7 +32,7 @@ export default defineConfig({
                 prefix: 'Icon',
                 }),
             ],
-            dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
+            dts: path.resolve(pathTypes, 'auto-imports.d.ts'),
         }),
         Components({
             resolvers: [
@@ -40,7 +42,7 @@ export default defineConfig({
                 }),
                 ElementPlusResolver()
             ],
-            dts: path.resolve(pathSrc, 'components.d.ts'),
+            dts: path.resolve(pathTypes, 'components.d.ts'),
         }),
         Icons({
             autoInstall: true,

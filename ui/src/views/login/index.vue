@@ -45,8 +45,9 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import * as LoginApi from '@/api/login'
+import * as UserApi from '@/api/user'
 import * as AuthUtils from '@/utils/auth'
+import router from '@/router'
 
 
 const loginForm = reactive({
@@ -65,12 +66,14 @@ const handleLogin = async () => {
   loginLoading.value = true;
 
   try{
-    const res = await LoginApi.login(loginForm.FormData)
+    const res = await UserApi.login(loginForm.FormData)
     if (!res || res.code !== 200) {
       return
     }
-    console.log(res)
     AuthUtils.setToken(res.data.token)
+
+    // 跳转到首页
+    router.push('/index')
 
   } finally {
     loginLoading.value = false;
@@ -81,5 +84,5 @@ const handleLogin = async () => {
 
 </script>
 
-<style scoped></style>import { ElMessage } from 'element-plus';
+<style scoped></style>
 

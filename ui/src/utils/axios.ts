@@ -63,7 +63,10 @@ axiosInstance.interceptors.response.use((res: AxiosResponse<any>) => {
   return res
 }, (error) => {
   console.log('response error: ', error)
+  
+  ElMessage.error('网络错误，请稍后重试')
 
+  return Promise.reject('Network Error')
 })
 
 

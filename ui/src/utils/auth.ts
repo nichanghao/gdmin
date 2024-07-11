@@ -1,4 +1,4 @@
-import { useCache } from '@/common/cache'
+import { useCache } from '@/hooks/useCache'
 
 const { wsCache } = useCache()
 
