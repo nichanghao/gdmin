@@ -1,7 +1,7 @@
 package system
 
 import (
-	"gitee.com/nichanghao/gdmin/model/common"
+	"gitee.com/nichanghao/gdmin/common"
 )
 
 type SysUser struct {
@@ -11,6 +11,6 @@ type SysUser struct {
 	Nickname string    `gorm:"type:varchar(128);comment:用户昵称" json:"nickname"`
 	Phone    string    `gorm:"type:varchar(16);comment:联系电话" json:"phone"`
 	Email    string    `gorm:"type:varchar(64);comment:邮箱" json:"email"`
-	Roles    []SysRole `gorm:"many2many:sys_user_role;"` // 用户角色关系
+	Roles    []SysRole `gorm:"many2many:sys_user_role;" json:"roles"` // 用户角色关系
 	common.BaseDO
 }

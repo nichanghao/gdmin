@@ -73,3 +73,67 @@ func (*SysUserController) EditUser(c *gin.Context) {
 	}
 
 }
+
+// ResetPassword 重置密码
+func (*SysUserController) ResetPassword(c *gin.Context) {
+	var req request.SysUserEditReq
+
+	// 绑定参数
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if req.Password == "" {
+		response.FailWithMessage("密码不能为空！", c)
+		return
+	}
+
+	if err := service.SysUser.ResetPassword(&req); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.Ok(c)
+	}
+
+}
+
+// DeleteUser 删除用户
+func (*SysUserController) DeleteUser(c *gin.Context) {
+	var req request.SysUserEditReq
+
+	// 绑定参数
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if err := service.SysUser.DeleteUser(req.Id); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.Ok(c)
+	}
+
+}
+
+// AllocateRoles 分配角色给用户
+func (*SysUserController) AllocateRoles(c *gin.Context) {
+	var req request.SysUserEditReq
+
+	// 绑定参数
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if len(req.RoleIds) == 0 {
+		response.FailWithMessage("请选择角色！", c)
+		return
+	}
+
+	if err := service.SysUser.AllocateRoles(&req); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.Ok(c)
+	}
+
+}

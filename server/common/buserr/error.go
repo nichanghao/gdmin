@@ -1,4 +1,4 @@
-package common
+package buserr
 
 var (
 	ErrPermissionDenied = NewNoticeBusErr("权限不足，请联系管理员分配权限！")

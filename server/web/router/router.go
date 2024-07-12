@@ -7,5 +7,5 @@ var (
 
 	Private = &system.PrivateRouter{}
 
-	Owner = &system.OwnerRouter{}
+	Self = &system.SelfRouter{}
 )

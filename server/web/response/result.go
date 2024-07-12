@@ -1,7 +1,7 @@
 package response
 
 import (
-	error2 "gitee.com/nichanghao/gdmin/model/common"
+	error2 "gitee.com/nichanghao/gdmin/common/buserr"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

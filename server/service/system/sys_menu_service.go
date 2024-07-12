@@ -1,9 +1,9 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
-	"gitee.com/nichanghao/gdmin/model/common"
 	"gorm.io/gorm"
 )
 
@@ -54,7 +54,7 @@ func (*SysMenuService) DeleteMenu(menuId uint64) error {
 		return err
 	}
 	if count > 0 {
-		return common.NewNoticeBusErr("菜单下有子菜单，不能被删除")
+		return buserr.NewNoticeBusErr("菜单下有子菜单，不能被删除")
 	}
 
 	return global.GormDB.Transaction(func(tx *gorm.DB) error {

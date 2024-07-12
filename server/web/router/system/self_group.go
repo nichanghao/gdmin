@@ -5,14 +5,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type OwnerRouter struct{}
+type SelfRouter struct{}
 
-func (*OwnerRouter) InitRouter(group *gin.RouterGroup) {
+func (*SelfRouter) InitRouter(group *gin.RouterGroup) {
 
 	// 菜单相关路由
 	sysMenuGroup := group.Group("/sys/menu")
 	{
-		sysMenuGroup.GET("/owner/tree", controller.SysMenu.GetOwnerMenuTree)
+		sysMenuGroup.GET("/self/tree", controller.SysMenu.GetSelfMenuTree)
 	}
 
 }

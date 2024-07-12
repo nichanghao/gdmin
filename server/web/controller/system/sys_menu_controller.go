@@ -1,8 +1,8 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/model"
-	"gitee.com/nichanghao/gdmin/model/common"
 	"gitee.com/nichanghao/gdmin/service"
 	"gitee.com/nichanghao/gdmin/utils"
 	"gitee.com/nichanghao/gdmin/web/request"
@@ -14,8 +14,8 @@ import (
 
 type SysMenuController struct{}
 
-// GetOwnerMenuTree 获取菜单树
-func (*SysMenuController) GetOwnerMenuTree(c *gin.Context) {
+// GetSelfMenuTree 获取自身的权限菜单树
+func (*SysMenuController) GetSelfMenuTree(c *gin.Context) {
 
 	claims, err := utils.CLAIMS.GetUserClaims(c)
 	if err != nil {
@@ -68,7 +68,7 @@ func (*SysMenuController) EditMenu(c *gin.Context) {
 		return
 	}
 	if req.Id == 0 {
-		_ = c.Error(common.ErrIllegalParameter)
+		_ = c.Error(buserr.ErrIllegalParameter)
 		return
 	}
 
@@ -92,12 +92,12 @@ func (*SysMenuController) DeleteMenu(c *gin.Context) {
 
 	id := c.Query("id")
 	if id == "" {
-		_ = c.Error(common.ErrIllegalParameter)
+		_ = c.Error(buserr.ErrIllegalParameter)
 		return
 	}
 	menuId, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		_ = c.Error(common.ErrIllegalParameter)
+		_ = c.Error(buserr.ErrIllegalParameter)
 		return
 	}
 

@@ -73,7 +73,7 @@ const handleLogin = async () => {
     AuthUtils.setToken(res.data.token)
 
     // 跳转到首页
-    router.push('/index')
+    await router.push('/index')
 
   } finally {
     loginLoading.value = false;

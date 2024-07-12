@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"errors"
-	"gitee.com/nichanghao/gdmin/model/common"
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +17,7 @@ func GlobalErrorHandler() gin.HandlerFunc {
 				err := c.Errors.Last()
 
 				// 业务错误
-				var busErr *common.BusinessError
+				var busErr *buserr.BusinessError
 				switch {
 				case errors.As(err.Err, &busErr):
 					response.FailWithBusErr(busErr, c)

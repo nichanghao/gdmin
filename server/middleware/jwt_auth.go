@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"gitee.com/nichanghao/gdmin/model/common"
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/utils"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -14,14 +14,14 @@ func JwtAuth() gin.HandlerFunc {
 
 		authorization := c.GetHeader("Authorization")
 		if authorization == "" {
-			_ = c.Error(common.NewTokenAuthErr("invalid token"))
+			_ = c.Error(buserr.NewTokenAuthErr("invalid token"))
 			c.Abort()
 			return
 		}
 
 		arr := strings.SplitN(authorization, " ", 2)
 		if len(arr) != 2 || arr[0] != "Bearer" {
-			_ = c.Error(common.NewTokenAuthErr("invalid token"))
+			_ = c.Error(buserr.NewTokenAuthErr("invalid token"))
 			c.Abort()
 			return
 		}

@@ -1,8 +1,8 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/model"
-	"gitee.com/nichanghao/gdmin/model/common"
 	"gitee.com/nichanghao/gdmin/service"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
@@ -71,19 +71,18 @@ func (*SysRoleController) EditRole(c *gin.Context) {
 	}
 
 	if req.Id == 0 {
-		_ = c.Error(common.ErrIllegalParameter)
+		_ = c.Error(buserr.ErrIllegalParameter)
 		return
 	}
 
 	var role model.SysRole
-	err := copier.Copy(&role, &req)
-	if err != nil {
+	if err := copier.Copy(&role, &req); err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	if err2 := service.SysRole.EditRole(&role); err2 != nil {
-		_ = c.Error(err2)
+	if err := service.SysRole.EditRole(&role); err != nil {
+		_ = c.Error(err)
 	} else {
 		response.OkWithData(true, c)
 	}
@@ -95,13 +94,13 @@ func (*SysRoleController) DeleteRole(c *gin.Context) {
 	id := c.Query("id")
 
 	if id == "" {
-		_ = c.Error(common.ErrIllegalParameter)
+		_ = c.Error(buserr.ErrIllegalParameter)
 		return
 	}
 
 	roleId, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		_ = c.Error(common.ErrIllegalParameter)
+		_ = c.Error(buserr.ErrIllegalParameter)
 		return
 	}
 

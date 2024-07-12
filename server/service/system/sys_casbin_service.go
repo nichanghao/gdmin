@@ -11,7 +11,7 @@ var (
 
 // casbin 中 区分角色和用户的前缀
 const (
-	role_prefix = "r:"
+	rolePrefix = "r:"
 
 	userPrefix = "u:"
 )
@@ -50,6 +50,32 @@ func (casbinService *SysCasbinService) DeletePermissionByMenuId(menuId uint64) e
 	return nil
 }
 
+// ClearRolesForUser 删除casbin用户所有角色
+func (casbinService *SysCasbinService) ClearRolesForUser(userId uint64) error {
+
+	_, err := global.Enforcer.DeleteUser(casbinService.GetCasbinUserStr(userId))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// AddRolesForUser casbin用户添加角色
+func (casbinService *SysCasbinService) AddRolesForUser(userId uint64, roleIds []uint64) error {
+
+	roleStrs := make([]string, 0, len(roleIds))
+	for i := range roleIds {
+		roleStrs = append(roleStrs, casbinService.GetCasbinRoleStr(roleIds[i]))
+	}
+
+	if _, err := global.Enforcer.AddRolesForUser(casbinService.GetCasbinUserStr(userId), roleStrs); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (casbinService *SysCasbinService) GetPermissionByUserId(userId uint64) (map[string]any, error) {
 
 	policies, err := global.Enforcer.GetImplicitPermissionsForUser(casbinService.GetCasbinUserStr(userId))
@@ -69,4 +95,8 @@ func (casbinService *SysCasbinService) GetPermissionByUserId(userId uint64) (map
 
 func (*SysCasbinService) GetCasbinUserStr(userId uint64) string {
 	return userPrefix + strconv.FormatUint(userId, 10)
+}
+
+func (*SysCasbinService) GetCasbinRoleStr(roleId uint64) string {
+	return rolePrefix + strconv.FormatUint(roleId, 10)
 }

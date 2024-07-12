@@ -1,6 +1,8 @@
 package system
 
-import "gitee.com/nichanghao/gdmin/model/common"
+import (
+	"gitee.com/nichanghao/gdmin/common"
+)
 
 type SysMenu struct {
 	Id         uint64     `gorm:"primarykey;comment:菜单ID" json:"id"`

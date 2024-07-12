@@ -2,9 +2,9 @@ package system
 
 import (
 	"errors"
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
-	"gitee.com/nichanghao/gdmin/model/common"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gorm.io/gorm"
 )
@@ -47,6 +47,7 @@ func (roleService *SysRoleService) AddRole(role *model.SysRole) error {
 
 		return nil
 	})
+
 }
 
 // EditRole 编辑角色
@@ -55,7 +56,7 @@ func (roleService *SysRoleService) EditRole(role *model.SysRole) error {
 
 		var roleOld = model.SysRole{}
 		if errors.Is(tx.Where("id = ?", role.Id).First(&roleOld).Error, gorm.ErrRecordNotFound) {
-			return common.NewNoticeBusErr("该角色不存在！")
+			return buserr.NewNoticeBusErr("该角色不存在！")
 		}
 
 		if roleOld.Name != role.Name {
@@ -85,10 +86,10 @@ func (roleService *SysRoleService) DeleteRole(roleId uint64) error {
 		var role = model.SysRole{}
 
 		if errors.Is(tx.Where("id = ?", roleId).Preload("Users").First(&role).Error, gorm.ErrRecordNotFound) {
-			return common.NewNoticeBusErr("该角色不存在！")
+			return buserr.NewNoticeBusErr("该角色不存在！")
 		}
 		if len(role.Users) > 0 {
-			return common.NewNoticeBusErr("该角色已分配给用户，不能删除！")
+			return buserr.NewNoticeBusErr("该角色已分配给用户，不能删除！")
 		}
 
 		return tx.Delete(&model.SysRole{}, roleId).Error
@@ -116,7 +117,7 @@ func (*SysRoleService) validateDuplicateRoleByName(tx *gorm.DB, name string) err
 		return err
 	}
 	if count > 0 {
-		return common.NewNoticeBusErr("角色名称已存在！")
+		return buserr.NewNoticeBusErr("角色名称已存在！")
 	}
 
 	return nil
@@ -129,7 +130,7 @@ func (*SysRoleService) validateDuplicateRoleByCode(tx *gorm.DB, code string) err
 		return err
 	}
 	if count > 0 {
-		return common.NewNoticeBusErr("角色编码已存在！")
+		return buserr.NewNoticeBusErr("角色编码已存在！")
 	}
 
 	return nil

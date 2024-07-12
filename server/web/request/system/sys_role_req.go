@@ -1,6 +1,8 @@
 package system
 
-import "gitee.com/nichanghao/gdmin/model/common"
+import (
+	"gitee.com/nichanghao/gdmin/common"
+)
 
 type SysRolePageReq struct {
 	Name           string `json:"name"` // 名称查询
