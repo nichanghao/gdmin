@@ -9,11 +9,6 @@ import { usePermissionStoreWithOut } from '@/stores/permission'
 // 路由不重定向白名单
 const whiteList = [
   '/login',
-  '/social-login',
-  '/auth-redirect',
-  '/bind',
-  '/register',
-  '/oauthLogin/gitee'
 ]
 
 // 路由加载前

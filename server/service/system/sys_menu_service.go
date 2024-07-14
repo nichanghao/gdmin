@@ -7,9 +7,24 @@ import (
 	"gorm.io/gorm"
 )
 
+var (
+	MenuService = new(SysMenuService)
+)
+
 type SysMenuService struct {
 }
 
+// GetAllMenuTree 获取所有菜单树
+func (service *SysMenuService) GetAllMenuTree() (res []*model.SysMenu, err error) {
+
+	if err = global.GormDB.Find(&res).Error; err != nil {
+		return
+	}
+
+	return service.buildMenuTree(res), nil
+}
+
+// GetMenuTreeByUserId 获取用户的菜单树
 func (service *SysMenuService) GetMenuTreeByUserId(userId uint64) ([]*model.SysMenu, error) {
 
 	// 获取用户的菜单权限

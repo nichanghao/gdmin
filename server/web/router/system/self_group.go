@@ -9,10 +9,10 @@ type SelfRouter struct{}
 
 func (*SelfRouter) InitRouter(group *gin.RouterGroup) {
 
-	// 菜单相关路由
-	sysMenuGroup := group.Group("/sys/menu")
+	// 用户相关路由
+	sysMenuGroup := group.Group("/sys/user")
 	{
-		sysMenuGroup.GET("/self/tree", controller.SysMenu.GetSelfMenuTree)
+		sysMenuGroup.GET("/self/info", controller.SysUser.GetSelfUserInfo)
 	}
 
 }

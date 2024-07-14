@@ -19,7 +19,7 @@ func (userService *SysUserService) Login(user *model.SysUser) (*response.SysUser
 
 	var userRes *model.SysUser
 
-	if err := global.GormDB.Where("username = ?", user.Username).Preload("Roles").First(&userRes).Error; err != nil {
+	if err := global.GormDB.Where("username = ?", user.Username).First(&userRes).Error; err != nil {
 		return nil, buserr.NewNoticeBusErr("用户不存在！")
 	}
 
@@ -37,6 +37,21 @@ func (userService *SysUserService) Login(user *model.SysUser) (*response.SysUser
 	}
 
 	return &response.SysUserLoginResp{Token: token, UserInfo: userRes}, nil
+}
+
+// GetSelfUserInfo 获取当前用户信息
+func (userService *SysUserService) GetSelfUserInfo(id uint64) (res *response.SysUserInfoResp, err error) {
+
+	res = &response.SysUserInfoResp{UserInfo: &model.SysUser{}}
+
+	if err = global.GormDB.Model(&model.SysUser{Id: id}).Preload("Roles").First(res.UserInfo).Error; err != nil {
+		return
+	}
+	if res.PermissionInfo, err = MenuService.GetMenuTreeByUserId(id); err != nil {
+		return
+	}
+
+	return
 }
 
 // PageUsers 分页查询用户列表

@@ -4,16 +4,17 @@
       label-position="left"
       label-width="auto"
       :model="loginForm.FormData"
+      :rules="formRules"
       style="max-width: 600px; margin: 40vh auto"
     >
-      <el-form-item>
+      <el-form-item prop="username">
         <el-input v-model="loginForm.FormData.username" placeholder="请输入用户名">
           <template #prefix>
             <i-ep-user />
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="password">
         <el-input
           v-model="loginForm.FormData.password"
           type="password"
@@ -49,14 +50,18 @@ import * as UserApi from '@/api/user'
 import * as AuthUtils from '@/utils/auth'
 import router from '@/router'
 
-
 const loginForm = reactive({
   FormData: {
     username: 'admin',
     password: '123456',
-    rememberMe: undefined
+    rememberMe: true
   }
 });
+
+const formRules = reactive({
+  username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
+  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],  
+})
 
 // 加载状态
 const loginLoading = ref(false);
@@ -70,6 +75,15 @@ const handleLogin = async () => {
     if (!res || res.code !== 200) {
       return
     }
+
+    // rememberMe
+    if (loginForm.FormData.rememberMe) {
+      AuthUtils.setLoginForm(loginForm.FormData)
+    } else {
+      AuthUtils.removeLoginForm()
+    }
+     
+
     AuthUtils.setToken(res.data.token)
 
     // 跳转到首页

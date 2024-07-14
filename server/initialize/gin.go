@@ -23,7 +23,7 @@ func InitGin() *gin.Engine {
 	//自有路由组，只要jwt鉴权即可
 	selfGroup := engine.Group("")
 	selfGroup.Use(middleware.JwtAuth())
-	router.Self.InitRouter(baseGroup)
+	router.Self.InitRouter(selfGroup)
 
 	// 私有路由组，需要jwt鉴权和casbin权限控制
 	privateGroup := engine.Group("")

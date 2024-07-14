@@ -3,6 +3,7 @@ package system
 import (
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
+	"gitee.com/nichanghao/gdmin/utils"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,22 @@ func (*SysUserController) Login(c *gin.Context) {
 		response.OkWithResult(&resp, "登录成功", c)
 	}
 
+}
+
+// GetSelfUserInfo 获取当前用户信息
+func (*SysUserController) GetSelfUserInfo(c *gin.Context) {
+
+	claims, err := utils.CLAIMS.GetUserClaims(c)
+	if err != nil {
+		response.FailWithMessage("获取用户信息失败！", c)
+		return
+	}
+
+	if info, err2 := service.SysUser.GetSelfUserInfo(claims.ID); err2 != nil {
+		response.FailWithMessage("获取用户信息失败！", c)
+	} else {
+		response.OkWithData(info, c)
+	}
 }
 
 // PageUsers 分页查询用户列表

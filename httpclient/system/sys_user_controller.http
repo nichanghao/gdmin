@@ -7,6 +7,12 @@ Content-Type: application/json
     "password": "123456"
 }
 
+### 获取用户信息
+GET {{host}}/sys/user/self/info
+Content-Type: application/json
+Authorization: {{token}}
+
+
 ### 编辑用户
 PUT {{host}}/sys/user/edit
 Content-Type: application/json

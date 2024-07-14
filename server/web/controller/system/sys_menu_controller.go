@@ -4,7 +4,6 @@ import (
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
-	"gitee.com/nichanghao/gdmin/utils"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
@@ -14,16 +13,10 @@ import (
 
 type SysMenuController struct{}
 
-// GetSelfMenuTree 获取自身的权限菜单树
-func (*SysMenuController) GetSelfMenuTree(c *gin.Context) {
+// GetAllMenuTree 获取所有菜单树
+func (*SysMenuController) GetAllMenuTree(c *gin.Context) {
 
-	claims, err := utils.CLAIMS.GetUserClaims(c)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if menuTrees, err2 := service.SysMenu.GetMenuTreeByUserId(claims.ID); err2 != nil {
+	if menuTrees, err2 := service.SysMenu.GetAllMenuTree(); err2 != nil {
 		_ = c.Error(err2)
 	} else {
 		response.OkWithData(menuTrees, c)

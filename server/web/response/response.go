@@ -6,4 +6,6 @@ import (
 
 type (
 	SysUserLoginResp = system.SysUserLoginResp
+
+	SysUserInfoResp = system.SysUserInfoResp
 )
