@@ -8,6 +8,7 @@ type SysUserLoginResp struct {
 }
 
 type SysUserInfoResp struct {
-	UserInfo       *model.SysUser   `json:"userInfo"`       // 用户信息
-	PermissionInfo []*model.SysMenu `json:"permissionInfo"` // 用户权限信息
+	User        *model.SysUser   `json:"user"`        // 用户信息
+	MenuTree    []*model.SysMenu `json:"menuTree"`    // 用户菜单树
+	Permissions []string         `json:"permissions"` // 用户权限标识集合
 }

@@ -13,5 +13,5 @@ export const login = (data: UserLoginVO) => {
 
 // 获取用户权限信息
 export const getUserInfo = () => {
-  return request.get({ url: '/sys/user/info'})
+  return request.get({ url: '/sys/user/self/info'})
 }

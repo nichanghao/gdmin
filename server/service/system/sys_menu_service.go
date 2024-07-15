@@ -5,6 +5,7 @@ import (
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
 	"gorm.io/gorm"
+	"sort"
 )
 
 var (
@@ -21,26 +22,28 @@ func (service *SysMenuService) GetAllMenuTree() (res []*model.SysMenu, err error
 		return
 	}
 
-	return service.buildMenuTree(res), nil
+	tree, _ := service.buildMenuTree(res, false)
+	return tree, nil
 }
 
 // GetMenuTreeByUserId 获取用户的菜单树
-func (service *SysMenuService) GetMenuTreeByUserId(userId uint64) ([]*model.SysMenu, error) {
+func (service *SysMenuService) GetMenuTreeByUserId(userId uint64) ([]*model.SysMenu, []string, error) {
 
 	// 获取用户的菜单权限
 	menuIds, err := CasbinService.GetPermissionMenuIdsByUserId(userId)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var menus []*model.SysMenu
 
 	global.GormDB.Where("id in (?)", menuIds).Find(&menus)
 	if len(menus) == 0 {
-		return nil, nil
+		return nil, nil, nil
 	}
 
-	return service.buildMenuTree(menus), nil
+	tree, permissionList := service.buildMenuTree(menus, true)
+	return tree, permissionList, nil
 
 }
 
@@ -88,17 +91,33 @@ func (*SysMenuService) DeleteMenu(menuId uint64) error {
 }
 
 // 构建菜单树
-func (*SysMenuService) buildMenuTree(menus []*model.SysMenu) []*model.SysMenu {
+func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([]*model.SysMenu, []string) {
 	// 创建一个 map 来存储每个菜单项
 	menuMap := make(map[uint64]*model.SysMenu)
 	for i := range menus {
 		menuMap[menus[i].Id] = menus[i]
 	}
 
+	// 排序
+	sort.Slice(menus, func(i, j int) bool { return menus[i].Sort < menus[j].Sort })
+
 	// 创建一个根菜单列表
-	var rootMenus []*model.SysMenu
+	var rootMenus = make([]*model.SysMenu, 0, len(menus))
+
+	// 权限列表
+	var permissionList = make([]string, 0, len(menus))
 
 	for _, menu := range menus {
+
+		if menu.Permission != "" {
+			permissionList = append(permissionList, menu.Permission)
+		}
+
+		// 是否排除按钮
+		if excludeBtn && menu.Type == 2 {
+			continue
+		}
+
 		if menu.ParentId == 0 {
 			// 如果 ParentID 为 0，表示这是根菜单
 			rootMenus = append(rootMenus, menu)
@@ -110,5 +129,5 @@ func (*SysMenuService) buildMenuTree(menus []*model.SysMenu) []*model.SysMenu {
 		}
 	}
 
-	return rootMenus
+	return rootMenus, permissionList
 }

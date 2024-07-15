@@ -56,11 +56,11 @@ export const useUserStore = defineStore('admin-user', {
         userInfo = await getUserInfo()
       }
       this.permissions = userInfo.permissions
-      this.roles = userInfo.roles
       this.user = userInfo.user
+      this.roles = userInfo.user.roles
       this.isSetUser = true
       wsCache.set(CACHE_KEY.USER, userInfo)
-      wsCache.set(CACHE_KEY.ROLE_ROUTERS, userInfo.menus)
+      wsCache.set(CACHE_KEY.ROLE_ROUTERS, userInfo.menuTree)
     },
     async setUserAvatarAction(avatar: string) {
       const userInfo = wsCache.get(CACHE_KEY.USER)

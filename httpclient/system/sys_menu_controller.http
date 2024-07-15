@@ -10,13 +10,14 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-    "title": "用户管理",
-    "resource": "",
-    "action": "",
-    "type": 1,
-    "sort": 1,
-    "parentId": 1,
-    "component": "user"
+  "title": "用户管理",
+  "type": 1,
+  "permission": "sys:user",
+  "path": "/system/user",
+  "component": "system/user/index",
+  "componentName": "SystemUser",
+  "sort": 1,
+  "parentId": 1
 }
 
 
@@ -26,19 +27,20 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "Id": 10001,
-  "title": "用户管理",
-  "resource": "",
-  "action": "",
+  "id": 1,
+  "title": "系统管理",
   "type": 1,
+  "permission": "sys",
+  "path": "/system",
+  "component": "",
+  "componentName": "",
   "sort": 1,
-  "parentId": 1,
-  "component": "user"
+  "parentId": 0
 }
 
 
 ### 删除菜单
-DELETE {{host}}/sys/menu/delete?id=10001
+DELETE {{host}}/sys/menu/delete?id=1
 Content-Type: application/json
 Authorization: {{token}}
 
