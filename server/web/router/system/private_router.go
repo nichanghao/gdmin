@@ -13,6 +13,11 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 	{
 		sysUserGroup.POST("page", controller.SysUser.PageUsers)
 		sysUserGroup.PUT("edit", controller.SysUser.EditUser)
+		sysUserGroup.PUT("reset-password", controller.SysUser.ResetPassword)
+		sysUserGroup.DELETE("delete", controller.SysUser.DeleteUser)
+		sysUserGroup.PUT("allocate-roles", controller.SysUser.AllocateRoles)
+		sysUserGroup.POST("add", controller.SysUser.AddUser)
+		sysUserGroup.PUT("update-status", controller.SysUser.UpdateStatus)
 	}
 
 	// 菜单相关路由

@@ -7,8 +7,8 @@ import (
 
 // BaseDO 基础模型
 type BaseDO struct {
-	UpdatedAt  time.Time      `gorm:"comment:修改时间" json:"updatedAt"`
-	ModifyUser string         `gorm:"comment:修改人" json:"modifyUser"`
+	UpdatedAt  time.Time      `gorm:"comment:修改时间" json:"updatedAt,omitempty"`
+	ModifyUser string         `gorm:"comment:修改人" json:"modifyUser,omitempty"`
 	DeletedAt  gorm.DeletedAt `gorm:"index;comment:删除时间" json:"-"` // gorm逻辑删除
 }
 

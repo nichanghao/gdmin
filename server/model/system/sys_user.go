@@ -11,6 +11,7 @@ type SysUser struct {
 	Nickname string    `gorm:"type:varchar(128);comment:用户昵称" json:"nickname"`
 	Phone    string    `gorm:"type:varchar(16);comment:联系电话" json:"phone"`
 	Email    string    `gorm:"type:varchar(64);comment:邮箱" json:"email"`
+	Status   uint8     `gorm:"type:tinyint(1);default:1;comment:用户状态(1:正常,2:停用)" json:"status"`
 	Roles    []SysRole `gorm:"many2many:sys_user_role;" json:"roles"` // 用户角色关系
 	common.BaseDO
 }

@@ -1,6 +1,7 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
 	"gitee.com/nichanghao/gdmin/utils"
@@ -69,7 +70,7 @@ func (*SysUserController) PageUsers(c *gin.Context) {
 
 // EditUser 编辑用户
 func (*SysUserController) EditUser(c *gin.Context) {
-	var req request.SysUserEditReq
+	var req request.SysUserUpdateReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -93,7 +94,7 @@ func (*SysUserController) EditUser(c *gin.Context) {
 
 // ResetPassword 重置密码
 func (*SysUserController) ResetPassword(c *gin.Context) {
-	var req request.SysUserEditReq
+	var req request.SysUserUpdateReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -116,7 +117,7 @@ func (*SysUserController) ResetPassword(c *gin.Context) {
 
 // DeleteUser 删除用户
 func (*SysUserController) DeleteUser(c *gin.Context) {
-	var req request.SysUserEditReq
+	var req request.SysUserUpdateReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -134,7 +135,7 @@ func (*SysUserController) DeleteUser(c *gin.Context) {
 
 // AllocateRoles 分配角色给用户
 func (*SysUserController) AllocateRoles(c *gin.Context) {
-	var req request.SysUserEditReq
+	var req request.SysUserUpdateReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -153,4 +154,44 @@ func (*SysUserController) AllocateRoles(c *gin.Context) {
 		response.Ok(c)
 	}
 
+}
+
+// AddUser 新增用户
+func (*SysUserController) AddUser(c *gin.Context) {
+	var req request.SysUserAddReq
+
+	// 绑定参数
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if err := service.SysUser.AddUser(&req); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.Ok(c)
+	}
+
+}
+
+// UpdateStatus 更新用户状态
+func (*SysUserController) UpdateStatus(c *gin.Context) {
+	var req request.SysUserUpdateReq
+
+	// 绑定参数
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if req.Status == 0 {
+		_ = c.Error(buserr.ErrIllegalParameter)
+		return
+	}
+
+	if err := service.SysUser.UpdateStatus(&req); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.Ok(c)
+	}
 }

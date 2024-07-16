@@ -16,3 +16,8 @@ type SysRoleReq struct {
 	Code string `json:"code" binding:"required"` // code
 	Desc string `json:"desc"`                    // 描述
 }
+
+type SysAssignRoleMenuReq struct {
+	RoleId  uint64   `json:"roleId" binding:"required"`  // 角色id
+	MenuIds []uint64 `json:"menuIds" binding:"required"` // 描述
+}

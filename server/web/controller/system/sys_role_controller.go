@@ -110,3 +110,17 @@ func (*SysRoleController) DeleteRole(c *gin.Context) {
 		response.OkWithData(true, c)
 	}
 }
+
+// AssignRoleMenus 分配角色菜单
+func (*SysRoleController) AssignRoleMenus(c *gin.Context) {
+
+	var req request.SysAssignRoleMenuReq
+
+	// 绑定参数
+	if err := c.ShouldBindJSON(&req); err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	service.SysRole.AssignRoleMenus(&req)
+}

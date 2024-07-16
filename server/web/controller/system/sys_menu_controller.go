@@ -101,3 +101,34 @@ func (*SysMenuController) DeleteMenu(c *gin.Context) {
 	}
 
 }
+
+// ListAllMenuSimple 获取所有菜单简要信息（角色管理页面分配角色权限时展示使用）
+func (*SysMenuController) ListAllMenuSimple(c *gin.Context) {
+	if res, err := service.SysRole.ListAllMenuSimple(); err != nil {
+		response.FailWithMessage("获取菜单简要信息失败！", c)
+	} else {
+		response.OkWithData(res, c)
+	}
+}
+
+// ListMenusByRoleId 获取角色拥有的菜单（角色管理页面分配角色权限时展示使用）
+func (*SysMenuController) ListMenusByRoleId(c *gin.Context) {
+	id := c.Query("roleId")
+	if id == "" {
+		_ = c.Error(buserr.ErrIllegalParameter)
+		return
+	}
+
+	roleId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		_ = c.Error(buserr.ErrIllegalParameter)
+		return
+	}
+
+	if res, err2 := service.SysRole.ListMenusByRoleId(roleId); err2 != nil {
+		response.FailWithMessage("获取角色菜单失败！", c)
+	} else {
+		response.OkWithData(res, c)
+	}
+
+}

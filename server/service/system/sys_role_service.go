@@ -6,6 +6,8 @@ import (
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/web/request"
+	"gitee.com/nichanghao/gdmin/web/response"
+	mapset "github.com/deckarep/golang-set/v2"
 	"gorm.io/gorm"
 )
 
@@ -94,6 +96,48 @@ func (roleService *SysRoleService) DeleteRole(roleId uint64) error {
 
 		return tx.Delete(&model.SysRole{}, roleId).Error
 	})
+
+}
+
+// ListAllMenuSimple 获取所有菜单的简要信息
+func (roleService *SysRoleService) ListAllMenuSimple() (res []*response.SysMenuSimpleResp, err error) {
+
+	err = global.GormDB.Model(&model.SysMenu{}).Select("id, name, type, parent_id").Find(&res).Error
+
+	return
+}
+
+// ListMenusByRoleId 获取角色拥有的菜单
+func (roleService *SysRoleService) ListMenusByRoleId(roleId uint64) (menuIds []uint64, err error) {
+
+	menuIds, err = CasbinService.GetPermissionMenuIdsByRoleId(roleId)
+	return
+}
+
+// AssignRoleMenus 分配角色菜单
+func (roleService *SysRoleService) AssignRoleMenus(req *request.SysAssignRoleMenuReq) error {
+	// 1. 获取角色拥有的菜单
+	menuIds, err := CasbinService.GetPermissionMenuIdsByRoleId(req.RoleId)
+	if err != nil {
+		return err
+	}
+
+	// 2. 计算需要新增和删除的菜单
+	existMenus := mapset.NewSet(menuIds...)
+	needHandleMenus := mapset.NewSet(req.MenuIds...)
+
+	needAddMenus := needHandleMenus.Difference(existMenus)
+	needDelMenus := existMenus.Difference(needHandleMenus)
+
+	// 3. 处理数据
+	var addMenus []model.SysMenu
+	err = global.GormDB.Model(&model.SysMenu{}).Select("id, permission").Where("id IN ?", needAddMenus.ToSlice()).Find(&addMenus).Error
+	if err != nil {
+		return err
+	}
+	err = CasbinService.AddPermissionByRoleAndMenus(req.RoleId, addMenus)
+	err = CasbinService.DeletePermissionByRoleAndMenus(req.RoleId, needDelMenus.ToSlice())
+	return err
 
 }
 

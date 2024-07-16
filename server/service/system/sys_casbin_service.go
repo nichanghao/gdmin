@@ -2,6 +2,7 @@ package system
 
 import (
 	"gitee.com/nichanghao/gdmin/global"
+	"gitee.com/nichanghao/gdmin/model"
 	"strconv"
 )
 
@@ -19,10 +20,10 @@ const (
 type SysCasbinService struct{}
 
 // GetPermissionMenuIdsByUserId 获取用户菜单权限
-func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint64) ([]string, error) {
+func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint64) ([]uint64, error) {
 
 	policies, err := global.Enforcer.GetImplicitPermissionsForUser(casbinService.GetCasbinUserStr(userId))
-	menuIds := make([]string, 0, len(policies))
+	menuIds := make([]uint64, 0, len(policies))
 
 	if err != nil {
 		return menuIds, err
@@ -32,7 +33,30 @@ func (casbinService *SysCasbinService) GetPermissionMenuIdsByUserId(userId uint6
 	}
 
 	for i := range policies {
-		menuIds = append(menuIds, policies[i][2])
+		num, _ := strconv.ParseUint(policies[i][2], 10, 64)
+		menuIds = append(menuIds, num)
+	}
+
+	return menuIds, nil
+
+}
+
+// GetPermissionMenuIdsByRoleId 获取角色菜单权限
+func (casbinService *SysCasbinService) GetPermissionMenuIdsByRoleId(roleId uint64) ([]uint64, error) {
+
+	policies, err := global.Enforcer.GetFilteredPolicy(0, casbinService.GetCasbinRoleStr(roleId))
+	menuIds := make([]uint64, 0, len(policies))
+
+	if err != nil {
+		return menuIds, err
+	}
+	if len(policies) == 0 {
+		return menuIds, nil
+	}
+
+	for i := range policies {
+		num, _ := strconv.ParseUint(policies[i][2], 10, 64)
+		menuIds = append(menuIds, num)
 	}
 
 	return menuIds, nil
@@ -76,6 +100,7 @@ func (casbinService *SysCasbinService) AddRolesForUser(userId uint64, roleIds []
 	return nil
 }
 
+// GetPermissionByUserId 获取用户所有权限
 func (casbinService *SysCasbinService) GetPermissionByUserId(userId uint64) (map[string]any, error) {
 
 	policies, err := global.Enforcer.GetImplicitPermissionsForUser(casbinService.GetCasbinUserStr(userId))
@@ -91,6 +116,27 @@ func (casbinService *SysCasbinService) GetPermissionByUserId(userId uint64) (map
 
 	return permissionSet, nil
 
+}
+
+// DeletePermissionByRoleAndMenus 删除角色菜单权限
+func (casbinService *SysCasbinService) DeletePermissionByRoleAndMenus(roleId uint64, menus []uint64) (err error) {
+	roleIdStr := casbinService.GetCasbinRoleStr(roleId)
+	for i := range menus {
+		_, err = global.Enforcer.RemoveFilteredPolicy(0, roleIdStr, "", strconv.FormatUint(menus[i], 10))
+	}
+	return
+}
+
+// AddPermissionByRoleAndMenus 添加角色菜单权限
+func (casbinService *SysCasbinService) AddPermissionByRoleAndMenus(roleId uint64, menus []model.SysMenu) (err error) {
+	var policies [][]string
+	casbinRoleStr := CasbinService.GetCasbinRoleStr(roleId)
+	for i := range menus {
+		policies[i] = []string{casbinRoleStr, menus[i].Permission, strconv.FormatUint(menus[i].Id, 10)}
+	}
+	_, err = global.Enforcer.AddPolicies(policies)
+
+	return
 }
 
 func (*SysCasbinService) GetCasbinUserStr(userId uint64) string {

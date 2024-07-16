@@ -8,4 +8,6 @@ type (
 	SysUserLoginResp = system.SysUserLoginResp
 
 	SysUserInfoResp = system.SysUserInfoResp
+
+	SysMenuSimpleResp = system.SysMenuSimpleResp
 )

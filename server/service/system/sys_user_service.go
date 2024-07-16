@@ -8,6 +8,7 @@ import (
 	"gitee.com/nichanghao/gdmin/utils"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -89,7 +90,7 @@ func (userService *SysUserService) EditUser(user *model.SysUser) error {
 }
 
 // ResetPassword 重置密码
-func (userService *SysUserService) ResetPassword(req *request.SysUserEditReq) error {
+func (userService *SysUserService) ResetPassword(req *request.SysUserUpdateReq) error {
 
 	password, err := utils.BCRYPT.HashPassword(req.Password)
 	if err != nil {
@@ -123,7 +124,7 @@ func (userService *SysUserService) DeleteUser(id uint64) error {
 }
 
 // AllocateRoles 分配角色给用户
-func (userService *SysUserService) AllocateRoles(req *request.SysUserEditReq) error {
+func (userService *SysUserService) AllocateRoles(req *request.SysUserUpdateReq) error {
 
 	var roles []*model.SysRole
 	for i := range req.RoleIds {
@@ -155,4 +156,31 @@ func (userService *SysUserService) AllocateRoles(req *request.SysUserEditReq) er
 		return nil
 	})
 
+}
+
+// AddUser 新增用户
+func (userService *SysUserService) AddUser(req *request.SysUserAddReq) error {
+	var user model.SysUser
+	if err := copier.Copy(&user, &req); err != nil {
+		return err
+	}
+
+	// 加密密码
+	password, err := utils.BCRYPT.HashPassword(req.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = password
+
+	return global.GormDB.Create(user).Error
+}
+
+// UpdateStatus 更新用户状态
+func (userService *SysUserService) UpdateStatus(req *request.SysUserUpdateReq) error {
+
+	if err := global.GormDB.Model(&model.SysUser{}).Where("id = ?", req.Id).Update("status", req.Status).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

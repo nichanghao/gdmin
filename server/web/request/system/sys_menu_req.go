@@ -2,7 +2,7 @@ package system
 
 type SysMenuReq struct {
 	Id            uint64 `json:"id"`                            // 菜单ID
-	Title         string `json:"title" binding:"required"`      // 菜单名称
+	Name          string `json:"name" binding:"required"`       // 菜单名称
 	Type          int8   `json:"type" binding:"gte=1,lte=2"`    // 菜单类型(1:菜单,2:按钮)
 	Permission    string `json:"permission" binding:"required"` // 权限标识
 	Path          string `json:"path" `                         // 路由地址
