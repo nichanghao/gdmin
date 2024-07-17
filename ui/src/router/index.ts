@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import type { App } from 'vue'
 
 /**
  * redirect: noredirect        当设置 noredirect 的时候该路由在面包屑导航中不可被点击
@@ -33,8 +34,8 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
  **/
 export const routerArray: AppRouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'login',
+    path: '/login',
+    name: 'Login',
     component: () => import('@/views/login/index.vue'),
     meta: {
       hidden: true,
@@ -43,21 +44,35 @@ export const routerArray: AppRouteRecordRaw[] = [
     }
   },
   {
-    path: '/index',
-    component: () => import('@/views/home/index.vue'),
-    name: 'Index',
-    meta: {
-      title: '首页',
-      icon: 'ep:home-filled',
-      noCache: false,
-      affix: true
-    }
+    path: '/',
+    component: () => import('@/layout/index.vue'),
+    name: 'Home',
+    redirect: '/index',
+    meta: {},
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/home/index.vue'),
+        name: 'Index',
+        meta: {
+          title: '首页',
+          icon: 'ep:home-filled',
+          noCache: false,
+          affix: true
+        }
+      }
+    ]
   }
+  
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: routerArray as  RouteRecordRaw[]
 })
+
+export const setupRouter = (app: App<Element>) => {
+  app.use(router)
+}
 
 export default router

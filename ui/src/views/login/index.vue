@@ -72,7 +72,7 @@ const handleLogin = async () => {
 
   try{
     const res = await UserApi.login(loginForm.FormData)
-    if (!res || res.code !== 200) {
+    if (!res) {
       return
     }
 
@@ -84,13 +84,13 @@ const handleLogin = async () => {
     }
      
 
-    AuthUtils.setToken(res.data.token)
+    AuthUtils.setToken(res.token)
 
     // 跳转到首页
     await router.push('/index')
 
   } finally {
-    loginLoading.value = false;
+    loginLoading.value = false
   }
 
 }

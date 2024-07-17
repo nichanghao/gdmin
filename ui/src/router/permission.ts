@@ -51,7 +51,8 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach((to) => {
-  
+
+
 })
 
 const parseURL = (url: string | null | undefined): { basePath: string; paramsObject: { [key: string]: string } } => {

@@ -1,4 +1,6 @@
-import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
+import { getAccessToken } from '@/utils/auth'
+
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -19,8 +21,7 @@ axiosInstance.interceptors.request.use((config) => {
   }
 
   if (isToken) {
-    // todo
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    config.headers.Authorization = `Bearer ` + getAccessToken()
   }
 
   return config
@@ -60,7 +61,7 @@ axiosInstance.interceptors.response.use((res: AxiosResponse<any>) => {
     })
   }
 
-  return res
+  return res.data
 }, (error) => {
   console.log('response error: ', error)
   
