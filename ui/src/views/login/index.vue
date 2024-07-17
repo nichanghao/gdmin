@@ -38,17 +38,19 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button :loading="loginLoading" style="width: 100%;" type="primary" @click="handleLogin">登陆</el-button>
+        <el-button :loading="loginLoading" style="width: 100%" type="primary" @click="handleLogin"
+          >登陆</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
-import * as UserApi from '@/api/user'
-import * as AuthUtils from '@/utils/auth'
-import router from '@/router'
+import { reactive, ref } from 'vue';
+import * as UserApi from '@/api/user';
+import * as AuthUtils from '@/utils/auth';
+import router from '@/router';
 
 const loginForm = reactive({
   FormData: {
@@ -60,8 +62,8 @@ const loginForm = reactive({
 
 const formRules = reactive({
   username: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],  
-})
+  password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+});
 
 // 加载状态
 const loginLoading = ref(false);
@@ -70,33 +72,27 @@ const loginLoading = ref(false);
 const handleLogin = async () => {
   loginLoading.value = true;
 
-  try{
-    const res = await UserApi.login(loginForm.FormData)
+  try {
+    const res = await UserApi.login(loginForm.FormData);
     if (!res) {
-      return
+      return;
     }
 
     // rememberMe
     if (loginForm.FormData.rememberMe) {
-      AuthUtils.setLoginForm(loginForm.FormData)
+      AuthUtils.setLoginForm(loginForm.FormData);
     } else {
-      AuthUtils.removeLoginForm()
+      AuthUtils.removeLoginForm();
     }
-     
 
-    AuthUtils.setToken(res.token)
+    AuthUtils.setToken(res.token);
 
     // 跳转到首页
-    await router.push('/index')
-
+    await router.push('/index');
   } finally {
-    loginLoading.value = false
+    loginLoading.value = false;
   }
-
-}
-
-
+};
 </script>
 
 <style scoped></style>
-

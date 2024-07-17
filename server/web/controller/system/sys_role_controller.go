@@ -122,5 +122,10 @@ func (*SysRoleController) AssignRoleMenus(c *gin.Context) {
 		return
 	}
 
-	service.SysRole.AssignRoleMenus(&req)
+	if err := service.SysRole.AssignRoleMenus(&req); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.OkWithData(true, c)
+	}
+
 }

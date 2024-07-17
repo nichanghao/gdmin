@@ -1,9 +1,9 @@
 /**
  * 配置浏览器本地存储的方式，可直接存储对象数组。
  */
-import WebStorageCache from 'web-storage-cache'
+import WebStorageCache from 'web-storage-cache';
 
-type CacheType = 'localStorage' | 'sessionStorage'
+type CacheType = 'localStorage' | 'sessionStorage';
 
 export const CACHE_KEY = {
   // 用户相关
@@ -17,21 +17,21 @@ export const CACHE_KEY = {
   DICT_CACHE: 'dictCache',
   // 登录表单
   LoginForm: 'loginForm'
-}
+};
 
 export const useCache = (type: CacheType = 'localStorage') => {
   const wsCache: WebStorageCache = new WebStorageCache({
     storage: type
-  })
+  });
 
   return {
     wsCache
-  }
-}
+  };
+};
 
 export const deleteUserCache = () => {
-  const { wsCache } = useCache()
-  wsCache.delete(CACHE_KEY.USER)
-  wsCache.delete(CACHE_KEY.ROLE_ROUTERS)
+  const { wsCache } = useCache();
+  wsCache.delete(CACHE_KEY.USER);
+  wsCache.delete(CACHE_KEY.ROLE_ROUTERS);
   // 注意，不要清理 LoginForm 登录表单
-}
+};

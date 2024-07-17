@@ -1,17 +1,16 @@
-import { defineStore } from 'pinia'
-import { store } from '@/stores'
-import { CACHE_KEY, useCache } from '@/hooks/useCache'
-import { generateRoute } from '@/utils/routerHelper'
-import { cloneDeep } from 'lodash-es'
-import {routerArray} from '@/router/index'
+import { defineStore } from 'pinia';
+import { store } from '@/stores';
+import { CACHE_KEY, useCache } from '@/hooks/useCache';
+import { flatMultiLevelRoutes, generateRoute } from '@/utils/routerHelper';
+import { cloneDeep } from 'lodash-es';
+import { routerArray } from '@/router/index';
 
-
-const { wsCache } = useCache()
+const { wsCache } = useCache();
 
 export interface PermissionState {
-  routers: AppRouteRecordRaw[]
-  addRouters: AppRouteRecordRaw[]
-  menuTabRouters: AppRouteRecordRaw[]
+  routers: AppRouteRecordRaw[];
+  addRouters: AppRouteRecordRaw[];
+  menuTabRouters: AppRouteRecordRaw[];
 }
 
 export const usePermissionStore = defineStore('permission', {
@@ -22,22 +21,23 @@ export const usePermissionStore = defineStore('permission', {
   }),
   getters: {
     getRouters(): AppRouteRecordRaw[] {
-      return this.routers
+      return this.routers;
     },
-
+    getAddRouters(): AppRouteRecordRaw[] {
+      return flatMultiLevelRoutes(cloneDeep(this.addRouters))
+    },
     getMenuTabRouters(): AppRouteRecordRaw[] {
-      return this.menuTabRouters
+      return this.menuTabRouters;
     }
   },
   actions: {
     async generateRoutes(): Promise<unknown> {
       return new Promise<void>(async (resolve) => {
-
-        let res: AppCustomRouteRecordRaw[] = []
+        let res: AppCustomRouteRecordRaw[] = [];
         if (wsCache.get(CACHE_KEY.ROLE_ROUTERS)) {
-          res = wsCache.get(CACHE_KEY.ROLE_ROUTERS) as AppCustomRouteRecordRaw[]
+          res = wsCache.get(CACHE_KEY.ROLE_ROUTERS) as AppCustomRouteRecordRaw[];
         }
-        const routerMap: AppRouteRecordRaw[] = generateRoute(res)
+        const routerMap: AppRouteRecordRaw[] = generateRoute(res);
 
         // 动态路由，404一定要放到最后面
         this.addRouters = routerMap.concat([
@@ -50,20 +50,19 @@ export const usePermissionStore = defineStore('permission', {
               breadcrumb: false
             }
           }
-        ])
+        ]);
         // 渲染菜单的所有路由
-        this.routers = cloneDeep(routerArray).concat(routerMap)
-        resolve()
-      })
+        this.routers = cloneDeep(routerArray).concat(routerMap);
+        resolve();
+      });
     },
     setMenuTabRouters(routers: AppRouteRecordRaw[]): void {
-      this.menuTabRouters = routers
+      this.menuTabRouters = routers;
     }
   },
-  persist: true
-})
+  persist: false
+});
 
 export const usePermissionStoreWithOut = () => {
-  return usePermissionStore(store)
-}
-
+  return usePermissionStore(store);
+};

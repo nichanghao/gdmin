@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import type { App } from 'vue'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
+import type { App } from 'vue';
 
 /**
  * redirect: noredirect        当设置 noredirect 的时候该路由在面包屑导航中不可被点击
@@ -63,16 +63,15 @@ export const routerArray: AppRouteRecordRaw[] = [
       }
     ]
   }
-  
-]
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: routerArray as  RouteRecordRaw[]
-})
+  routes: routerArray as RouteRecordRaw[]
+});
 
 export const setupRouter = (app: App<Element>) => {
-  app.use(router)
-}
+  app.use(router);
+};
 
-export default router
+export default router;

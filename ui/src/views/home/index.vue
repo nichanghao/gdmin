@@ -1,7 +1,3 @@
-<template>
-首页
-</template>
+<template>首页</template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>

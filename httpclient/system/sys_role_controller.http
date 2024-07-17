@@ -29,3 +29,13 @@ Content-Type: application/json
 ### 删除角色
 DELETE {{host}}/sys/role/delete?id=1
 Authorization: {{token}}
+
+### 分配角色菜单
+PUT {{host}}/sys/role/assign-menus
+Authorization: {{token}}
+
+{
+  "roleId": 1,
+  "menuIds": [1, 2]
+}
+}

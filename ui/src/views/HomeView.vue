@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import request from "@/utils/axios"
+import request from '@/utils/axios';
 </script>
 
 <template>

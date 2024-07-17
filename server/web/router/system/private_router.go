@@ -37,6 +37,7 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 		sysRoleGroup.POST("add", controller.SysRole.AddRole)
 		sysRoleGroup.PUT("edit", controller.SysRole.EditRole)
 		sysRoleGroup.DELETE("delete", controller.SysRole.DeleteRole)
+		sysRoleGroup.PUT("assign-menus", controller.SysRole.AssignRoleMenus)
 
 	}
 }
