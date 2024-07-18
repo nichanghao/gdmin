@@ -1,9 +1,7 @@
 <template>
   <el-menu
-    active-text-color="#ffd04b"
-    background-color="#545c64"
-    class="el-menu-vertical-demo"
-    text-color="#fff"
+    default-active="2"
+    style="height: 100%"
     @open="handleOpen"
     @close="handleClose"
   >
@@ -25,7 +23,7 @@
             </el-menu-item-group>
         </el-sub-menu>
 
-        <el-menu-item v-else @click="handleRouter(item)" :index=menu.path>{{ menu.meta.title }}</el-menu-item>
+        <el-menu-item v-else @click="handleRouter(menu)" :index=menu.path>{{ menu.meta.title }}</el-menu-item>
         
     </template>
 
