@@ -3,6 +3,8 @@ import qs from 'qs';
 import { createRouter, createWebHashHistory, type RouteRecordNormalized, type RouteRecordRaw, type Router } from 'vue-router';
 
 const components = import.meta.glob('../views/**/*.vue');
+export const Layout = () => import('@/layout/index.vue')
+
 
 // 路由生成
 export const generateRoute = (routes: AppCustomRouteRecordRaw[]): AppRouteRecordRaw[] => {
@@ -13,7 +15,7 @@ export const generateRoute = (routes: AppCustomRouteRecordRaw[]): AppRouteRecord
     const meta = {
       title: route.name,
       icon: route.icon,
-      hidden: !route.visible,
+      hidden: false,
       noCache: !route.keepAlive,
       alwaysShow:
         route.children &&
@@ -41,7 +43,7 @@ export const generateRoute = (routes: AppCustomRouteRecordRaw[]): AppRouteRecord
     };
     // 顶级菜单路由
     if (!route.children && route.parentId == 0 && route.component) {
-      // data.component = Layout
+      data.component = Layout
       data.meta = {};
       data.name = toCamelCase(route.path, true) + 'Parent';
       data.redirect = '';
@@ -63,7 +65,7 @@ export const generateRoute = (routes: AppCustomRouteRecordRaw[]): AppRouteRecord
     } else {
       // 非顶级菜单路由且有子节点路由
       if (route.children) {
-        // data.component = Layout
+        data.component = Layout
         data.redirect = getRedirect(route.path, route.children);
       } else {
         // 叶子节点路由
@@ -183,4 +185,16 @@ const addToChildren = (
       addToChildren(routes, child.children, routeModule)
     }
   }
+}
+
+export const pathResolve = (parentPath: string, path: string) => {
+  if (isUrl(path)) return path
+  const childPath = path.startsWith('/') || !path ? path : `/${path}`
+  return `${parentPath}${childPath}`.replace(/\/\//g, '/')
+}
+
+const isUrl = (path: string): boolean => {
+  const reg =
+    /(((^https?:(?:\/\/)?)(?:[-:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&%@.\w_]*)#?(?:[\w]*))?)$/
+  return reg.test(path)
 }

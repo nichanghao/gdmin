@@ -5,7 +5,9 @@
         <Aside />
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header>
+          <Header />
+        </el-header>
         <el-main>
           <Main />
         </el-main>
@@ -18,4 +20,5 @@
 <script setup>
 import Main from './main/index.vue';
 import Aside from './aside/index.vue';
+import Header from './header/index.vue';
 </script>

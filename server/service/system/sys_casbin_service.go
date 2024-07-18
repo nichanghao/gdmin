@@ -129,7 +129,7 @@ func (casbinService *SysCasbinService) DeletePermissionByRoleAndMenus(roleId uin
 
 // AddPermissionByRoleAndMenus 添加角色菜单权限
 func (casbinService *SysCasbinService) AddPermissionByRoleAndMenus(roleId uint64, menus []model.SysMenu) (err error) {
-	var policies [][]string
+	var policies = make([][]string, len(menus))
 	casbinRoleStr := CasbinService.GetCasbinRoleStr(roleId)
 	for i := range menus {
 		policies[i] = []string{casbinRoleStr, menus[i].Permission, strconv.FormatUint(menus[i].Id, 10)}

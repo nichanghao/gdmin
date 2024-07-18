@@ -7,19 +7,25 @@
     @open="handleOpen"
     @close="handleClose"
   >
+    <el-menu-item @click="handleRouter({path: '/home'})" index="/home">
+      <template #title>
+        <el-icon><i-ep-house /></el-icon>
+        <span>首页</span>
+      </template>
+    </el-menu-item>
 
-    <template v-for="menu in routers">
+    <template v-for="menu in menuTree">
         <el-sub-menu v-if="menu.children && menu.children.length > 0" :index=menu.path>
             <template #title>
                 <el-icon><location /></el-icon>
-                <span>{{ menu.name }}</span>
+                <span>{{ menu.meta.title }}</span>
             </template>
             <el-menu-item-group>
-                <el-menu-item v-for="item in menu.children" index="{{ item.path }}">{{ item.name }}</el-menu-item>
+                <el-menu-item v-for="item in menu.children" @click="handleRouter(item)" index="{{ item.path }}">{{ item.meta.title }}</el-menu-item>
             </el-menu-item-group>
         </el-sub-menu>
 
-        <el-menu-item v-else :index=menu.path>{{ menu.name }}</el-menu-item>
+        <el-menu-item v-else @click="handleRouter(item)" :index=menu.path>{{ menu.meta.title }}</el-menu-item>
         
     </template>
 
@@ -60,11 +66,23 @@
 import { Document, Menu as IconMenu, Location, Setting } from '@element-plus/icons-vue';
 import { usePermissionStoreWithOut } from '@/stores/permission';
 import { storeToRefs } from 'pinia';
+import router from '@/router';
+
 
 // 获取pinia中的菜单路由
 const permissionStore = usePermissionStoreWithOut()
-const {routers} = storeToRefs(permissionStore)
-console.log(routers.value)
+const {menuTree} = storeToRefs(permissionStore)
+console.log("menuTree: ",menuTree.value)
+
+
+// 切换路由
+function handleRouter(menu) {
+console.log("handleRouter: ",menu)
+
+  router.push(menu.path);
+}
+
+
 
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);

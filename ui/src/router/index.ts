@@ -47,11 +47,11 @@ export const routerArray: AppRouteRecordRaw[] = [
     path: '/',
     component: () => import('@/layout/index.vue'),
     name: 'Home',
-    redirect: '/index',
+    redirect: '/home',
     meta: {},
     children: [
       {
-        path: 'index',
+        path: 'home',
         component: () => import('@/views/home/index.vue'),
         name: 'Index',
         meta: {

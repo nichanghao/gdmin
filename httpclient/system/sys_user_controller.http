@@ -24,3 +24,14 @@ Authorization: {{token}}
     "email": "admin@localhost",
     "phone": "13800138000"
 }
+
+### 分配用户角色
+PUT {{host}}/sys/user/assign-roles
+Content-Type: application/json
+Authorization: {{token}}
+
+
+{
+  "id": 1,
+  "roleIds": [1]
+}

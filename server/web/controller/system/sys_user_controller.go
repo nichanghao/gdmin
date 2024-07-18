@@ -133,8 +133,8 @@ func (*SysUserController) DeleteUser(c *gin.Context) {
 
 }
 
-// AllocateRoles 分配角色给用户
-func (*SysUserController) AllocateRoles(c *gin.Context) {
+// AssignRoles 分配角色给用户
+func (*SysUserController) AssignRoles(c *gin.Context) {
 	var req request.SysUserUpdateReq
 
 	// 绑定参数
@@ -148,7 +148,7 @@ func (*SysUserController) AllocateRoles(c *gin.Context) {
 		return
 	}
 
-	if err := service.SysUser.AllocateRoles(&req); err != nil {
+	if err := service.SysUser.AssignRoles(&req); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.Ok(c)

@@ -123,8 +123,8 @@ func (userService *SysUserService) DeleteUser(id uint64) error {
 	})
 }
 
-// AllocateRoles 分配角色给用户
-func (userService *SysUserService) AllocateRoles(req *request.SysUserUpdateReq) error {
+// AssignRoles 分配角色给用户
+func (userService *SysUserService) AssignRoles(req *request.SysUserUpdateReq) error {
 
 	var roles []*model.SysRole
 	for i := range req.RoleIds {

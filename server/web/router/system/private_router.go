@@ -15,7 +15,7 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 		sysUserGroup.PUT("edit", controller.SysUser.EditUser)
 		sysUserGroup.PUT("reset-password", controller.SysUser.ResetPassword)
 		sysUserGroup.DELETE("delete", controller.SysUser.DeleteUser)
-		sysUserGroup.PUT("allocate-roles", controller.SysUser.AllocateRoles)
+		sysUserGroup.PUT("assign-roles", controller.SysUser.AssignRoles)
 		sysUserGroup.POST("add", controller.SysUser.AddUser)
 		sysUserGroup.PUT("update-status", controller.SysUser.UpdateStatus)
 	}

@@ -11,13 +11,16 @@ export interface PermissionState {
   routers: AppRouteRecordRaw[];
   addRouters: AppRouteRecordRaw[];
   menuTabRouters: AppRouteRecordRaw[];
+  menuTree: AppRouteRecordRaw[];
 }
 
 export const usePermissionStore = defineStore('permission', {
   state: (): PermissionState => ({
     routers: [],
     addRouters: [],
-    menuTabRouters: []
+    menuTabRouters: [],
+    // 左侧导航菜单树
+    menuTree: []
   }),
   getters: {
     getRouters(): AppRouteRecordRaw[] {
@@ -28,6 +31,9 @@ export const usePermissionStore = defineStore('permission', {
     },
     getMenuTabRouters(): AppRouteRecordRaw[] {
       return this.menuTabRouters;
+    },
+    getMenuTree(): AppRouteRecordRaw[] {
+      return this.menuTree;
     }
   },
   actions: {
@@ -38,6 +44,7 @@ export const usePermissionStore = defineStore('permission', {
           res = wsCache.get(CACHE_KEY.ROLE_ROUTERS) as AppCustomRouteRecordRaw[];
         }
         const routerMap: AppRouteRecordRaw[] = generateRoute(res);
+        this.menuTree = routerMap;
 
         // 动态路由，404一定要放到最后面
         this.addRouters = routerMap.concat([
