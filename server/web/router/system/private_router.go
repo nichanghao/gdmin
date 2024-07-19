@@ -1,7 +1,9 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/middleware"
 	"gitee.com/nichanghao/gdmin/web/controller"
+	"gitee.com/nichanghao/gdmin/web/request"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +36,8 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 	sysRoleGroup := group.Group("/sys/role")
 	{
 		sysRoleGroup.POST("page", controller.SysRole.PageRoles)
-		sysRoleGroup.POST("add", controller.SysRole.AddRole)
+		sysRoleGroup.POST("add",
+			middleware.RequestContextHandler(&request.SysRoleReq{}), controller.SysRole.AddRole)
 		sysRoleGroup.PUT("edit", controller.SysRole.EditRole)
 		sysRoleGroup.DELETE("delete", controller.SysRole.DeleteRole)
 		sysRoleGroup.PUT("assign-menus", controller.SysRole.AssignRoleMenus)

@@ -2,6 +2,7 @@ package common
 
 import (
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -16,8 +17,8 @@ type BaseDO struct {
 func (u *BaseDO) BeforeUpdate(tx *gorm.DB) (err error) {
 	ctx := tx.Statement.Context
 
-	if value := ctx.Value("userId"); value != nil {
-		u.ModifyUser = value.(string)
+	if userId := CTX.GetUserId(&ctx); userId != 0 {
+		u.ModifyUser = strconv.FormatUint(userId, 10)
 	}
 	return nil
 }
@@ -26,8 +27,8 @@ func (u *BaseDO) BeforeUpdate(tx *gorm.DB) (err error) {
 func (u *BaseDO) BeforeSave(tx *gorm.DB) (err error) {
 	ctx := tx.Statement.Context
 
-	if value := ctx.Value("userId"); value != nil {
-		u.ModifyUser = value.(string)
+	if userId := CTX.GetUserId(&ctx); userId != 0 {
+		u.ModifyUser = strconv.FormatUint(userId, 10)
 	}
 	return nil
 }

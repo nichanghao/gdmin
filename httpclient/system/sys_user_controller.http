@@ -30,8 +30,7 @@ PUT {{host}}/sys/user/assign-roles
 Content-Type: application/json
 Authorization: {{token}}
 
-
 {
   "id": 1,
-  "roleIds": [1]
+  "roleIds": [2]
 }

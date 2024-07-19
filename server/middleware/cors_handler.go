@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// Cors 直接放行所有跨域请求并放行所有 OPTIONS 方法
-func Cors() gin.HandlerFunc {
+// CorsHandler 直接放行所有跨域请求并放行所有 OPTIONS 方法
+func CorsHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		method := c.Request.Method
 		origin := c.Request.Header.Get("Origin")

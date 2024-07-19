@@ -2,12 +2,14 @@ package system
 
 import (
 	"errors"
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	mapset "github.com/deckarep/golang-set/v2"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -35,15 +37,20 @@ func (*SysRoleService) PageRoles(req *request.SysRolePageReq) ([]*model.SysRole,
 }
 
 // AddRole 新增角色
-func (roleService *SysRoleService) AddRole(role *model.SysRole) error {
+func (roleService *SysRoleService) AddRole(req *common.Request) error {
+
+	var role model.SysRole
+	if err := copier.Copy(&role, req.Data); err != nil {
+		return err
+	}
 
 	return global.GormDB.Model(&model.SysRole{}).Transaction(func(tx *gorm.DB) error {
 
-		if err := roleService.validateDuplicateRole(tx, role); err != nil {
+		if err := roleService.validateDuplicateRole(tx, &role); err != nil {
 			return err
 		}
 
-		if err := tx.Create(role).Error; err != nil {
+		if err := tx.WithContext(req.Context).Create(&role).Error; err != nil {
 			return err
 		}
 

@@ -1,19 +1,19 @@
 package middleware
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/service"
-	"gitee.com/nichanghao/gdmin/utils"
 	"github.com/gin-gonic/gin"
 )
 
-// CasbinAuth 权限控制
-func CasbinAuth() gin.HandlerFunc {
+// CasbinAuthHandler 权限控制
+func CasbinAuthHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		userClaims, err := utils.CLAIMS.GetUserClaims(c)
+		userClaims, err := common.CTX.GetUserClaims(c)
 		// jwt token 验证失败
 		if err != nil || userClaims == nil || userClaims.ID == 0 {
 			_ = c.Error(buserr.ErrPermissionDenied)

@@ -1,14 +1,15 @@
 package middleware
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/utils"
 	"github.com/gin-gonic/gin"
 	"strings"
 )
 
-// JwtAuth jwt token authentication middleware
-func JwtAuth() gin.HandlerFunc {
+// JwtAuthHandler jwt token authentication middleware
+func JwtAuthHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
@@ -30,7 +31,7 @@ func JwtAuth() gin.HandlerFunc {
 			_ = c.Error(err)
 			c.Abort()
 		} else {
-			c.Set("claims", userClaims)
+			c.Set(common.ClaimsKey, userClaims)
 			c.Next()
 		}
 

@@ -1,10 +1,10 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
-	"gitee.com/nichanghao/gdmin/utils"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
@@ -36,7 +36,7 @@ func (*SysUserController) Login(c *gin.Context) {
 // GetSelfUserInfo 获取当前用户信息
 func (*SysUserController) GetSelfUserInfo(c *gin.Context) {
 
-	claims, err := utils.CLAIMS.GetUserClaims(c)
+	claims, err := common.CTX.GetUserClaims(c)
 	if err != nil {
 		response.FailWithMessage("获取用户信息失败！", c)
 		return
@@ -140,11 +140,6 @@ func (*SysUserController) AssignRoles(c *gin.Context) {
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
 		_ = c.Error(err)
-		return
-	}
-
-	if len(req.RoleIds) == 0 {
-		response.FailWithMessage("请选择角色！", c)
 		return
 	}
 

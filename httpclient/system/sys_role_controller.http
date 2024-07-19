@@ -9,9 +9,9 @@ Authorization: {{token}}
 Content-Type: application/json
 
 {
-  "name": "超级管理员",
-  "code": "super_admin",
-  "desc": "超级管理员"
+  "name": "管理员1",
+  "code": "admin1",
+  "desc": "管理员1"
 }
 
 ### 修改角色
@@ -37,5 +37,5 @@ Content-Type: application/json
 
 {
   "roleId": 1,
-  "menuIds": []
+  "menuIds": [1]
 }

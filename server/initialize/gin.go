@@ -14,7 +14,7 @@ func InitGin() *gin.Engine {
 	// panic 处理
 	engine.Use(gin.Recovery())
 	// 跨域
-	engine.Use(middleware.Cors())
+	engine.Use(middleware.CorsHandler())
 
 	// 公开路由组，不需要jwt鉴权和casbin权限控制
 	baseGroup := engine.Group("")
@@ -22,13 +22,13 @@ func InitGin() *gin.Engine {
 
 	//自有路由组，只要jwt鉴权即可
 	selfGroup := engine.Group("")
-	selfGroup.Use(middleware.JwtAuth())
+	selfGroup.Use(middleware.JwtAuthHandler())
 	router.Self.InitRouter(selfGroup)
 
 	// 私有路由组，需要jwt鉴权和casbin权限控制
 	privateGroup := engine.Group("")
-	privateGroup.Use(middleware.JwtAuth())
-	//privateGroup.Use(middleware.CasbinAuth())
+	privateGroup.Use(middleware.JwtAuthHandler())
+	//privateGroup.Use(middleware.CasbinAuthHandler())
 	router.Private.InitRouter(privateGroup)
 
 	return engine

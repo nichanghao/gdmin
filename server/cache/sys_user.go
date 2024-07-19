@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
 	"go.uber.org/zap"
@@ -38,5 +39,5 @@ func GetSysUserStatus(userId uint64) (status uint8, err error) {
 		return user.Status, nil
 	}
 
-	return
+	return 0, buserr.NewNoticeBusErr("网络错误，请稍后再试！")
 }

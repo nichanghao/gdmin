@@ -133,19 +133,21 @@ func (userService *SysUserService) AssignRoles(req *request.SysUserUpdateReq) er
 
 	return global.GormDB.Transaction(func(tx *gorm.DB) error {
 
-		association := tx.Model(&model.SysUser{Id: req.Id}).Association("Roles")
-
-		// 先需要清空用户关联的旧角色数据
-		if err := association.Clear(); err != nil {
+		// 清空用户关联的旧角色数据
+		if err := tx.Model(&model.SysUser{Id: req.Id}).Association("Roles").Clear(); err != nil {
 			return err
 		}
-		// 添加用户关联的角色
-		if err := association.Append(roles); err != nil {
-			return err
-		}
-
 		// 删除casbin用户角色
 		if err := CasbinService.ClearRolesForUser(req.Id); err != nil {
+			return err
+		}
+
+		// 移除关联的所有角色时，直接返回
+		if len(roles) == 0 {
+			return nil
+		}
+		// 添加用户关联的角色
+		if err := tx.Model(&model.SysUser{Id: req.Id}).Association("Roles").Append(roles); err != nil {
 			return err
 		}
 		// 添加casbin用户角色

@@ -1,6 +1,7 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
@@ -37,22 +38,18 @@ func (*SysRoleController) PageRoles(c *gin.Context) {
 // AddRole 创建角色
 func (*SysRoleController) AddRole(c *gin.Context) {
 
-	var req request.SysRoleReq
+	//var req request.SysRoleReq
+	//
+	//// 绑定参数
+	//if err := c.ShouldBindJSON(&req); err != nil {
+	//	_ = c.Error(err)
+	//	return
+	//}
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
+	_request, _ := c.Get("_request")
+	req := _request.(*common.Request)
 
-	var role model.SysRole
-	err := copier.Copy(&role, &req)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err2 := service.SysRole.AddRole(&role); err2 != nil {
+	if err2 := service.SysRole.AddRole(req); err2 != nil {
 		_ = c.Error(err2)
 	} else {
 		response.OkWithData(true, c)

@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%; display: flex; align-items: center;">
     <div width="200px" style="display: flex; align-items: center;">
-      <el-image style="height: 3rem; border-radius: 9999px" src="/favicon.ico" fit="fill" />
+      <el-image style="height: 3rem;" src="/vue-logo.png" fit="fill" />
     </div>
 
   
