@@ -7,10 +7,14 @@ import (
 )
 
 var (
-	CTX = &userContext{}
+	USER_CTX = &userContext{}
 )
 
-const ClaimsKey = "claims"
+const (
+	ClaimsKey = "claims"
+
+	RequestKey = "_request"
+)
 
 type userContext struct {
 }
@@ -26,7 +30,7 @@ func (*userContext) GetUserClaims(c *gin.Context) (*UserClaims, error) {
 
 func (*userContext) GetUserId(ctx *context.Context) uint64 {
 
-	if claims := (*ctx).Value("claims"); claims != nil {
+	if claims := (*ctx).Value(ClaimsKey); claims != nil {
 		id := claims.(*UserClaims).ID
 		return id
 	}

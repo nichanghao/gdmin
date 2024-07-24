@@ -38,15 +38,7 @@ func (*SysRoleController) PageRoles(c *gin.Context) {
 // AddRole 创建角色
 func (*SysRoleController) AddRole(c *gin.Context) {
 
-	//var req request.SysRoleReq
-	//
-	//// 绑定参数
-	//if err := c.ShouldBindJSON(&req); err != nil {
-	//	_ = c.Error(err)
-	//	return
-	//}
-
-	_request, _ := c.Get("_request")
+	_request, _ := c.Get(common.RequestKey)
 	req := _request.(*common.Request)
 
 	if err2 := service.SysRole.AddRole(req); err2 != nil {

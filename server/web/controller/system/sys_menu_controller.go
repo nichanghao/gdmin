@@ -1,13 +1,11 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
-	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
-	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
 	"strconv"
 )
 
@@ -27,22 +25,10 @@ func (*SysMenuController) GetAllMenuTree(c *gin.Context) {
 // AddMenu 添加菜单
 func (*SysMenuController) AddMenu(c *gin.Context) {
 
-	var req request.SysMenuReq
+	_request, _ := c.Get(common.RequestKey)
+	req := _request.(*common.Request)
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	var menu model.SysMenu
-	err := copier.Copy(&menu, &req)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if id, err2 := service.SysMenu.AddMenu(&menu); err2 != nil {
+	if id, err2 := service.SysMenu.AddMenu(req); err2 != nil {
 		_ = c.Error(err2)
 	} else {
 		response.OkWithData(id, c)
@@ -53,27 +39,10 @@ func (*SysMenuController) AddMenu(c *gin.Context) {
 // EditMenu 编辑菜单
 func (*SysMenuController) EditMenu(c *gin.Context) {
 
-	var req request.SysMenuReq
+	_request, _ := c.Get(common.RequestKey)
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if id, err := service.SysMenu.EditMenu(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
-		return
-	}
-	if req.Id == 0 {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
-
-	var menu model.SysMenu
-	err := copier.Copy(&menu, &req)
-	if err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if id, err2 := service.SysMenu.EditMenu(&menu); err2 != nil {
-		_ = c.Error(err2)
 	} else {
 		response.OkWithData(id, c)
 	}
@@ -83,21 +52,12 @@ func (*SysMenuController) EditMenu(c *gin.Context) {
 // DeleteMenu 删除菜单
 func (*SysMenuController) DeleteMenu(c *gin.Context) {
 
-	id := c.Query("id")
-	if id == "" {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
-	menuId, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
+	_request, _ := c.Get(common.RequestKey)
 
-	if err2 := service.SysMenu.DeleteMenu(menuId); err2 != nil {
-		_ = c.Error(err2)
+	if err := service.SysMenu.DeleteMenu(_request.(*common.Request)); err != nil {
+		_ = c.Error(err)
 	} else {
-		response.OkWithData(id, c)
+		response.OkWithData(true, c)
 	}
 
 }

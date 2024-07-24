@@ -36,7 +36,7 @@ func (*SysUserController) Login(c *gin.Context) {
 // GetSelfUserInfo 获取当前用户信息
 func (*SysUserController) GetSelfUserInfo(c *gin.Context) {
 
-	claims, err := common.CTX.GetUserClaims(c)
+	claims, err := common.USER_CTX.GetUserClaims(c)
 	if err != nil {
 		response.FailWithMessage("获取用户信息失败！", c)
 		return

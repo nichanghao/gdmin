@@ -1,6 +1,7 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/middleware"
 	"gitee.com/nichanghao/gdmin/web/controller"
 	"gitee.com/nichanghao/gdmin/web/request"
@@ -26,9 +27,12 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 	sysMenuGroup := group.Group("/sys/menu")
 	{
 		sysMenuGroup.GET("tree", controller.SysMenu.GetAllMenuTree)
-		sysMenuGroup.POST("add", controller.SysMenu.AddMenu)
-		sysMenuGroup.PUT("edit", controller.SysMenu.EditMenu)
-		sysMenuGroup.DELETE("delete", controller.SysMenu.DeleteMenu)
+		sysMenuGroup.POST("add",
+			middleware.RequestContextHandler(&request.SysMenuAddReq{}), controller.SysMenu.AddMenu)
+		sysMenuGroup.PUT("edit",
+			middleware.RequestContextHandler(&request.SysMenuUpdateReq{}), controller.SysMenu.EditMenu)
+		sysMenuGroup.DELETE("delete",
+			middleware.RequestContextHandler(&request.SysMenuUpdateReq{}, common.Query), controller.SysMenu.DeleteMenu)
 
 	}
 

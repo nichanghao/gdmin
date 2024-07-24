@@ -10,7 +10,9 @@ type (
 )
 
 type (
-	SysMenuReq = system.SysMenuReq
+	SysMenuAddReq = system.SysMenuAddReq
+
+	SysMenuUpdateReq = system.SysMenuUpdateReq
 )
 
 type (

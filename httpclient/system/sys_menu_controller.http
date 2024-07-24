@@ -10,16 +10,18 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "name": "用户管理",
+  "name": "首页",
+  "path": "/home",
   "type": 1,
-  "permission": "sys:user",
-  "path": "/system/user",
-  "component": "system/user/index",
-  "componentName": "SystemUser",
-  "sort": 1,
-  "parentId": 1
+  "status": 1,
+  "parentId": 0,
+  "component": "layout.base$view.home",
+  "meta": {
+    "i18nKey": "route.home",
+    "icon": "mdi:monitor-dashboard",
+    "order": 1
+  }
 }
-
 
 ### 修改菜单
 PUT {{host}}/sys/menu/edit
@@ -27,20 +29,23 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "id": 1,
-  "name": "系统管理",
+  "id": 3,
+  "name": "首页",
+  "path": "/home",
   "type": 1,
-  "permission": "sys",
-  "path": "/system",
-  "component": "",
-  "componentName": "",
-  "sort": 1,
-  "parentId": 0
+  "status": 1,
+  "parentId": 0,
+  "component": "layout.base$view.home",
+  "meta": {
+    "i18nKey": "route.home",
+    "icon": "mdi:monitor-dashboard",
+    "order": 2
+  }
 }
 
 
 ### 删除菜单
-DELETE {{host}}/sys/menu/delete?id=1
+DELETE {{host}}/sys/menu/delete?id=3
 Content-Type: application/json
 Authorization: {{token}}
 

@@ -1,11 +1,13 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
+	"gitee.com/nichanghao/gdmin/web/request"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
-	"sort"
 )
 
 var (
@@ -47,25 +49,39 @@ func (service *SysMenuService) GetMenuTreeByUserId(userId uint64) ([]*model.SysM
 
 }
 
-func (*SysMenuService) AddMenu(menu *model.SysMenu) (uint64, error) {
+func (*SysMenuService) AddMenu(req *common.Request) (uint64, error) {
 
-	if err := global.GormDB.Create(menu).Error; err != nil {
+	var menu model.SysMenu
+	err := copier.Copy(&menu, req.Data)
+	if err != nil {
+		return 0, err
+	}
+
+	if err = global.GormDB.WithContext(req.Context).Create(&menu).Error; err != nil {
 		return 0, err
 	}
 
 	return menu.Id, nil
 }
 
-func (*SysMenuService) EditMenu(menu *model.SysMenu) (uint64, error) {
+func (*SysMenuService) EditMenu(req *common.Request) (uint64, error) {
 
-	if err := global.GormDB.Where("id =?", menu.Id).Updates(menu).Error; err != nil {
+	var menu model.SysMenu
+	err := copier.Copy(&menu, req.Data)
+	if err != nil {
+		return 0, err
+	}
+
+	if err = global.GormDB.WithContext(req.Context).Where("id =?", menu.Id).Updates(&menu).Error; err != nil {
 		return 0, err
 	}
 
 	return menu.Id, nil
 }
 
-func (*SysMenuService) DeleteMenu(menuId uint64) error {
+func (*SysMenuService) DeleteMenu(req *common.Request) error {
+
+	menuId := req.Data.(*request.SysMenuUpdateReq).Id
 
 	var count int64
 	if err := global.GormDB.Model(&model.SysMenu{}).Where("parent_id = ?", menuId).Count(&count).Error; err != nil {
@@ -82,7 +98,7 @@ func (*SysMenuService) DeleteMenu(menuId uint64) error {
 		}
 
 		// 删除菜单
-		if err := global.GormDB.Delete(&model.SysMenu{}, menuId).Error; err != nil {
+		if err := tx.WithContext(req.Context).Delete(&model.SysMenu{}, menuId).Error; err != nil {
 			return err
 		}
 		return nil
@@ -97,9 +113,6 @@ func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([
 	for i := range menus {
 		menuMap[menus[i].Id] = menus[i]
 	}
-
-	// 排序
-	sort.Slice(menus, func(i, j int) bool { return menus[i].Sort < menus[j].Sort })
 
 	// 创建一个根菜单列表
 	var rootMenus = make([]*model.SysMenu, 0, len(menus))

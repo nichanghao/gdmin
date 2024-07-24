@@ -30,7 +30,7 @@ func RequestContextHandler(params ...interface{}) gin.HandlerFunc {
 		default:
 		}
 
-		claims, err := common.CTX.GetUserClaims(c)
+		claims, err := common.USER_CTX.GetUserClaims(c)
 		if err != nil {
 			_ = c.Error(err)
 			c.Abort()
@@ -41,7 +41,7 @@ func RequestContextHandler(params ...interface{}) gin.HandlerFunc {
 		ctx := c.Request.Context()
 		ctx = context.WithValue(ctx, common.ClaimsKey, claims)
 		request := common.Request{Data: data, Context: ctx}
-		c.Set("_request", &request)
+		c.Set(common.RequestKey, &request)
 		// 继续处理请求
 		c.Next()
 	}

@@ -13,7 +13,7 @@ func CasbinAuthHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		userClaims, err := common.CTX.GetUserClaims(c)
+		userClaims, err := common.USER_CTX.GetUserClaims(c)
 		// jwt token 验证失败
 		if err != nil || userClaims == nil || userClaims.ID == 0 {
 			_ = c.Error(buserr.ErrPermissionDenied)
