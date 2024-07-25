@@ -64,7 +64,7 @@ async function handleToggleAccount(account: Account) {
       <NDescriptions bordered :column="1">
         <NDescriptionsItem :label="$t('page.manage.user.userRole')">
           <NSpace>
-            <NTag v-for="role in authStore.userInfo.roles" :key="role">{{ role }}</NTag>
+            <NTag v-for="role in authStore.userInfo.roles" :key="role.id">{{ role.name }}</NTag>
           </NSpace>
         </NDescriptionsItem>
         <NDescriptionsItem ions-item :label="$t('page.function.toggleAuth.toggleAccount')">

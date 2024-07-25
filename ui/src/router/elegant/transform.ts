@@ -190,11 +190,6 @@ const routeMap: RouteMap = {
   "home": "/home",
   "iframe-page": "/iframe-page/:url",
   "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?",
-  "manage": "/manage",
-  "manage_menu": "/manage/menu",
-  "manage_role": "/manage/role",
-  "manage_user": "/manage/user",
-  "manage_user-detail": "/manage/user-detail/:id",
   "multi-menu": "/multi-menu",
   "multi-menu_first": "/multi-menu/first",
   "multi-menu_first_child": "/multi-menu/first/child",
@@ -216,6 +211,11 @@ const routeMap: RouteMap = {
   "plugin_print": "/plugin/print",
   "plugin_swiper": "/plugin/swiper",
   "plugin_video": "/plugin/video",
+  "system": "/system",
+  "system_menu": "/system/menu",
+  "system_role": "/system/role",
+  "system_user": "/system/user",
+  "system_user-detail": "/system/user-detail/:id",
   "user-center": "/user-center"
 };
 

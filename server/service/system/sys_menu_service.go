@@ -124,7 +124,7 @@ func (service *SysMenuService) GetSelfPermissionRouters(userId uint64) (res *res
 		return
 	}
 
-	res.Routers, res.Permissions = service.buildMenuTree(menus, true)
+	res.Routes, res.Permissions = service.buildMenuTree(menus, true)
 	return
 }
 

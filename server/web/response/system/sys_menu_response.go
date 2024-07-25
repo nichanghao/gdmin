@@ -12,6 +12,6 @@ type SysMenuSimpleResp struct {
 // SysPermissionRoutersResp 用户权限路由
 type SysPermissionRoutersResp struct {
 	Permissions []string         `json:"permissions"` // 权限列表
-	Routers     []*model.SysMenu `json:"routers"`     // 路由列表
+	Routes      []*model.SysMenu `json:"routes"`      // 路由列表
 	Home        string           `json:"home"`        // 首页路由，用户登录后默认跳转的路由
 }

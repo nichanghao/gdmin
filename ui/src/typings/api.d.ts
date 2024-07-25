@@ -57,9 +57,9 @@ declare namespace Api {
     }
 
     interface UserInfo {
-      userId: string;
-      userName: string;
-      roles: string[];
+      id: number;
+      username: string;
+      roles: any[];
       buttons: string[];
     }
   }
@@ -78,6 +78,7 @@ declare namespace Api {
 
     interface UserRoute {
       routes: MenuRoute[];
+      permissions: string[];
       home: import('@elegant-router/types').LastLevelRouteKey;
     }
   }
