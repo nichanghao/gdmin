@@ -1,5 +1,0 @@
-# 代码格式化: npx prettier --write .
-trailingComma: 'none' # 尾随逗号
-tabWidth: 2 # tab缩进长度
-printWidth: 100 # 换行长度
-singleQuote: true # 使用单引号

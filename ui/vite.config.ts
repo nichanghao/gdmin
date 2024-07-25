@@ -1,63 +1,51 @@
-// element-plus 按需导入
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Icons from 'unplugin-icons/vite'
-import ElementPlus from 'unplugin-element-plus/vite'
+import process from 'node:process';
+import { URL, fileURLToPath } from 'node:url';
+import { defineConfig, loadEnv } from 'vite';
+import { setupVitePlugins } from './build/plugins';
+import { createViteProxy, getBuildTime } from './build/config';
 
-import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
+export default defineConfig(configEnv => {
+  const viteEnv = loadEnv(configEnv.mode, process.cwd()) as unknown as Env.ImportMeta;
 
-import {defineConfig} from 'vite'
-import vue from '@vitejs/plugin-vue'
-import path from 'path'
+  const buildTime = getBuildTime();
 
-
-const pathSrc = path.resolve(__dirname, 'src')
-
-const pathTypes = path.resolve(__dirname, 'types')
-
-// https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [
-        vue(),
-        ElementPlus({}),
-        // element-plus 按需导入
-        AutoImport({
-            // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
-            resolvers: [
-                ElementPlusResolver(),
-
-                // 自动导入图标组件
-                IconsResolver({
-                prefix: 'Icon',
-                }),
-            ],
-            dts: path.resolve(pathTypes, 'auto-imports.d.ts'),
-        }),
-        Components({
-            resolvers: [
-                // 自动注册图标组件
-                IconsResolver({
-                    enabledCollections: ['ep'],
-                }),
-                ElementPlusResolver()
-            ],
-            dts: path.resolve(pathTypes, 'components.d.ts'),
-        }),
-        Icons({
-            autoInstall: true,
-        }),
-    ],
+  return {
+    base: viteEnv.VITE_BASE_URL,
     resolve: {
-        alias: {
-            '@': pathSrc
-        }
+      alias: {
+        '~': fileURLToPath(new URL('./', import.meta.url)),
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
     },
     css: {
-        preprocessorOptions: {
-            scss: {
-                additionalData: `@use "@/styles/element/index.scss" as *;`,
-            },
-        },
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "./src/styles/scss/global.scss" as *;`
+        }
+      }
+    },
+    plugins: setupVitePlugins(viteEnv, buildTime),
+    define: {
+      BUILD_TIME: JSON.stringify(buildTime)
+    },
+    server: {
+      host: '0.0.0.0',
+      port: 9527,
+      open: true,
+      proxy: createViteProxy(viteEnv, configEnv.command === 'serve'),
+      fs: {
+        cachedChecks: false
+      }
+    },
+    preview: {
+      port: 9725
+    },
+    build: {
+      reportCompressedSize: false,
+      sourcemap: viteEnv.VITE_SOURCE_MAP === 'Y',
+      commonjsOptions: {
+        ignoreTryCatch: false
+      }
     }
-})
+  };
+});

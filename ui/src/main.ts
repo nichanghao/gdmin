@@ -1,18 +1,31 @@
 import { createApp } from 'vue';
-import { setupStore } from '@/stores';
-// 路由
-import router, { setupRouter } from '@/router';
-// 确保在创建应用实例之前导入了导航守卫
-import '@/router/permission';
+import './plugins/assets';
+import { setupAppVersionNotification, setupDayjs, setupIconifyOffline, setupLoading, setupNProgress } from './plugins';
+import { setupStore } from './store';
+import { setupRouter } from './router';
+import { setupI18n } from './locales';
 import App from './App.vue';
 
-const app = createApp(App);
+async function setupApp() {
+  setupLoading();
 
-// 使用 pinia 状态管理
-setupStore(app);
+  setupNProgress();
 
-// 设置路由
-setupRouter(app);
-await router.isReady();
+  setupIconifyOffline();
 
-app.mount('#app');
+  setupDayjs();
+
+  const app = createApp(App);
+
+  setupStore(app);
+
+  await setupRouter(app);
+
+  setupI18n(app);
+
+  setupAppVersionNotification();
+
+  app.mount('#app');
+}
+
+setupApp();
