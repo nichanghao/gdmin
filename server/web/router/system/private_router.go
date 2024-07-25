@@ -32,8 +32,7 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 		sysMenuGroup.PUT("edit",
 			middleware.RequestContextHandler(&request.SysMenuUpdateReq{}), controller.SysMenu.EditMenu)
 		sysMenuGroup.DELETE("delete",
-			middleware.RequestContextHandler(&request.SysMenuUpdateReq{}, common.Query), controller.SysMenu.DeleteMenu)
-
+			middleware.RequestContextHandler(&request.SysMenuUpdateReq{}, common.BindModeQuery), controller.SysMenu.DeleteMenu)
 	}
 
 	// 角色相关路由

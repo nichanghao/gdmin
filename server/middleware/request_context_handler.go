@@ -10,20 +10,20 @@ func RequestContextHandler(params ...interface{}) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		var data interface{}
-		var bindingMode = common.Body
+		var bindingMode = common.BindModeBody
 
 		if len(params) >= 1 {
 			data = params[0]
 		}
 		if len(params) == 2 {
-			bindingMode = params[1].(common.BindingMode)
+			bindingMode = params[1].(common.BindMode)
 		}
 
 		var err error
 		switch bindingMode {
-		case common.Query:
+		case common.BindModeQuery:
 			err = c.ShouldBindQuery(data)
-		case common.Body:
+		case common.BindModeBody:
 			if data != nil {
 				err = c.ShouldBindJSON(data)
 			}

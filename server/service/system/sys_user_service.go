@@ -41,14 +41,9 @@ func (userService *SysUserService) Login(user *model.SysUser) (*response.SysUser
 }
 
 // GetSelfUserInfo 获取当前用户信息
-func (userService *SysUserService) GetSelfUserInfo(id uint64) (res *response.SysUserInfoResp, err error) {
+func (userService *SysUserService) GetSelfUserInfo(id uint64) (res *model.SysUser, err error) {
 
-	res = &response.SysUserInfoResp{User: &model.SysUser{}}
-
-	if err = global.GormDB.Model(&model.SysUser{Id: id}).Preload("Roles").First(res.User).Error; err != nil {
-		return
-	}
-	if res.MenuTree, res.Permissions, err = MenuService.GetMenuTreeByUserId(id); err != nil {
+	if err = global.GormDB.Model(&model.SysUser{Id: id}).Preload("Roles").First(&res).Error; err != nil {
 		return
 	}
 

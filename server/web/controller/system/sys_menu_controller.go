@@ -62,6 +62,23 @@ func (*SysMenuController) DeleteMenu(c *gin.Context) {
 
 }
 
+// GetSelfPermissionRouters 获取自身权限路由
+func (*SysMenuController) GetSelfPermissionRouters(c *gin.Context) {
+
+	claims, err := common.USER_CTX.GetUserClaims(c)
+	if err != nil {
+		_ = c.Error(err)
+		return
+	}
+
+	if data, err2 := service.SysMenu.GetSelfPermissionRouters(claims.ID); err2 != nil {
+		_ = c.Error(err2)
+	} else {
+		response.OkWithData(data, c)
+	}
+
+}
+
 // ListAllMenuSimple 获取所有菜单简要信息（角色管理页面分配角色权限时展示使用）
 func (*SysMenuController) ListAllMenuSimple(c *gin.Context) {
 	if res, err := service.SysRole.ListAllMenuSimple(); err != nil {

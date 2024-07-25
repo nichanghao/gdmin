@@ -6,6 +6,7 @@ import (
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/web/request"
+	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
@@ -106,6 +107,27 @@ func (*SysMenuService) DeleteMenu(req *common.Request) error {
 
 }
 
+// GetSelfPermissionRouters 获取自身权限路由
+func (service *SysMenuService) GetSelfPermissionRouters(userId uint64) (res *response.SysPermissionRoutersResp, err error) {
+	res = &response.SysPermissionRoutersResp{Home: "home"}
+
+	// 获取用户的菜单权限
+	menuIds, err := CasbinService.GetPermissionMenuIdsByUserId(userId)
+	if err != nil {
+		return
+	}
+
+	var menus []*model.SysMenu
+
+	global.GormDB.Where("id in (?)", menuIds).Find(&menus)
+	if len(menus) == 0 {
+		return
+	}
+
+	res.Routers, res.Permissions = service.buildMenuTree(menus, true)
+	return
+}
+
 // 构建菜单树
 func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([]*model.SysMenu, []string) {
 	// 创建一个 map 来存储每个菜单项
@@ -127,7 +149,7 @@ func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([
 		}
 
 		// 是否排除按钮
-		if excludeBtn && menu.Type == 2 {
+		if excludeBtn && menu.Type == 3 {
 			continue
 		}
 

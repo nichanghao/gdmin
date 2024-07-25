@@ -8,6 +8,10 @@ type (
 	SysUserLoginResp = system.SysUserLoginResp
 
 	SysUserInfoResp = system.SysUserInfoResp
+)
 
+type (
 	SysMenuSimpleResp = system.SysMenuSimpleResp
+
+	SysPermissionRoutersResp = system.SysPermissionRoutersResp
 )

@@ -20,6 +20,8 @@ func (*SelfRouter) InitRouter(group *gin.RouterGroup) {
 	{
 		sysMenuGroup.GET("/all/simple", controller.SysMenu.ListAllMenuSimple)
 		sysMenuGroup.GET("/list-by-role", controller.SysMenu.ListMenusByRoleId)
+		sysMenuGroup.GET("/self/permission-routers", controller.SysMenu.GetSelfPermissionRouters)
+
 	}
 
 }

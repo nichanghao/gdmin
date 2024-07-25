@@ -10,16 +10,16 @@ Content-Type: application/json
 Authorization: {{token}}
 
 {
-  "name": "首页",
-  "path": "/home",
-  "type": 1,
+  "name": "菜单管理",
+  "path": "/system/menu",
+  "type": 2,
   "status": 1,
-  "parentId": 0,
-  "component": "layout.base$view.home",
+  "parentId": 5,
+  "component": "view.manage_menu",
   "meta": {
-    "i18nKey": "route.home",
-    "icon": "mdi:monitor-dashboard",
-    "order": 1
+    "i18nKey": "route.manage_menu",
+    "icon": "material-symbols:route",
+    "order": 3
   }
 }
 
@@ -39,13 +39,18 @@ Authorization: {{token}}
   "meta": {
     "i18nKey": "route.home",
     "icon": "mdi:monitor-dashboard",
-    "order": 2
+    "order": 1
   }
 }
 
 
 ### 删除菜单
 DELETE {{host}}/sys/menu/delete?id=3
+Content-Type: application/json
+Authorization: {{token}}
+
+### 获取自身权限路由
+GET {{host}}/sys/menu/self/permission-routers
 Content-Type: application/json
 Authorization: {{token}}
 

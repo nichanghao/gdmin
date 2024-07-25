@@ -38,12 +38,12 @@ func (*SysUserController) GetSelfUserInfo(c *gin.Context) {
 
 	claims, err := common.USER_CTX.GetUserClaims(c)
 	if err != nil {
-		response.FailWithMessage("获取用户信息失败！", c)
+		_ = c.Error(err)
 		return
 	}
 
 	if info, err2 := service.SysUser.GetSelfUserInfo(claims.ID); err2 != nil {
-		response.FailWithMessage("获取用户信息失败！", c)
+		_ = c.Error(err)
 	} else {
 		response.OkWithData(info, c)
 	}
