@@ -58,6 +58,12 @@ export type TableConfig<A extends ApiFn, T, C> = {
    * @default true
    */
   immediate?: boolean;
+  /**
+   * whether to need to page
+   *
+   * @default true
+   */
+  isPagination?: boolean;
 };
 
 export default function useHookTable<A extends ApiFn, T, C>(config: TableConfig<A, T, C>) {

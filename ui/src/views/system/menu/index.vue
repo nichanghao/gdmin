@@ -1,16 +1,16 @@
 <script setup lang="tsx">
-import { ref } from 'vue';
-import type { Ref } from 'vue';
-import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { useBoolean } from '@sa/hooks';
-import { fetchGetAllPages, fetchGetMenuList } from '@/service/api';
-import { useAppStore } from '@/store/modules/app';
-import { useTable, useTableOperate } from '@/hooks/common/table';
-import { $t } from '@/locales';
-import { yesOrNoRecord } from '@/constants/common';
-import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
+import type {Ref} from 'vue';
+import {ref} from 'vue';
+import {NButton, NPopconfirm, NTag} from 'naive-ui';
+import {useBoolean} from '@sa/hooks';
+import {fetchGetAllPages, fetchGetMenuList} from '@/service/api';
+import {useAppStore} from '@/store/modules/app';
+import {useTable, useTableOperate} from '@/hooks/common/table';
+import {$t} from '@/locales';
+import {yesOrNoRecord} from '@/constants/common';
+import {enableStatusRecord, menuTypeRecord} from '@/constants/business';
 import SvgIcon from '@/components/custom/svg-icon.vue';
-import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
+import MenuOperateModal, {type OperateType} from './modules/menu-operate-modal.vue';
 
 const appStore = useAppStore();
 
@@ -20,6 +20,7 @@ const wrapperRef = ref<HTMLElement | null>(null);
 
 const { columns, columnChecks, data, loading, pagination, getData, getDataByPage } = useTable({
   apiFn: fetchGetMenuList,
+  isPagination: false,
   columns: () => [
     {
       type: 'selection',
@@ -32,7 +33,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       align: 'center'
     },
     {
-      key: 'menuType',
+      key: 'type',
       title: $t('page.manage.menu.menuType'),
       align: 'center',
       width: 80,
@@ -42,22 +43,19 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
           2: 'primary'
         };
 
-        const label = $t(menuTypeRecord[row.menuType]);
+        const label = $t(menuTypeRecord[row.type]);
 
-        return <NTag type={tagMap[row.menuType]}>{label}</NTag>;
+        return <NTag type={tagMap[row.type]}>{label}</NTag>;
       }
     },
     {
-      key: 'menuName',
+      key: 'name',
       title: $t('page.manage.menu.menuName'),
       align: 'center',
       minWidth: 120,
       render: row => {
-        const { i18nKey, menuName } = row;
-
-        const label = i18nKey ? $t(i18nKey) : menuName;
-
-        return <span>{label}</span>;
+        const { name } = row;
+        return <span>{name}</span>;
       }
     },
     {
@@ -66,10 +64,8 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       align: 'center',
       width: 60,
       render: row => {
-        const icon = row.iconType === '1' ? row.icon : undefined;
-
-        const localIcon = row.iconType === '2' ? row.icon : undefined;
-
+        const icon = row.meta.icon;
+        const localIcon = row.meta.localIcon;
         return (
           <div class="flex-center">
             <SvgIcon icon={icon} localIcon={localIcon} class="text-icon" />
@@ -84,7 +80,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       minWidth: 120
     },
     {
-      key: 'routePath',
+      key: 'path',
       title: $t('page.manage.menu.routePath'),
       align: 'center',
       minWidth: 120
@@ -110,24 +106,6 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       }
     },
     {
-      key: 'hideInMenu',
-      title: $t('page.manage.menu.hideInMenu'),
-      align: 'center',
-      width: 80,
-      render: row => {
-        const hide: CommonType.YesOrNo = row.hideInMenu ? 'Y' : 'N';
-
-        const tagMap: Record<CommonType.YesOrNo, NaiveUI.ThemeColor> = {
-          Y: 'error',
-          N: 'default'
-        };
-
-        const label = $t(yesOrNoRecord[hide]);
-
-        return <NTag type={tagMap[hide]}>{label}</NTag>;
-      }
-    },
-    {
       key: 'parentId',
       title: $t('page.manage.menu.parentId'),
       width: 90,
@@ -137,7 +115,10 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       key: 'order',
       title: $t('page.manage.menu.order'),
       align: 'center',
-      width: 60
+      width: 60,
+      render: row => {
+        return row.meta.order;
+      }
     },
     {
       key: 'operate',
@@ -146,7 +127,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 230,
       render: row => (
         <div class="flex-center justify-end gap-8px">
-          {row.menuType === '1' && (
+          {row.type != '3' && (
             <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
               {$t('page.manage.menu.addChildMenu')}
             </NButton>
@@ -214,14 +195,13 @@ function handleAddChildMenu(item: Api.SystemManage.Menu) {
 const allPages = ref<string[]>([]);
 
 async function getAllPages() {
-  const { data: pages } = await fetchGetAllPages();
-  allPages.value = pages || [];
+  // const { data: pages } = await fetchGetAllPages();
+  allPages.value = [];
 }
 
 function init() {
   getAllPages();
 }
-
 // init
 init();
 </script>

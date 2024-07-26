@@ -56,10 +56,10 @@ const title = computed(() => {
 
 type Model = Pick<
   Api.SystemManage.Menu,
-  | 'menuType'
-  | 'menuName'
+  | 'type'
+  | 'name'
   | 'routeName'
-  | 'routePath'
+  | 'path'
   | 'component'
   | 'order'
   | 'i18nKey'
@@ -86,10 +86,10 @@ const model: Model = reactive(createDefaultModel());
 
 function createDefaultModel(): Model {
   return {
-    menuType: '1',
-    menuName: '',
+    type: '1',
+    name: '',
     routeName: '',
-    routePath: '',
+    path: '',
     pathParam: '',
     component: '',
     layout: '',
@@ -112,13 +112,13 @@ function createDefaultModel(): Model {
   };
 }
 
-type RuleKey = Extract<keyof Model, 'menuName' | 'status' | 'routeName' | 'routePath'>;
+type RuleKey = Extract<keyof Model, 'name' | 'status' | 'routeName' | 'path'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
-  menuName: defaultRequiredRule,
+  name: defaultRequiredRule,
   status: defaultRequiredRule,
   routeName: defaultRequiredRule,
-  routePath: defaultRequiredRule
+  path: defaultRequiredRule
 };
 
 const disabledMenuType = computed(() => props.operateType === 'edit');
@@ -136,7 +136,7 @@ const localIconOptions = localIcons.map<SelectOption>(item => ({
 
 const showLayout = computed(() => model.parentId === 0);
 
-const showPage = computed(() => model.menuType === '2');
+const showPage = computed(() => model.type === '2' || model.type === '1');
 
 const pageOptions = computed(() => {
   const allPages = [...props.allPages];
@@ -195,7 +195,7 @@ function handleInitModel() {
     const { component, ...rest } = props.rowData;
 
     const { layout, page } = getLayoutAndPage(component);
-    const { path, param } = getPathParamFromRoutePath(rest.routePath);
+    const { path, param } = getPathParamFromRoutePath(rest.path);
 
     Object.assign(model, rest, { layout, page, routePath: path, pathParam: param });
   }
@@ -214,9 +214,9 @@ function closeDrawer() {
 
 function handleUpdateRoutePathByRouteName() {
   if (model.routeName) {
-    model.routePath = getRoutePathByRouteName(model.routeName);
+    model.path = getRoutePathByRouteName(model.routeName);
   } else {
-    model.routePath = '';
+    model.path = '';
   }
 }
 
@@ -241,10 +241,10 @@ function getSubmitParams() {
   const { layout, page, pathParam, ...params } = model;
 
   const component = transformLayoutAndPageToComponent(layout, page);
-  const routePath = getRoutePathWithParam(model.routePath, pathParam);
+  const routePath = getRoutePathWithParam(model.path, pathParam);
 
   params.component = component;
-  params.routePath = routePath;
+  params.path = routePath;
 
   return params;
 }
@@ -285,18 +285,18 @@ watch(
       <NForm ref="formRef" :model="model" :rules="rules" label-placement="left" :label-width="100">
         <NGrid responsive="screen" item-responsive>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuType')" path="menuType">
-            <NRadioGroup v-model:value="model.menuType" :disabled="disabledMenuType">
+            <NRadioGroup v-model:value="model.type" :disabled="disabledMenuType">
               <NRadio v-for="item in menuTypeOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
             </NRadioGroup>
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.menuName')" path="menuName">
-            <NInput v-model:value="model.menuName" :placeholder="$t('page.manage.menu.form.menuName')" />
+            <NInput v-model:value="model.name" :placeholder="$t('page.manage.menu.form.menuName')" />
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.routeName')" path="routeName">
             <NInput v-model:value="model.routeName" :placeholder="$t('page.manage.menu.form.routeName')" />
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.routePath')" path="routePath">
-            <NInput v-model:value="model.routePath" disabled :placeholder="$t('page.manage.menu.form.routePath')" />
+            <NInput v-model:value="model.path" disabled :placeholder="$t('page.manage.menu.form.routePath')" />
           </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.pathParam')" path="pathParam">
             <NInput v-model:value="model.pathParam" :placeholder="$t('page.manage.menu.form.pathParam')" />
@@ -363,47 +363,8 @@ watch(
               <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
             </NRadioGroup>
           </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.constant')" path="constant">
-            <NRadioGroup v-model:value="model.constant">
-              <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
-              <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
-            </NRadioGroup>
-          </NFormItemGi>
           <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.href')" path="href">
             <NInput v-model:value="model.href" :placeholder="$t('page.manage.menu.form.href')" />
-          </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.hideInMenu')" path="hideInMenu">
-            <NRadioGroup v-model:value="model.hideInMenu">
-              <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
-              <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
-            </NRadioGroup>
-          </NFormItemGi>
-          <NFormItemGi
-            v-if="model.hideInMenu"
-            span="24 m:12"
-            :label="$t('page.manage.menu.activeMenu')"
-            path="activeMenu"
-          >
-            <NSelect
-              v-model:value="model.activeMenu"
-              :options="pageOptions"
-              clearable
-              :placeholder="$t('page.manage.menu.form.activeMenu')"
-            />
-          </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.multiTab')" path="multiTab">
-            <NRadioGroup v-model:value="model.multiTab">
-              <NRadio :value="true" :label="$t('common.yesOrNo.yes')" />
-              <NRadio :value="false" :label="$t('common.yesOrNo.no')" />
-            </NRadioGroup>
-          </NFormItemGi>
-          <NFormItemGi span="24 m:12" :label="$t('page.manage.menu.fixedIndexInTab')" path="fixedIndexInTab">
-            <NInputNumber
-              v-model:value="model.fixedIndexInTab"
-              class="w-full"
-              clearable
-              :placeholder="$t('page.manage.menu.form.fixedIndexInTab')"
-            />
           </NFormItemGi>
           <NFormItemGi span="24" :label="$t('page.manage.menu.query')">
             <NDynamicInput

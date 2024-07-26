@@ -21,33 +21,13 @@ type SysMenuService struct {
 // GetAllMenuTree 获取所有菜单树
 func (service *SysMenuService) GetAllMenuTree() (res []*model.SysMenu, err error) {
 
-	if err = global.GormDB.Find(&res).Error; err != nil {
+	var menus []*model.SysMenu
+	if err = global.GormDB.Find(&menus).Error; err != nil {
 		return
 	}
 
-	tree, _ := service.buildMenuTree(res, false)
-	return tree, nil
-}
-
-// GetMenuTreeByUserId 获取用户的菜单树
-func (service *SysMenuService) GetMenuTreeByUserId(userId uint64) ([]*model.SysMenu, []string, error) {
-
-	// 获取用户的菜单权限
-	menuIds, err := CasbinService.GetPermissionMenuIdsByUserId(userId)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var menus []*model.SysMenu
-
-	global.GormDB.Where("id in (?)", menuIds).Find(&menus)
-	if len(menus) == 0 {
-		return nil, nil, nil
-	}
-
-	tree, permissionList := service.buildMenuTree(menus, true)
-	return tree, permissionList, nil
-
+	res = service.buildMenuTree(menus)
+	return
 }
 
 func (*SysMenuService) AddMenu(req *common.Request) (uint64, error) {
@@ -117,19 +97,57 @@ func (service *SysMenuService) GetSelfPermissionRouters(userId uint64) (res *res
 		return
 	}
 
-	var menus []*model.SysMenu
-
-	global.GormDB.Where("id in (?)", menuIds).Find(&menus)
-	if len(menus) == 0 {
+	var routes []*response.SysRoutesResp
+	tx := global.GormDB.Model(&model.SysMenu{}).Where("status = 1 AND id IN (?)", menuIds)
+	tx.Select("id, route_name as name, parent_id, path, component, permission, type, meta").Find(&routes)
+	if len(routes) == 0 {
 		return
 	}
 
-	res.Routes, res.Permissions = service.buildMenuTree(menus, true)
+	res.Routes, res.Permissions = service.buildPermissionRoutes(routes)
 	return
 }
 
+// buildPermissionRoutes 构建权限路由
+func (*SysMenuService) buildPermissionRoutes(routes []*response.SysRoutesResp) ([]*response.SysRoutesResp, []string) {
+	// 创建一个 map 来存储每个菜单项
+	routeMap := make(map[uint64]*response.SysRoutesResp)
+	for i := range routes {
+		routeMap[routes[i].Id] = routes[i]
+	}
+
+	// 创建一个根菜单列表
+	var rootRoutes = make([]*response.SysRoutesResp, 0, len(routes))
+
+	// 权限列表
+	var permissionList = make([]string, 0, len(routes))
+
+	for _, menu := range routes {
+
+		if menu.Permission != "" {
+			permissionList = append(permissionList, menu.Permission)
+		}
+
+		if menu.Type == 3 {
+			continue
+		}
+
+		if menu.ParentId == 0 {
+			// 如果 ParentID 为 0，表示这是根菜单
+			rootRoutes = append(rootRoutes, menu)
+		} else {
+			// 否则，找到父菜单并将其添加到父菜单的 Children 列表中
+			if parentMenu, ok := routeMap[menu.ParentId]; ok {
+				parentMenu.Children = append(parentMenu.Children, menu)
+			}
+		}
+	}
+
+	return rootRoutes, permissionList
+}
+
 // 构建菜单树
-func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([]*model.SysMenu, []string) {
+func (*SysMenuService) buildMenuTree(menus []*model.SysMenu) []*model.SysMenu {
 	// 创建一个 map 来存储每个菜单项
 	menuMap := make(map[uint64]*model.SysMenu)
 	for i := range menus {
@@ -139,20 +157,7 @@ func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([
 	// 创建一个根菜单列表
 	var rootMenus = make([]*model.SysMenu, 0, len(menus))
 
-	// 权限列表
-	var permissionList = make([]string, 0, len(menus))
-
 	for _, menu := range menus {
-
-		if menu.Permission != "" {
-			permissionList = append(permissionList, menu.Permission)
-		}
-
-		// 是否排除按钮
-		if excludeBtn && menu.Type == 3 {
-			continue
-		}
-
 		if menu.ParentId == 0 {
 			// 如果 ParentID 为 0，表示这是根菜单
 			rootMenus = append(rootMenus, menu)
@@ -163,6 +168,5 @@ func (*SysMenuService) buildMenuTree(menus []*model.SysMenu, excludeBtn bool) ([
 			}
 		}
 	}
-
-	return rootMenus, permissionList
+	return rootMenus
 }

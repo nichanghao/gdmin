@@ -150,8 +150,9 @@ declare namespace Api {
      *
      * - "1": directory
      * - "2": menu
+     * - "3": button
      */
-    type MenuType = '1' | '2';
+    type MenuType = '1' | '2' | '3';
 
     type MenuButton = {
       /**
@@ -187,16 +188,18 @@ declare namespace Api {
     >;
 
     type Menu = Common.CommonRecord<{
+      /** menu id */
+      id: number;
       /** parent menu id */
       parentId: number;
       /** menu type */
-      menuType: MenuType;
+      type: MenuType;
       /** menu name */
-      menuName: string;
+      name: string;
       /** route name */
       routeName: string;
       /** route path */
-      routePath: string;
+      path: string;
       /** component */
       component?: string;
       /** iconify icon name or local icon name */
@@ -205,6 +208,8 @@ declare namespace Api {
       iconType: IconType;
       /** buttons */
       buttons?: MenuButton[] | null;
+      /** menu meta */
+      meta?: MenuPropsOfRoute;
       /** children menu */
       children?: Menu[] | null;
     }> &

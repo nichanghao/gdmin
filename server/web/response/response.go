@@ -13,5 +13,7 @@ type (
 type (
 	SysMenuSimpleResp = system.SysMenuSimpleResp
 
+	SysRoutesResp = system.SysRoutesResp
+
 	SysPermissionRoutersResp = system.SysPermissionRoutersResp
 )
