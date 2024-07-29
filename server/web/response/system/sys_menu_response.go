@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 )
 
-type SysMenuSimpleResp struct {
-	Id       string `json:"id"`       // 菜单id
-	Name     string `json:"name"`     // 菜单名称
-	Type     int8   `json:"type"`     // 菜单类型
-	ParentId uint64 `json:"parentId"` // 父菜单id
+type SysSimpleMenuResp struct {
+	Id       uint64               `json:"id"`                // 菜单id
+	Name     string               `json:"name"`              // 菜单名称
+	ParentId uint64               `json:"parentId"`          // 父菜单id
+	Children []*SysSimpleMenuResp `gorm:"-" json:"children"` // 子菜单列表
 }
 
 type SysRoutesResp struct {

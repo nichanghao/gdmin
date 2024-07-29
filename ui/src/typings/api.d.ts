@@ -94,23 +94,23 @@ declare namespace Api {
     /** role */
     type Role = Common.CommonRecord<{
       /** role name */
-      roleName: string;
+      name: string;
       /** role code */
-      roleCode: string;
+      code: string;
       /** role description */
-      roleDesc: string;
+      desc: string;
     }>;
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
-      Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & CommonSearchParams
+      Pick<Api.SystemManage.Role, 'name' | 'code' | 'status'> & CommonSearchParams
     >;
 
     /** role list */
     type RoleList = Common.PaginatingQueryRecord<Role>;
 
     /** all role */
-    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
+    type AllRole = Pick<Role, 'id' | 'name' | 'code'>;
 
     /**
      * user gender
@@ -196,6 +196,8 @@ declare namespace Api {
       type: MenuType;
       /** menu name */
       name: string;
+      /** permission */
+      permission: string;
       /** route name */
       routeName: string;
       /** route path */
@@ -219,8 +221,8 @@ declare namespace Api {
 
     type MenuTree = {
       id: number;
-      label: string;
-      pId: number;
+      name: string;
+      parentId: number;
       children?: MenuTree[];
     };
   }

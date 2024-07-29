@@ -3,6 +3,10 @@ POST {{host}}/sys/role/page
 Authorization: {{token}}
 Content-Type: application/json
 
+{
+  "name": "管理员"
+}
+
 ### 创建角色
 POST {{host}}/sys/role/add
 Authorization: {{token}}

@@ -40,10 +40,13 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 	{
 		sysRoleGroup.POST("page", controller.SysRole.PageRoles)
 		sysRoleGroup.POST("add",
-			middleware.RequestContextHandler(&request.SysRoleReq{}), controller.SysRole.AddRole)
-		sysRoleGroup.PUT("edit", controller.SysRole.EditRole)
-		sysRoleGroup.DELETE("delete", controller.SysRole.DeleteRole)
-		sysRoleGroup.PUT("assign-menus", controller.SysRole.AssignRoleMenus)
+			middleware.RequestContextHandler(&request.SysRoleAddReq{}), controller.SysRole.AddRole)
+		sysRoleGroup.PUT("edit",
+			middleware.RequestContextHandler(&request.SysRoleEditReq{}), controller.SysRole.EditRole)
+		sysRoleGroup.DELETE("delete",
+			middleware.RequestContextHandler(&request.QueryIdReq{}, common.BindModeQuery), controller.SysRole.DeleteRole)
+		sysRoleGroup.PUT("assign-menus",
+			middleware.RequestContextHandler(&request.SysAssignRoleMenuReq{}), controller.SysRole.AssignRoleMenus)
 
 	}
 }

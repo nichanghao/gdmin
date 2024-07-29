@@ -11,7 +11,7 @@ type (
 )
 
 type (
-	SysMenuSimpleResp = system.SysMenuSimpleResp
+	SysSimpleMenuResp = system.SysSimpleMenuResp
 
 	SysRoutesResp = system.SysRoutesResp
 

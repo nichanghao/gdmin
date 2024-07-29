@@ -17,6 +17,11 @@ type (
 
 type (
 	SysRolePageReq       = system.SysRolePageReq
-	SysRoleReq           = system.SysRoleReq
+	SysRoleAddReq        = system.SysRoleAddReq
+	SysRoleEditReq       = system.SysRoleEditReq
 	SysAssignRoleMenuReq = system.SysAssignRoleMenuReq
 )
+
+type QueryIdReq struct {
+	Id uint64 `form:"id" binding:"required"`
+}

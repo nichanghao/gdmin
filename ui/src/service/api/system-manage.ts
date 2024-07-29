@@ -1,13 +1,43 @@
-import { request } from '../request';
+import {request} from '../request';
 
 /** get role list */
 export function fetchGetRoleList(params?: Api.SystemManage.RoleSearchParams) {
   return request<Api.SystemManage.RoleList>({
-    url: '/systemManage/getRoleList',
-    method: 'get',
-    params
+    url: '/sys/role/page',
+    method: 'post',
+    data: params
   });
 }
+
+/** add role */
+export function addRole(data: any) {
+  return request<any>({
+    url: '/sys/role/add',
+    method: 'post',
+    data: data
+  });
+}
+
+/** edit role */
+export function editRole(data: any) {
+  return request<any>({
+    url: '/sys/role/edit',
+    method: 'put',
+    data: data
+  });
+}
+
+/** delete role */
+export function deleteRole(id: number) {
+  return request<any>({
+    url: '/sys/role/delete',
+    method: 'delete',
+    params: {
+      id
+    }
+  });
+}
+
 
 /**
  * get all roles
@@ -49,7 +79,60 @@ export function fetchGetAllPages() {
 /** get menu tree */
 export function fetchGetMenuTree() {
   return request<Api.SystemManage.MenuTree[]>({
-    url: '/systemManage/getMenuTree',
+    url: '/sys/menu/all-simple-tree',
     method: 'get'
+  });
+}
+
+/** get menu by role */
+export function fetchGetMenuByRole(id: number) {
+  return request<number[]>({
+    url: '/sys/menu/list-by-role',
+    method: 'get',
+    params: {
+      id
+    }
+  });
+}
+
+/** assign menu to role */
+export function assignMenuToRole(menuIds: number[], roleId: number) {
+  return request<any>({
+    url: '/sys/role/assign-menus',
+    method: 'put',
+    data: {
+      menuIds,
+      roleId
+    }
+  });
+}
+
+
+/** add menu data */
+export function addMenu(menu: any) {
+  return request<any>({
+    url: '/sys/menu/add',
+    method: 'post',
+    data: menu
+  });
+}
+
+/** edit menu data */
+export function editMenu(menu: any) {
+  return request<any>({
+    url: '/sys/menu/edit',
+    method: 'put',
+    data: menu
+  });
+}
+
+/** delete menu data */
+export function deleteMenu(id: number) {
+  return request<any>({
+    url: '/sys/menu/delete',
+    method: 'delete',
+    params: {
+      id
+    }
   });
 }

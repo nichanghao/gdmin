@@ -2,29 +2,29 @@ package common
 
 // PageReq 分页请求参数
 type PageReq struct {
-	PageNum  int `json:"pageNum"`
-	PageSize int `json:"pageSize"`
-	Limit    int
-	Offset   int
+	Current int `json:"current"`
+	Size    int `json:"size"`
+	Limit   int
+	Offset  int
 }
 
 // PageResp 分页返回参数
 type PageResp struct {
-	Total   int   `json:"total"`
-	Records []any `json:"records"`
+	Total   int64 `json:"total"`
+	Records any   `json:"records"`
 	Current int   `json:"current"`
 	Size    int   `json:"size"`
 }
 
 // InitDefaultValue 初始化默认值
 func (req *PageReq) InitDefaultValue() {
-	if req.PageNum == 0 {
-		req.PageNum = 1
+	if req.Current == 0 {
+		req.Current = 1
 	}
-	if req.PageSize == 0 {
-		req.PageSize = 10
+	if req.Size == 0 {
+		req.Size = 10
 	}
 
-	req.Limit = req.PageSize
-	req.Offset = req.PageSize * (req.PageNum - 1)
+	req.Limit = req.Size
+	req.Offset = req.Size * (req.Current - 1)
 }

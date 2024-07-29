@@ -2,11 +2,9 @@ package system
 
 import (
 	"gitee.com/nichanghao/gdmin/common"
-	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/service"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
-	"strconv"
 )
 
 type SysMenuController struct{}
@@ -79,9 +77,9 @@ func (*SysMenuController) GetSelfPermissionRouters(c *gin.Context) {
 
 }
 
-// ListAllMenuSimple 获取所有菜单简要信息（角色管理页面分配角色权限时展示使用）
-func (*SysMenuController) ListAllMenuSimple(c *gin.Context) {
-	if res, err := service.SysRole.ListAllMenuSimple(); err != nil {
+// AllSimpleMenuTree 获取所有菜单简要信息（角色管理页面分配角色权限时展示使用）
+func (*SysMenuController) AllSimpleMenuTree(c *gin.Context) {
+	if res, err := service.SysMenu.AllSimpleMenuTree(); err != nil {
 		response.FailWithMessage("获取菜单简要信息失败！", c)
 	} else {
 		response.OkWithData(res, c)
@@ -90,19 +88,9 @@ func (*SysMenuController) ListAllMenuSimple(c *gin.Context) {
 
 // ListMenusByRoleId 获取角色拥有的菜单（角色管理页面分配角色权限时展示使用）
 func (*SysMenuController) ListMenusByRoleId(c *gin.Context) {
-	id := c.Query("roleId")
-	if id == "" {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
+	_request, _ := c.Get(common.RequestKey)
 
-	roleId, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
-
-	if res, err2 := service.SysRole.ListMenusByRoleId(roleId); err2 != nil {
+	if res, err2 := service.SysMenu.ListMenusByRoleId(_request.(*common.Request)); err2 != nil {
 		response.FailWithMessage("获取角色菜单失败！", c)
 	} else {
 		response.OkWithData(res, c)

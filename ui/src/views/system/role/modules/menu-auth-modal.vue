@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, shallowRef, watch } from 'vue';
 import { $t } from '@/locales';
-import { fetchGetAllPages, fetchGetMenuTree } from '@/service/api';
+import {fetchGetAllPages, fetchGetMenuTree, fetchGetMenuByRole, assignMenuToRole } from '@/service/api';
 
 defineOptions({
   name: 'MenuAuthModal'
@@ -70,14 +70,15 @@ async function getTree() {
 const checks = shallowRef<number[]>([]);
 
 async function getChecks() {
-  console.log(props.roleId);
   // request
-  checks.value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+  const { data } = await fetchGetMenuByRole(props.roleId);
+  checks.value = data || [];
 }
 
 function handleSubmit() {
   console.log(checks.value, props.roleId);
   // request
+  assignMenuToRole(checks.value, props.roleId)
 
   window.$message?.success?.($t('common.modifySuccess'));
 
@@ -86,7 +87,7 @@ function handleSubmit() {
 
 function init() {
   getHome();
-  getPages();
+  // getPages();
   getTree();
   getChecks();
 }
@@ -108,6 +109,7 @@ watch(visible, val => {
       v-model:checked-keys="checks"
       :data="tree"
       key-field="id"
+      label-field="name"
       checkable
       expand-on-click
       virtual-scroll

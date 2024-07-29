@@ -7,7 +7,6 @@ import (
 	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/web/request"
-	"gitee.com/nichanghao/gdmin/web/response"
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
@@ -17,7 +16,7 @@ type SysRoleService struct {
 }
 
 // PageRoles 分页查询角色列表
-func (*SysRoleService) PageRoles(req *request.SysRolePageReq) ([]*model.SysRole, error) {
+func (*SysRoleService) PageRoles(req *request.SysRolePageReq) (*common.PageResp, error) {
 
 	tx := global.GormDB.Model(&model.SysRole{}).Limit(req.Limit).Offset(req.Offset)
 	if req.Name != "" {
@@ -26,13 +25,28 @@ func (*SysRoleService) PageRoles(req *request.SysRolePageReq) ([]*model.SysRole,
 	if req.Code != "" {
 		tx.Where("code LIKE ?", "%"+req.Code+"%")
 	}
-	var roleList []*model.SysRole
-
-	if err := tx.Find(&roleList).Error; err != nil {
-		return roleList, err
+	if req.Status != 0 {
+		tx.Where("status = ?", req.Status)
 	}
 
-	return roleList, nil
+	res := &common.PageResp{Current: req.Current, Size: req.Size, Records: make([]any, 0)}
+
+	// 查询数量
+	if err := tx.Count(&res.Total).Error; err != nil {
+		return res, err
+	}
+	if res.Total == 0 {
+		return res, nil
+	}
+
+	// 查询列表
+	var roleList []*model.SysRole
+	if err := tx.Find(&roleList).Error; err != nil {
+		return res, err
+	}
+	res.Records = roleList
+
+	return res, nil
 
 }
 
@@ -60,7 +74,16 @@ func (roleService *SysRoleService) AddRole(req *common.Request) error {
 }
 
 // EditRole 编辑角色
-func (roleService *SysRoleService) EditRole(role *model.SysRole) error {
+func (roleService *SysRoleService) EditRole(req *common.Request) error {
+
+	var role model.SysRole
+	if err := copier.Copy(&role, req.Data); err != nil {
+		return err
+	}
+	if role.Id == 0 {
+		return buserr.NewNoticeBusErr("角色ID不能为空！")
+	}
+
 	return global.GormDB.Model(&model.SysRole{}).Transaction(func(tx *gorm.DB) error {
 
 		var roleOld = model.SysRole{}
@@ -80,7 +103,7 @@ func (roleService *SysRoleService) EditRole(role *model.SysRole) error {
 			}
 		}
 
-		if err := tx.Where("id = ?", role.Id).Updates(role).Error; err != nil {
+		if err := tx.WithContext(req.Context).Where("id = ?", role.Id).Updates(&role).Error; err != nil {
 			return err
 		}
 
@@ -89,7 +112,9 @@ func (roleService *SysRoleService) EditRole(role *model.SysRole) error {
 }
 
 // DeleteRole 删除角色
-func (roleService *SysRoleService) DeleteRole(roleId uint64) error {
+func (roleService *SysRoleService) DeleteRole(req *common.Request) error {
+
+	roleId := req.Data.(*request.QueryIdReq).Id
 
 	return global.GormDB.Model(&model.SysRole{}).Transaction(func(tx *gorm.DB) error {
 		var role = model.SysRole{}
@@ -101,28 +126,16 @@ func (roleService *SysRoleService) DeleteRole(roleId uint64) error {
 			return buserr.NewNoticeBusErr("该角色已分配给用户，不能删除！")
 		}
 
-		return tx.Delete(&model.SysRole{}, roleId).Error
+		return tx.WithContext(req.Context).Delete(&model.SysRole{}, roleId).Error
 	})
 
 }
 
-// ListAllMenuSimple 获取所有菜单的简要信息
-func (roleService *SysRoleService) ListAllMenuSimple() (res []*response.SysMenuSimpleResp, err error) {
-
-	err = global.GormDB.Model(&model.SysMenu{}).Select("id, name, type, parent_id").Find(&res).Error
-
-	return
-}
-
-// ListMenusByRoleId 获取角色拥有的菜单
-func (roleService *SysRoleService) ListMenusByRoleId(roleId uint64) (menuIds []uint64, err error) {
-
-	menuIds, err = CasbinService.GetPermissionMenuIdsByRoleId(roleId)
-	return
-}
-
 // AssignRoleMenus 分配角色菜单
-func (roleService *SysRoleService) AssignRoleMenus(req *request.SysAssignRoleMenuReq) error {
+func (roleService *SysRoleService) AssignRoleMenus(_req *common.Request) error {
+
+	req := _req.Data.(*request.SysAssignRoleMenuReq)
+
 	// 1. 获取角色拥有的菜单
 	menuIds, err := CasbinService.GetPermissionMenuIdsByRoleId(req.RoleId)
 	if err != nil {

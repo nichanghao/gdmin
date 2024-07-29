@@ -6,6 +6,8 @@ import { $t } from '@/locales';
 import { enableStatusOptions } from '@/constants/business';
 import MenuAuthModal from './menu-auth-modal.vue';
 import ButtonAuthModal from './button-auth-modal.vue';
+import { addRole, editRole } from '@/service/api';
+
 
 defineOptions({
   name: 'RoleOperateDrawer'
@@ -43,15 +45,15 @@ const title = computed(() => {
   return titles[props.operateType];
 });
 
-type Model = Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'roleDesc' | 'status'>;
+type Model = Pick<Api.SystemManage.Role, 'name' | 'code' | 'desc' | 'status'>;
 
 const model: Model = reactive(createDefaultModel());
 
 function createDefaultModel(): Model {
   return {
-    roleName: '',
-    roleCode: '',
-    roleDesc: '',
+    name: '',
+    code: '',
+    desc: '',
     status: null
   };
 }
@@ -59,8 +61,8 @@ function createDefaultModel(): Model {
 type RuleKey = Exclude<keyof Model, 'roleDesc'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
-  roleName: defaultRequiredRule,
-  roleCode: defaultRequiredRule,
+  name: defaultRequiredRule,
+  code: defaultRequiredRule,
   status: defaultRequiredRule
 };
 
@@ -82,7 +84,14 @@ function closeDrawer() {
 
 async function handleSubmit() {
   await validate();
+
   // request
+  if (props.operateType === 'edit') {
+    await editRole(model);
+  } else if (props.operateType === 'add') {
+    await addRole(model);
+  }
+
   window.$message?.success($t('common.updateSuccess'));
   closeDrawer();
   emit('submitted');
@@ -100,19 +109,19 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules">
-        <NFormItem :label="$t('page.manage.role.roleName')" path="roleName">
-          <NInput v-model:value="model.roleName" :placeholder="$t('page.manage.role.form.roleName')" />
+        <NFormItem :label="$t('page.manage.role.roleName')" path="name">
+          <NInput v-model:value="model.name" :placeholder="$t('page.manage.role.form.roleName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.role.roleCode')" path="roleCode">
-          <NInput v-model:value="model.roleCode" :placeholder="$t('page.manage.role.form.roleCode')" />
+        <NFormItem :label="$t('page.manage.role.roleCode')" path="code">
+          <NInput v-model:value="model.code" :placeholder="$t('page.manage.role.form.roleCode')" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.role.roleStatus')" path="status">
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItem>
-        <NFormItem :label="$t('page.manage.role.roleDesc')" path="roleDesc">
-          <NInput v-model:value="model.roleDesc" :placeholder="$t('page.manage.role.form.roleDesc')" />
+        <NFormItem :label="$t('page.manage.role.roleDesc')" path="desc">
+          <NInput v-model:value="model.desc" :placeholder="$t('page.manage.role.form.roleDesc')" />
         </NFormItem>
       </NForm>
       <NSpace v-if="isEdit">

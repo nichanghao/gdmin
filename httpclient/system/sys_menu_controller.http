@@ -55,11 +55,11 @@ Content-Type: application/json
 Authorization: {{token}}
 
 ### 获取所有菜单简要信息
-GET {{host}}/sys/menu/all/simple
+GET {{host}}/sys/menu/all-simple-tree
 Content-Type: application/json
 Authorization: {{token}}
 
 ### 获取角色拥有的菜单
-GET {{host}}/sys/menu/list-by-role?roleId=2
+GET {{host}}/sys/menu/list-by-role?id=2
 Content-Type: application/json
 Authorization: {{token}}

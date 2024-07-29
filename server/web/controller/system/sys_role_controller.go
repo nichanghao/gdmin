@@ -2,14 +2,10 @@ package system
 
 import (
 	"gitee.com/nichanghao/gdmin/common"
-	"gitee.com/nichanghao/gdmin/common/buserr"
-	"gitee.com/nichanghao/gdmin/model"
 	"gitee.com/nichanghao/gdmin/service"
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
-	"strconv"
 )
 
 type SysRoleController struct{}
@@ -21,10 +17,12 @@ func (*SysRoleController) PageRoles(c *gin.Context) {
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
+		// 允许空的请求体
+		if err.Error() != "EOF" {
+			_ = c.Error(err)
+			return
+		}
 	}
-
 	// 初始化默认值
 	req.InitDefaultValue()
 
@@ -51,26 +49,9 @@ func (*SysRoleController) AddRole(c *gin.Context) {
 // EditRole 编辑角色
 func (*SysRoleController) EditRole(c *gin.Context) {
 
-	var req request.SysRoleReq
+	_request, _ := c.Get(common.RequestKey)
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if req.Id == 0 {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
-
-	var role model.SysRole
-	if err := copier.Copy(&role, &req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err := service.SysRole.EditRole(&role); err != nil {
+	if err := service.SysRole.EditRole(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.OkWithData(true, c)
@@ -80,20 +61,8 @@ func (*SysRoleController) EditRole(c *gin.Context) {
 // DeleteRole 删除角色
 func (*SysRoleController) DeleteRole(c *gin.Context) {
 
-	id := c.Query("id")
-
-	if id == "" {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
-
-	roleId, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		_ = c.Error(buserr.ErrIllegalParameter)
-		return
-	}
-
-	if err2 := service.SysRole.DeleteRole(roleId); err2 != nil {
+	_request, _ := c.Get(common.RequestKey)
+	if err2 := service.SysRole.DeleteRole(_request.(*common.Request)); err2 != nil {
 		_ = c.Error(err2)
 	} else {
 		response.OkWithData(true, c)
@@ -103,15 +72,8 @@ func (*SysRoleController) DeleteRole(c *gin.Context) {
 // AssignRoleMenus 分配角色菜单
 func (*SysRoleController) AssignRoleMenus(c *gin.Context) {
 
-	var req request.SysAssignRoleMenuReq
-
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err := service.SysRole.AssignRoleMenus(&req); err != nil {
+	_request, _ := c.Get(common.RequestKey)
+	if err := service.SysRole.AssignRoleMenus(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.OkWithData(true, c)

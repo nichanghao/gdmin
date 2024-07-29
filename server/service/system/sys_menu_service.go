@@ -27,8 +27,9 @@ func (service *SysMenuService) GetAllMenuTree() (res *common.PageResp, err error
 	}
 
 	res = &common.PageResp{}
-	res.Records = service.buildMenuTree(menus)
-	res.Total = len(res.Records)
+	menuList := service.buildMenuTree(menus)
+	res.Records = menuList
+	res.Total = int64(len(menuList))
 	return
 }
 
@@ -107,6 +108,40 @@ func (service *SysMenuService) GetSelfPermissionRouters(userId uint64) (res *res
 	}
 
 	res.Routes, res.Permissions = service.buildPermissionRoutes(routes)
+	return
+}
+
+// AllSimpleMenuTree 获取所有菜单的简要信息
+func (*SysMenuService) AllSimpleMenuTree() (res []*response.SysSimpleMenuResp, err error) {
+
+	var simpleMenus []*response.SysSimpleMenuResp
+	if err = global.GormDB.Model(&model.SysMenu{}).Select("id, name, parent_id").Find(&simpleMenus).Error; err != nil {
+		return
+	}
+	// 创建一个 map 来存储每个菜单项
+	menuMap := make(map[uint64]*response.SysSimpleMenuResp)
+	for i := range simpleMenus {
+		menuMap[simpleMenus[i].Id] = simpleMenus[i]
+	}
+
+	for _, menu := range simpleMenus {
+		if menu.ParentId == 0 {
+			// 如果 ParentID 为 0，表示这是根菜单
+			res = append(res, menu)
+		} else {
+			// 否则，找到父菜单并将其添加到父菜单的 Children 列表中
+			if parentMenu, ok := menuMap[menu.ParentId]; ok {
+				parentMenu.Children = append(parentMenu.Children, menu)
+			}
+		}
+	}
+	return
+}
+
+// ListMenusByRoleId 获取角色拥有的菜单
+func (*SysMenuService) ListMenusByRoleId(req *common.Request) (menuIds []uint64, err error) {
+	roleId := req.Data.(*request.QueryIdReq).Id
+	menuIds, err = CasbinService.GetPermissionMenuIdsByRoleId(roleId)
 	return
 }
 

@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 import { ref } from 'vue';
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
 import { useBoolean } from '@sa/hooks';
-import { fetchGetMenuList } from '@/service/api';
+import { fetchGetMenuList, deleteMenu } from '@/service/api';
 import { useAppStore } from '@/store/modules/app';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import { $t } from '@/locales';
@@ -57,6 +57,12 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
         const { name } = row;
         return <span>{name}</span>;
       }
+    },
+    {
+      key: 'permission',
+      title: $t('page.manage.menu.permission'),
+      align: 'center',
+      minWidth: 120
     },
     {
       key: 'icon',
@@ -167,11 +173,10 @@ async function handleBatchDelete() {
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: number) {
   // request
-  console.log(id);
-
-  onDeleted();
+  await deleteMenu(id);
+  await onDeleted();
 }
 
 /** the edit menu data or the parent menu data when adding a child menu */

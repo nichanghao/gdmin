@@ -7,6 +7,7 @@ import { $t } from '@/locales';
 import { enableStatusRecord } from '@/constants/business';
 import RoleOperateDrawer from './modules/role-operate-drawer.vue';
 import RoleSearch from './modules/role-search.vue';
+import { deleteRole } from '@/service/api';
 
 const appStore = useAppStore();
 
@@ -28,8 +29,8 @@ const {
     // if you want to use the searchParams in Form, you need to define the following properties, and the value is null
     // the value can not be undefined, otherwise the property in Form will not be reactive
     status: null,
-    roleName: null,
-    roleCode: null
+    name: null,
+    code: null
   },
   columns: () => [
     {
@@ -44,19 +45,19 @@ const {
       align: 'center'
     },
     {
-      key: 'roleName',
+      key: 'name',
       title: $t('page.manage.role.roleName'),
       align: 'center',
       minWidth: 120
     },
     {
-      key: 'roleCode',
+      key: 'code',
       title: $t('page.manage.role.roleCode'),
       align: 'center',
       minWidth: 120
     },
     {
-      key: 'roleDesc',
+      key: 'desc',
       title: $t('page.manage.role.roleDesc'),
       minWidth: 120
     },
@@ -127,7 +128,7 @@ async function handleBatchDelete() {
 
 function handleDelete(id: number) {
   // request
-  console.log(id);
+  deleteRole(id)
 
   onDeleted();
 }

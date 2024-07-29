@@ -120,6 +120,10 @@ func (casbinService *SysCasbinService) GetPermissionByUserId(userId uint64) (map
 
 // DeletePermissionByRoleAndMenus 删除角色菜单权限
 func (casbinService *SysCasbinService) DeletePermissionByRoleAndMenus(roleId uint64, menus []uint64) (err error) {
+	if len(menus) == 0 {
+		return
+	}
+
 	roleIdStr := casbinService.GetCasbinRoleStr(roleId)
 	for i := range menus {
 		_, err = global.Enforcer.RemoveFilteredPolicy(0, roleIdStr, "", strconv.FormatUint(menus[i], 10))
@@ -129,6 +133,10 @@ func (casbinService *SysCasbinService) DeletePermissionByRoleAndMenus(roleId uin
 
 // AddPermissionByRoleAndMenus 添加角色菜单权限
 func (casbinService *SysCasbinService) AddPermissionByRoleAndMenus(roleId uint64, menus []model.SysMenu) (err error) {
+	if len(menus) == 0 {
+		return
+	}
+
 	var policies = make([][]string, len(menus))
 	casbinRoleStr := CasbinService.GetCasbinRoleStr(roleId)
 	for i := range menus {
