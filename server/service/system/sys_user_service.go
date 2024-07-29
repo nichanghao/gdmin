@@ -51,7 +51,7 @@ func (userService *SysUserService) GetSelfUserInfo(id uint64) (res *model.SysUse
 }
 
 // PageUsers 分页查询用户列表
-func (userService *SysUserService) PageUsers(req *request.SysUserPageReq) ([]*model.SysUser, error) {
+func (userService *SysUserService) PageUsers(req *request.SysUserPageReq) (*common.PageResp, error) {
 	tx := global.GormDB.Model(&model.SysUser{}).Limit(req.Limit).Offset(req.Offset)
 	if req.Username != "" {
 		tx.Where("username LIKE ?", "%"+req.Username+"%")
@@ -65,19 +65,58 @@ func (userService *SysUserService) PageUsers(req *request.SysUserPageReq) ([]*mo
 	if req.Email != "" {
 		tx.Where("email LIKE ?", "%"+req.Email+"%")
 	}
-	var userList []*model.SysUser
-
-	if err := tx.Find(&userList).Error; err != nil {
-		return userList, err
+	if req.Status != 0 {
+		tx.Where("status = ?", req.Status)
+	}
+	if req.Gender != 0 {
+		tx.Where("gender = ?", req.Gender)
 	}
 
-	return userList, nil
+	res := &common.PageResp{Current: req.Current, Size: req.Size, Records: make([]any, 0)}
+	// 查询数量
+	if err := tx.Count(&res.Total).Error; err != nil {
+		return res, err
+	}
+	if res.Total == 0 {
+		return res, nil
+	}
+
+	var userList []*model.SysUser
+	if err := tx.Preload("Roles").Find(&userList).Error; err != nil {
+		return res, err
+	} else {
+		res.Records = userList
+	}
+
+	return res, nil
+}
+
+// AddUser 新增用户
+func (userService *SysUserService) AddUser(req *common.Request) error {
+	var user model.SysUser
+	if err := copier.Copy(&user, req.Data); err != nil {
+		return err
+	}
+
+	// 加密密码
+	password, err := utils.BCRYPT.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = password
+
+	return global.GormDB.Create(user).Error
 }
 
 // EditUser 编辑用户
-func (userService *SysUserService) EditUser(user *model.SysUser) error {
+func (userService *SysUserService) EditUser(req *common.Request) error {
 
-	if err := global.GormDB.Model(user).Select("nickname", "phone", "email").Updates(user).Error; err != nil {
+	var user model.SysUser
+	if err := copier.Copy(&user, req.Data); err != nil {
+		return err
+	}
+
+	if err := global.GormDB.Model(&model.SysUser{}).Where("id = ?", user.Id).Updates(&user).Error; err != nil {
 		return err
 	}
 
@@ -85,7 +124,7 @@ func (userService *SysUserService) EditUser(user *model.SysUser) error {
 }
 
 // ResetPassword 重置密码
-func (userService *SysUserService) ResetPassword(req *request.SysUserUpdateReq) error {
+func (userService *SysUserService) ResetPassword(req *request.SysUserEditReq) error {
 
 	password, err := utils.BCRYPT.HashPassword(req.Password)
 	if err != nil {
@@ -100,17 +139,18 @@ func (userService *SysUserService) ResetPassword(req *request.SysUserUpdateReq) 
 }
 
 // DeleteUser 删除用户
-func (userService *SysUserService) DeleteUser(id uint64) error {
+func (userService *SysUserService) DeleteUser(req *common.Request) error {
+	userId := req.Data.(*request.QueryIdReq).Id
 
 	return global.GormDB.Transaction(func(tx *gorm.DB) error {
 
 		// 删除用户并同步删除关联的角色
-		if err := tx.Select("Roles").Delete(&model.SysUser{Id: id}).Error; err != nil {
+		if err := tx.WithContext(req.Context).Select("Roles").Delete(&model.SysUser{Id: userId}).Error; err != nil {
 			return err
 		}
 
 		// 删除casbin用户
-		if err := CasbinService.ClearRolesForUser(id); err != nil {
+		if err := CasbinService.ClearRolesForUser(userId); err != nil {
 			return err
 		}
 
@@ -119,7 +159,7 @@ func (userService *SysUserService) DeleteUser(id uint64) error {
 }
 
 // AssignRoles 分配角色给用户
-func (userService *SysUserService) AssignRoles(req *request.SysUserUpdateReq) error {
+func (userService *SysUserService) AssignRoles(req *request.SysUserEditReq) error {
 
 	var roles []*model.SysRole
 	for i := range req.RoleIds {
@@ -155,25 +195,8 @@ func (userService *SysUserService) AssignRoles(req *request.SysUserUpdateReq) er
 
 }
 
-// AddUser 新增用户
-func (userService *SysUserService) AddUser(req *request.SysUserAddReq) error {
-	var user model.SysUser
-	if err := copier.Copy(&user, &req); err != nil {
-		return err
-	}
-
-	// 加密密码
-	password, err := utils.BCRYPT.HashPassword(req.Password)
-	if err != nil {
-		return err
-	}
-	user.Password = password
-
-	return global.GormDB.Create(user).Error
-}
-
 // UpdateStatus 更新用户状态
-func (userService *SysUserService) UpdateStatus(req *request.SysUserUpdateReq) error {
+func (userService *SysUserService) UpdateStatus(req *request.SysUserEditReq) error {
 
 	if err := global.GormDB.Model(&model.SysUser{}).Where("id = ?", req.Id).Update("status", req.Status).Error; err != nil {
 		return err

@@ -12,6 +12,10 @@ GET {{host}}/sys/user/self/info
 Content-Type: application/json
 Authorization: {{token}}
 
+### 查询用户列表
+POST {{host}}/sys/user/page
+Content-Type: application/json
+Authorization: {{token}}
 
 ### 编辑用户
 PUT {{host}}/sys/user/edit

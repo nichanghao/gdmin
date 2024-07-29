@@ -41,27 +41,27 @@ const title = computed(() => {
 
 type Model = Pick<
   Api.SystemManage.User,
-  'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'userRoles' | 'status'
+  'username' | 'gender' | 'nickname' | 'phone' | 'email' | 'roles' | 'status'
 >;
 
 const model: Model = reactive(createDefaultModel());
 
 function createDefaultModel(): Model {
   return {
-    userName: '',
-    userGender: null,
-    nickName: '',
-    userPhone: '',
-    userEmail: '',
-    userRoles: [],
+    username: '',
+    gender: null,
+    nickname: '',
+    phone: '',
+    email: '',
+    roles: [],
     status: null
   };
 }
 
-type RuleKey = Extract<keyof Model, 'userName' | 'status'>;
+type RuleKey = Extract<keyof Model, 'username' | 'status'>;
 
 const rules: Record<RuleKey, App.Global.FormRule> = {
-  userName: defaultRequiredRule,
+  username: defaultRequiredRule,
   status: defaultRequiredRule
 };
 
@@ -73,15 +73,15 @@ async function getRoleOptions() {
 
   if (!error) {
     const options = data.map(item => ({
-      label: item.roleName,
-      value: item.roleCode
+      label: item.name,
+      value: item.code
     }));
 
     // the mock data does not have the roleCode, so fill it
     // if the real request, remove the following code
-    const userRoleOptions = model.userRoles.map(item => ({
-      label: item,
-      value: item
+    const userRoleOptions = model.roles.map(item => ({
+      label: item.code,
+      value: item.code
     }));
     // end
 
@@ -93,7 +93,9 @@ function handleInitModel() {
   Object.assign(model, createDefaultModel());
 
   if (props.operateType === 'edit' && props.rowData) {
-    Object.assign(model, props.rowData);
+    const { roles , ...rest } = props.rowData;
+    const roleCodes = roles.map(item => item.code);
+    Object.assign(model, rest, { roles: roleCodes });
   }
 }
 
@@ -122,22 +124,22 @@ watch(visible, () => {
   <NDrawer v-model:show="visible" display-directive="show" :width="360">
     <NDrawerContent :title="title" :native-scrollbar="false" closable>
       <NForm ref="formRef" :model="model" :rules="rules">
-        <NFormItem :label="$t('page.manage.user.userName')" path="userName">
-          <NInput v-model:value="model.userName" :placeholder="$t('page.manage.user.form.userName')" />
+        <NFormItem :label="$t('page.manage.user.userName')" path="username">
+          <NInput v-model:value="model.username" :placeholder="$t('page.manage.user.form.userName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userGender')" path="userGender">
-          <NRadioGroup v-model:value="model.userGender">
+        <NFormItem :label="$t('page.manage.user.userGender')" path="gender">
+          <NRadioGroup v-model:value="model.gender">
             <NRadio v-for="item in userGenderOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.nickName')" path="nickName">
-          <NInput v-model:value="model.nickName" :placeholder="$t('page.manage.user.form.nickName')" />
+        <NFormItem :label="$t('page.manage.user.nickName')" path="nickname">
+          <NInput v-model:value="model.nickname" :placeholder="$t('page.manage.user.form.nickName')" />
         </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userPhone')" path="userPhone">
-          <NInput v-model:value="model.userPhone" :placeholder="$t('page.manage.user.form.userPhone')" />
+        <NFormItem :label="$t('page.manage.user.userPhone')" path="phone">
+          <NInput v-model:value="model.phone" :placeholder="$t('page.manage.user.form.userPhone')" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userEmail')" path="email">
-          <NInput v-model:value="model.userEmail" :placeholder="$t('page.manage.user.form.userEmail')" />
+          <NInput v-model:value="model.email" :placeholder="$t('page.manage.user.form.userEmail')" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userStatus')" path="status">
           <NRadioGroup v-model:value="model.status">
@@ -146,7 +148,7 @@ watch(visible, () => {
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userRole')" path="roles">
           <NSelect
-            v-model:value="model.userRoles"
+            v-model:value="model.roles"
             multiple
             :options="roleOptions"
             :placeholder="$t('page.manage.user.form.userRole')"

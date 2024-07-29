@@ -8,7 +8,6 @@ import (
 	"gitee.com/nichanghao/gdmin/web/request"
 	"gitee.com/nichanghao/gdmin/web/response"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
 )
 
 type SysUserController struct{}
@@ -54,7 +53,7 @@ func (*SysUserController) PageUsers(c *gin.Context) {
 	var req request.SysUserPageReq
 
 	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil && err.Error() != "EOF" {
 		_ = c.Error(err)
 		return
 	}
@@ -68,23 +67,22 @@ func (*SysUserController) PageUsers(c *gin.Context) {
 	}
 }
 
+// AddUser 新增用户
+func (*SysUserController) AddUser(c *gin.Context) {
+	_request, _ := c.Get(common.RequestKey)
+	if err := service.SysUser.AddUser(_request.(*common.Request)); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.Ok(c)
+	}
+
+}
+
 // EditUser 编辑用户
 func (*SysUserController) EditUser(c *gin.Context) {
-	var req request.SysUserUpdateReq
+	_request, _ := c.Get(common.RequestKey)
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	var user model.SysUser
-	if err := copier.Copy(&user, &req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err := service.SysUser.EditUser(&user); err != nil {
+	if err := service.SysUser.EditUser(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.Ok(c)
@@ -94,7 +92,7 @@ func (*SysUserController) EditUser(c *gin.Context) {
 
 // ResetPassword 重置密码
 func (*SysUserController) ResetPassword(c *gin.Context) {
-	var req request.SysUserUpdateReq
+	var req request.SysUserEditReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -117,15 +115,8 @@ func (*SysUserController) ResetPassword(c *gin.Context) {
 
 // DeleteUser 删除用户
 func (*SysUserController) DeleteUser(c *gin.Context) {
-	var req request.SysUserUpdateReq
-
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err := service.SysUser.DeleteUser(req.Id); err != nil {
+	_request, _ := c.Get(common.RequestKey)
+	if err := service.SysUser.DeleteUser(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.Ok(c)
@@ -135,7 +126,7 @@ func (*SysUserController) DeleteUser(c *gin.Context) {
 
 // AssignRoles 分配角色给用户
 func (*SysUserController) AssignRoles(c *gin.Context) {
-	var req request.SysUserUpdateReq
+	var req request.SysUserEditReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -151,27 +142,9 @@ func (*SysUserController) AssignRoles(c *gin.Context) {
 
 }
 
-// AddUser 新增用户
-func (*SysUserController) AddUser(c *gin.Context) {
-	var req request.SysUserAddReq
-
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err := service.SysUser.AddUser(&req); err != nil {
-		_ = c.Error(err)
-	} else {
-		response.Ok(c)
-	}
-
-}
-
 // UpdateStatus 更新用户状态
 func (*SysUserController) UpdateStatus(c *gin.Context) {
-	var req request.SysUserUpdateReq
+	var req request.SysUserEditReq
 
 	// 绑定参数
 	if err := c.ShouldBindJSON(&req); err != nil {

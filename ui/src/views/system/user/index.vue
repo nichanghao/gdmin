@@ -29,11 +29,11 @@ const {
     // if you want to use the searchParams in Form, you need to define the following properties, and the value is null
     // the value can not be undefined, otherwise the property in Form will not be reactive
     status: null,
-    userName: null,
-    userGender: null,
-    nickName: null,
-    userPhone: null,
-    userEmail: null
+    username: null,
+    gender: null,
+    nickname: null,
+    phone: null,
+    email: null
   },
   columns: () => [
     {
@@ -48,18 +48,18 @@ const {
       width: 64
     },
     {
-      key: 'userName',
+      key: 'username',
       title: $t('page.manage.user.userName'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userGender',
+      key: 'gender',
       title: $t('page.manage.user.userGender'),
       align: 'center',
       width: 100,
       render: row => {
-        if (row.userGender === null) {
+        if (row.gender === null) {
           return null;
         }
 
@@ -68,25 +68,25 @@ const {
           2: 'error'
         };
 
-        const label = $t(userGenderRecord[row.userGender]);
+        const label = $t(userGenderRecord[row.gender]);
 
-        return <NTag type={tagMap[row.userGender]}>{label}</NTag>;
+        return <NTag type={tagMap[row.gender]}>{label}</NTag>;
       }
     },
     {
-      key: 'nickName',
+      key: 'nickname',
       title: $t('page.manage.user.nickName'),
       align: 'center',
       minWidth: 100
     },
     {
-      key: 'userPhone',
+      key: 'phone',
       title: $t('page.manage.user.userPhone'),
       align: 'center',
       width: 120
     },
     {
-      key: 'userEmail',
+      key: 'email',
       title: $t('page.manage.user.userEmail'),
       align: 'center',
       minWidth: 200

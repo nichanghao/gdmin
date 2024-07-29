@@ -15,11 +15,14 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 	sysUserGroup := group.Group("/sys/user")
 	{
 		sysUserGroup.POST("page", controller.SysUser.PageUsers)
-		sysUserGroup.PUT("edit", controller.SysUser.EditUser)
+		sysUserGroup.POST("add",
+			middleware.RequestContextHandler(&request.SysUserAddReq{}), controller.SysUser.AddUser)
+		sysUserGroup.PUT("edit",
+			middleware.RequestContextHandler(&request.SysUserEditReq{}), controller.SysUser.EditUser)
 		sysUserGroup.PUT("reset-password", controller.SysUser.ResetPassword)
-		sysUserGroup.DELETE("delete", controller.SysUser.DeleteUser)
+		sysUserGroup.DELETE("delete",
+			middleware.RequestContextHandler(&request.QueryIdReq{}, common.BindModeQuery), controller.SysUser.DeleteUser)
 		sysUserGroup.PUT("assign-roles", controller.SysUser.AssignRoles)
-		sysUserGroup.POST("add", controller.SysUser.AddUser)
 		sysUserGroup.PUT("update-status", controller.SysUser.UpdateStatus)
 	}
 
