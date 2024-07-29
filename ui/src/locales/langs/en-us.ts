@@ -387,7 +387,7 @@ const local: App.I18n.Schema = {
         menuName: 'Menu Name',
         routeName: 'Route Name',
         routePath: 'Route Path',
-        pathParam: 'Path Param',
+        permission: 'Permission',
         layout: 'Layout Component',
         page: 'Page Component',
         i18nKey: 'I18n Key',
@@ -413,7 +413,7 @@ const local: App.I18n.Schema = {
           menuName: 'Please enter menu name',
           routeName: 'Please enter route name',
           routePath: 'Please enter route path',
-          pathParam: 'Please enter path param',
+          permission: 'Please enter permission',
           page: 'Please select page component',
           layout: 'Please select layout component',
           i18nKey: 'Please enter i18n key',
@@ -439,7 +439,8 @@ const local: App.I18n.Schema = {
         addChildMenu: 'Add Child Menu',
         type: {
           directory: 'Directory',
-          menu: 'Menu'
+          menu: 'Menu',
+          button: 'Button'
         },
         iconType: {
           iconify: 'Iconify Icon',

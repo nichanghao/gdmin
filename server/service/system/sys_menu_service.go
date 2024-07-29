@@ -19,14 +19,16 @@ type SysMenuService struct {
 }
 
 // GetAllMenuTree 获取所有菜单树
-func (service *SysMenuService) GetAllMenuTree() (res []*model.SysMenu, err error) {
+func (service *SysMenuService) GetAllMenuTree() (res *common.PageResp, err error) {
 
 	var menus []*model.SysMenu
 	if err = global.GormDB.Find(&menus).Error; err != nil {
 		return
 	}
 
-	res = service.buildMenuTree(menus)
+	res = &common.PageResp{}
+	res.Records = service.buildMenuTree(menus)
+	res.Total = len(res.Records)
 	return
 }
 
@@ -147,7 +149,7 @@ func (*SysMenuService) buildPermissionRoutes(routes []*response.SysRoutesResp) (
 }
 
 // 构建菜单树
-func (*SysMenuService) buildMenuTree(menus []*model.SysMenu) []*model.SysMenu {
+func (*SysMenuService) buildMenuTree(menus []*model.SysMenu) []any {
 	// 创建一个 map 来存储每个菜单项
 	menuMap := make(map[uint64]*model.SysMenu)
 	for i := range menus {
@@ -155,7 +157,7 @@ func (*SysMenuService) buildMenuTree(menus []*model.SysMenu) []*model.SysMenu {
 	}
 
 	// 创建一个根菜单列表
-	var rootMenus = make([]*model.SysMenu, 0, len(menus))
+	var rootMenus = make([]any, 0, len(menus))
 
 	for _, menu := range menus {
 		if menu.ParentId == 0 {

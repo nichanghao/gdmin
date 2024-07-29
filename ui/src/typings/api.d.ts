@@ -26,7 +26,7 @@ declare namespace Api {
      * - "1": enabled
      * - "2": disabled
      */
-    type EnableStatus = '1' | '2';
+    type EnableStatus = 1 | 2;
 
     /** common record */
     type CommonRecord<T = any> = {
@@ -118,7 +118,7 @@ declare namespace Api {
      * - "1": "male"
      * - "2": "female"
      */
-    type UserGender = '1' | '2';
+    type UserGender = 1 | 2;
 
     /** user */
     type User = Common.CommonRecord<{
@@ -152,7 +152,7 @@ declare namespace Api {
      * - "2": menu
      * - "3": button
      */
-    type MenuType = '1' | '2' | '3';
+    type MenuType = 1 | 2 | 3;
 
     type MenuButton = {
       /**
@@ -171,7 +171,7 @@ declare namespace Api {
      * - "1": iconify icon
      * - "2": local icon
      */
-    type IconType = '1' | '2';
+    type IconType = 1 | 2;
 
     type MenuPropsOfRoute = Pick<
       import('vue-router').RouteMeta,
@@ -185,11 +185,11 @@ declare namespace Api {
       | 'multiTab'
       | 'fixedIndexInTab'
       | 'query'
+      | 'icon'
+      | 'localIcon'
     >;
 
     type Menu = Common.CommonRecord<{
-      /** menu id */
-      id: number;
       /** parent menu id */
       parentId: number;
       /** menu type */
@@ -209,11 +209,10 @@ declare namespace Api {
       /** buttons */
       buttons?: MenuButton[] | null;
       /** menu meta */
-      meta?: MenuPropsOfRoute;
+      meta: MenuPropsOfRoute;
       /** children menu */
       children?: Menu[] | null;
-    }> &
-      MenuPropsOfRoute;
+    }>;
 
     /** menu list */
     type MenuList = Common.PaginatingQueryRecord<Menu>;

@@ -384,10 +384,10 @@ const local: App.I18n.Schema = {
         id: 'ID',
         parentId: '父级菜单ID',
         menuType: '菜单类型',
-        menuName: '菜单名称',
+        menuName: '名称',
         routeName: '路由名称',
         routePath: '路由路径',
-        pathParam: '路径参数',
+        permission: '权限标识',
         layout: '布局',
         page: '页面组件',
         i18nKey: '国际化key',
@@ -410,11 +410,11 @@ const local: App.I18n.Schema = {
         form: {
           home: '请选择首页',
           menuType: '请选择菜单类型',
-          menuName: '请输入菜单名称',
+          menuName: '请输入名称',
           routeName: '请输入路由名称',
           routePath: '请输入路由路径',
-          pathParam: '请输入路径参数',
-          page: '请选择页面组件',
+          permission: '请输入权限标识',
+          page: '请输入页面组件',
           layout: '请选择布局组件',
           i18nKey: '请输入国际化key',
           icon: '请输入图标',
@@ -439,7 +439,8 @@ const local: App.I18n.Schema = {
         addChildMenu: '新增子菜单',
         type: {
           directory: '目录',
-          menu: '菜单'
+          menu: '菜单',
+          button: '按钮'
         },
         iconType: {
           iconify: 'iconify图标',

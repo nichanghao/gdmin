@@ -567,7 +567,7 @@ declare namespace App {
             menuName: string;
             routeName: string;
             routePath: string;
-            pathParam: string;
+            permission: string;
             layout: string;
             page: string;
             i18nKey: string;
@@ -593,7 +593,7 @@ declare namespace App {
               menuName: string;
               routeName: string;
               routePath: string;
-              pathParam: string;
+              permission: string;
               layout: string;
               page: string;
               i18nKey: string;
@@ -620,6 +620,7 @@ declare namespace App {
             type: {
               directory: string;
               menu: string;
+              button: string;
             };
             iconType: {
               iconify: string;

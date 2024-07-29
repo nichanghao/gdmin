@@ -8,6 +8,14 @@ type PageReq struct {
 	Offset   int
 }
 
+// PageResp 分页返回参数
+type PageResp struct {
+	Total   int   `json:"total"`
+	Records []any `json:"records"`
+	Current int   `json:"current"`
+	Size    int   `json:"size"`
+}
+
 // InitDefaultValue 初始化默认值
 func (req *PageReq) InitDefaultValue() {
 	if req.PageNum == 0 {

@@ -1,16 +1,15 @@
 <script setup lang="tsx">
-import type {Ref} from 'vue';
-import {ref} from 'vue';
-import {NButton, NPopconfirm, NTag} from 'naive-ui';
-import {useBoolean} from '@sa/hooks';
-import {fetchGetAllPages, fetchGetMenuList} from '@/service/api';
-import {useAppStore} from '@/store/modules/app';
-import {useTable, useTableOperate} from '@/hooks/common/table';
-import {$t} from '@/locales';
-import {yesOrNoRecord} from '@/constants/common';
-import {enableStatusRecord, menuTypeRecord} from '@/constants/business';
+import type { Ref } from 'vue';
+import { ref } from 'vue';
+import { NButton, NPopconfirm, NTag } from 'naive-ui';
+import { useBoolean } from '@sa/hooks';
+import { fetchGetMenuList } from '@/service/api';
+import { useAppStore } from '@/store/modules/app';
+import { useTable, useTableOperate } from '@/hooks/common/table';
+import { $t } from '@/locales';
+import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
 import SvgIcon from '@/components/custom/svg-icon.vue';
-import MenuOperateModal, {type OperateType} from './modules/menu-operate-modal.vue';
+import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
 
 const appStore = useAppStore();
 
@@ -40,7 +39,8 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       render: row => {
         const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
           1: 'default',
-          2: 'primary'
+          2: 'primary',
+          3: 'info'
         };
 
         const label = $t(menuTypeRecord[row.type]);
@@ -64,8 +64,8 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       align: 'center',
       width: 60,
       render: row => {
-        const icon = row.meta.icon;
-        const localIcon = row.meta.localIcon;
+        const icon = row.meta?.icon;
+        const localIcon = row.meta?.localIcon;
         return (
           <div class="flex-center">
             <SvgIcon icon={icon} localIcon={localIcon} class="text-icon" />
@@ -112,12 +112,12 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       align: 'center'
     },
     {
-      key: 'order',
+      key: 'meta',
       title: $t('page.manage.menu.order'),
       align: 'center',
       width: 60,
       render: row => {
-        return row.meta.order;
+        return row.meta?.order;
       }
     },
     {
@@ -127,7 +127,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 230,
       render: row => (
         <div class="flex-center justify-end gap-8px">
-          {row.type != '3' && (
+          {row.type !== 3 && (
             <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
               {$t('page.manage.menu.addChildMenu')}
             </NButton>
@@ -180,7 +180,7 @@ const editingData: Ref<Api.SystemManage.Menu | null> = ref(null);
 function handleEdit(item: Api.SystemManage.Menu) {
   operateType.value = 'edit';
   editingData.value = { ...item };
-
+  console.log(editingData.value);
   openModal();
 }
 

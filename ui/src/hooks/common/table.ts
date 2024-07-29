@@ -1,10 +1,10 @@
-import {computed, effectScope, onScopeDispose, reactive, ref, watch} from 'vue';
-import type {Ref} from 'vue';
-import type {PaginationProps} from 'naive-ui';
-import {jsonClone} from '@sa/utils';
-import {useBoolean, useHookTable} from '@sa/hooks';
-import {useAppStore} from '@/store/modules/app';
-import {$t} from '@/locales';
+import { computed, effectScope, onScopeDispose, reactive, ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import type { PaginationProps } from 'naive-ui';
+import { jsonClone } from '@sa/utils';
+import { useBoolean, useHookTable } from '@sa/hooks';
+import { useAppStore } from '@/store/modules/app';
+import { $t } from '@/locales';
 
 type TableData = NaiveUI.TableData;
 type GetTableData<A extends NaiveUI.TableApiFn> = NaiveUI.GetTableData<A>;
@@ -16,7 +16,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 
   const isMobile = computed(() => appStore.isMobile);
 
-  const {apiFn, apiParams, immediate, showTotal, isPagination = true} = config;
+  const { apiFn, apiParams, immediate, showTotal, isPagination = true } = config;
 
   const SELECTION_KEY = '__selection__';
 
@@ -38,31 +38,22 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
     apiParams,
     columns: config.columns,
     transformer: res => {
-      if (!isPagination) {
-        const records = res.data || [];
-        return {
-          data: records,
-          pageNum: 1,
-          pageSize: 10,
-          total: records.length
-        };
-      }
-
-      const {records = [], current = 1, size = 10, total = 0} = res.data || {};
+      const { records = [], current = 1, size = 10, total = 0 } = res.data || {};
 
       // Ensure that the size is greater than 0, If it is less than 0, it will cause paging calculation errors.
       const pageSize = size <= 0 ? 10 : size;
+      const pageNum = current <= 0 ? 1 : current;
 
-      // const recordsWithIndex = records.map((item, index) => {
-      //   return {
-      //     ...item,
-      //     index: (current - 1) * pageSize + index + 1
-      //   };
-      // });
+      const recordsWithIndex = records.map((item, index) => {
+        return {
+          ...item,
+          index: (current - 1) * pageSize + index + 1
+        };
+      });
 
       return {
-        data: records,
-        pageNum: current,
+        data: recordsWithIndex,
+        pageNum,
         pageSize,
         total
       };
@@ -114,7 +105,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
       return filteredColumns;
     },
     onFetched: async transformed => {
-      const {pageNum, pageSize, total} = transformed;
+      const { pageNum, pageSize, total } = transformed;
 
       updatePagination({
         page: pageNum,
@@ -154,8 +145,8 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
     },
     ...(showTotal
       ? {
-        prefix: page => $t('datatable.itemCount', {total: page.itemCount})
-      }
+          prefix: page => $t('datatable.itemCount', { total: page.itemCount })
+        }
       : {})
   });
 
@@ -224,7 +215,7 @@ export function useTable<A extends NaiveUI.TableApiFn>(config: NaiveUI.NaiveTabl
 }
 
 export function useTableOperate<T extends TableData = TableData>(data: Ref<T[]>, getData: () => Promise<void>) {
-  const {bool: drawerVisible, setTrue: openDrawer, setFalse: closeDrawer} = useBoolean();
+  const { bool: drawerVisible, setTrue: openDrawer, setFalse: closeDrawer } = useBoolean();
 
   const operateType = ref<NaiveUI.TableOperateType>('add');
 
