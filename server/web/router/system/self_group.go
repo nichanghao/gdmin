@@ -21,7 +21,7 @@ func (*SelfRouter) InitRouter(group *gin.RouterGroup) {
 	// 菜单相关路由
 	sysMenuGroup := group.Group("/sys/menu")
 	{
-		sysMenuGroup.GET("/all-simple-tree", controller.SysMenu.AllSimpleMenuTree)
+		sysMenuGroup.GET("/all-simple-menu-tree", controller.SysMenu.AllSimpleMenuTree)
 		sysMenuGroup.GET("/list-by-role",
 			middleware.RequestContextHandler(&request.QueryIdReq{}, common.BindModeQuery), controller.SysMenu.ListMenusByRoleId)
 		sysMenuGroup.GET("/self/permission-routers", controller.SysMenu.GetSelfPermissionRouters)
@@ -30,7 +30,7 @@ func (*SelfRouter) InitRouter(group *gin.RouterGroup) {
 	// 角色相关路由
 	sysRoleGroup := group.Group("/sys/role")
 	{
-		sysRoleGroup.GET("/list-by-role", controller.SysMenu.ListMenusByRoleId)
+		sysRoleGroup.GET("/all-simple-roles", controller.SysRole.AllSimpleRoles)
 	}
 
 }

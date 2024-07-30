@@ -80,3 +80,14 @@ func (*SysRoleController) AssignRoleMenus(c *gin.Context) {
 	}
 
 }
+
+// AllSimpleRoles 获取角色列表（用户管理页面分配用户角色时展示使用）
+func (*SysRoleController) AllSimpleRoles(c *gin.Context) {
+
+	if res, err := service.SysRole.AllSimpleRoles(); err != nil {
+		_ = c.Error(err)
+	} else {
+		response.OkWithData(res, c)
+	}
+
+}

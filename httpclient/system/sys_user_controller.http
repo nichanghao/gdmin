@@ -17,6 +17,21 @@ POST {{host}}/sys/user/page
 Content-Type: application/json
 Authorization: {{token}}
 
+### 新增用户
+POST {{host}}/sys/user/add
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+    "username": "admin",
+    "password": "123456",
+    "nickname": "admin",
+    "email": "admin@localhost",
+    "phone": "13800138000",
+    "gender": 1,
+    "status": 1
+}
+
 ### 编辑用户
 PUT {{host}}/sys/user/edit
 Content-Type: application/json
@@ -28,6 +43,12 @@ Authorization: {{token}}
     "email": "admin@localhost",
     "phone": "13800138000"
 }
+
+### 删除用户
+DELETE {{host}}/sys/user/delete?id=4
+Content-Type: application/json
+Authorization: {{token}}
+
 
 ### 分配用户角色
 PUT {{host}}/sys/user/assign-roles

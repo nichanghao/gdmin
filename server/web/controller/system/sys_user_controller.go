@@ -126,15 +126,9 @@ func (*SysUserController) DeleteUser(c *gin.Context) {
 
 // AssignRoles 分配角色给用户
 func (*SysUserController) AssignRoles(c *gin.Context) {
-	var req request.SysUserEditReq
+	_request, _ := c.Get(common.RequestKey)
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if err := service.SysUser.AssignRoles(&req); err != nil {
+	if err := service.SysUser.AssignRoles(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.Ok(c)

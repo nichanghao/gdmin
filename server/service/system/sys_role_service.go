@@ -158,7 +158,13 @@ func (roleService *SysRoleService) AssignRoleMenus(_req *common.Request) error {
 	err = CasbinService.AddPermissionByRoleAndMenus(req.RoleId, addMenus)
 	err = CasbinService.DeletePermissionByRoleAndMenus(req.RoleId, needDelMenus.ToSlice())
 	return err
+}
 
+// AllSimpleRoles 获取角色列表（用户管理页面分配用户角色时展示使用）
+func (*SysRoleService) AllSimpleRoles() (roles []*model.SysRole, err error) {
+
+	err = global.GormDB.Model(&model.SysRole{}).Select("id, name, code").Where("status = ?", 1).Find(&roles).Error
+	return
 }
 
 // 校验角色名称和编码是否重复

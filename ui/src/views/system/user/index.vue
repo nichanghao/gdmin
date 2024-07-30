@@ -1,12 +1,16 @@
 <script setup lang="tsx">
 import { NButton, NPopconfirm, NTag } from 'naive-ui';
-import { fetchGetUserList } from '@/service/api';
+import { fetchGetUserList, deleteUser } from '@/service/api';
 import { $t } from '@/locales';
 import { useAppStore } from '@/store/modules/app';
 import { enableStatusRecord, userGenderRecord } from '@/constants/business';
 import { useTable, useTableOperate } from '@/hooks/common/table';
 import UserOperateDrawer from './modules/user-operate-drawer.vue';
 import UserSearch from './modules/user-search.vue';
+import { ref } from "vue";
+import AssignRoleModel from "./modules/assign-role-model.vue";
+import { useBoolean } from "~/packages/hooks";
+
 
 const appStore = useAppStore();
 
@@ -115,9 +119,12 @@ const {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
+      width: 200,
       render: row => (
         <div class="flex-center gap-8px">
+          <NButton type="primary" ghost size="small" onClick={() => handleRoleAuth(row.id, row.roles)}>
+            {$t('page.manage.user.roleAuth')}
+          </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -156,15 +163,23 @@ async function handleBatchDelete() {
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: number) {
   // request
-  console.log(id);
-
-  onDeleted();
+  await deleteUser(id);
+  await onDeleted();
 }
 
 function edit(id: number) {
   handleEdit(id);
+}
+
+const roleAuthUserId = ref<number>();
+const roleList = ref<Api.SystemManage.Role[]>([]);
+const { bool: roleAuthVisible, setTrue: openRoleAuthModal } = useBoolean();
+function handleRoleAuth(id: number, roles: Api.SystemManage.Role[]) {
+  roleAuthUserId.value = id;
+  roleList.value = roles;
+  openRoleAuthModal();
 }
 </script>
 
@@ -201,6 +216,7 @@ function edit(id: number) {
         :row-data="editingData"
         @submitted="getDataByPage"
       />
+      <AssignRoleModel v-model:visible="roleAuthVisible" :user-id="roleAuthUserId" :roles="roleList" @submitted="getDataByPage"/>
     </NCard>
   </div>
 </template>

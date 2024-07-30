@@ -170,11 +170,11 @@ const local: App.I18n.Schema = {
     function_request: '请求',
     'function_toggle-auth': '切换权限',
     'function_super-page': '超级管理员可见',
-    manage: '系统管理',
-    manage_user: '用户管理',
-    'manage_user-detail': '用户详情',
-    manage_role: '角色管理',
-    manage_menu: '菜单管理',
+    system: '系统管理',
+    system_user: '用户管理',
+    'system_user-detail': '用户详情',
+    system_role: '角色管理',
+    system_menu: '菜单管理',
     'multi-menu': '多级菜单',
     'multi-menu_first': '菜单一',
     'multi-menu_first_child': '菜单一子菜单',
@@ -356,6 +356,7 @@ const local: App.I18n.Schema = {
       user: {
         title: '用户列表',
         userName: '用户名',
+        password: '密码',
         userGender: '性别',
         nickName: '昵称',
         userPhone: '手机号',
@@ -364,6 +365,7 @@ const local: App.I18n.Schema = {
         userRole: '用户角色',
         form: {
           userName: '请输入用户名',
+          password: '请输入密码',
           userGender: '请选择性别',
           nickName: '请输入昵称',
           userPhone: '请输入手机号',
@@ -376,7 +378,8 @@ const local: App.I18n.Schema = {
         gender: {
           male: '男',
           female: '女'
-        }
+        },
+        roleAuth: '角色权限',
       },
       menu: {
         home: '首页',

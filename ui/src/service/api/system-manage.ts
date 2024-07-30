@@ -38,7 +38,6 @@ export function deleteRole(id: number) {
   });
 }
 
-
 /**
  * get all roles
  *
@@ -46,7 +45,7 @@ export function deleteRole(id: number) {
  */
 export function fetchGetAllRoles() {
   return request<Api.SystemManage.AllRole[]>({
-    url: '/systemManage/getAllRoles',
+    url: '/sys/role/all-simple-roles',
     method: 'get'
   });
 }
@@ -57,6 +56,47 @@ export function fetchGetUserList(data?: Api.SystemManage.UserSearchParams) {
     url: '/sys/user/page',
     method: 'post',
     data: data
+  });
+}
+
+/** add user */
+export function addUser(data: any) {
+  return request<any>({
+    url: '/sys/user/add',
+    method: 'post',
+    data: data
+  });
+}
+
+/** edit user */
+export function editUser(data: any) {
+  return request<any>({
+    url: '/sys/user/edit',
+    method: 'put',
+    data: data
+  });
+}
+
+/** delete user */
+export function deleteUser(id: number) {
+  return request<any>({
+    url: '/sys/user/delete',
+    method: 'delete',
+    params: {
+      id
+    }
+  });
+}
+
+/** assign roles to user */
+export function assignRoleToUser(roleIds: number[], id: number) {
+  return request<any>({
+    url: '/sys/user/assign-roles',
+    method: 'put',
+    data: {
+      roleIds,
+      id
+    }
   });
 }
 
@@ -79,7 +119,7 @@ export function fetchGetAllPages() {
 /** get menu tree */
 export function fetchGetMenuTree() {
   return request<Api.SystemManage.MenuTree[]>({
-    url: '/sys/menu/all-simple-tree',
+    url: '/sys/menu/all-simple-menu-tree',
     method: 'get'
   });
 }

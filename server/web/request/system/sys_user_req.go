@@ -20,14 +20,18 @@ type SysUserPageReq struct {
 }
 
 type SysUserEditReq struct {
-	Id       uint64   `json:"id" binding:"required"`     // 用户ID
-	Password string   `json:"password"`                  // 密码
-	Nickname string   `json:"nickname"`                  // 昵称
-	Phone    string   `json:"phone"`                     // 手机号
-	Email    string   `json:"email"`                     // 邮箱
-	RoleIds  []uint64 `json:"roleIds"`                   // 角色ID
-	Status   uint8    `json:"status" binding:"required"` // 状态
-	Gender   uint8    `json:"gender" binding:"required"` // 性别
+	Id       uint64 `json:"id" binding:"required"`     // 用户ID
+	Password string `json:"password"`                  // 密码
+	Nickname string `json:"nickname"`                  // 昵称
+	Phone    string `json:"phone"`                     // 手机号
+	Email    string `json:"email"`                     // 邮箱
+	Status   uint8  `json:"status" binding:"required"` // 状态
+	Gender   uint8  `json:"gender" binding:"required"` // 性别
+}
+
+type SysUserAssignRoleReq struct {
+	Id      uint64   `json:"id" binding:"required"` // 用户ID
+	RoleIds []uint64 `json:"roleIds"`               // 角色ID
 }
 
 type SysUserAddReq struct {

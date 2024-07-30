@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
-import { fetchGetAllRoles } from '@/service/api';
+import { addUser, editUser } from '@/service/api';
 import { $t } from '@/locales';
 import { enableStatusOptions, userGenderOptions } from '@/constants/business';
 
@@ -41,7 +41,7 @@ const title = computed(() => {
 
 type Model = Pick<
   Api.SystemManage.User,
-  'username' | 'gender' | 'nickname' | 'phone' | 'email' | 'roles' | 'status'
+  'username' | 'password' | 'gender' | 'nickname' | 'phone' | 'email' | 'roles' | 'status'
 >;
 
 const model: Model = reactive(createDefaultModel());
@@ -49,6 +49,7 @@ const model: Model = reactive(createDefaultModel());
 function createDefaultModel(): Model {
   return {
     username: '',
+    password: '',
     gender: null,
     nickname: '',
     phone: '',
@@ -64,30 +65,6 @@ const rules: Record<RuleKey, App.Global.FormRule> = {
   username: defaultRequiredRule,
   status: defaultRequiredRule
 };
-
-/** the enabled role options */
-const roleOptions = ref<CommonType.Option<string>[]>([]);
-
-async function getRoleOptions() {
-  const { error, data } = await fetchGetAllRoles();
-
-  if (!error) {
-    const options = data.map(item => ({
-      label: item.name,
-      value: item.code
-    }));
-
-    // the mock data does not have the roleCode, so fill it
-    // if the real request, remove the following code
-    const userRoleOptions = model.roles.map(item => ({
-      label: item.code,
-      value: item.code
-    }));
-    // end
-
-    roleOptions.value = [...userRoleOptions, ...options];
-  }
-}
 
 function handleInitModel() {
   Object.assign(model, createDefaultModel());
@@ -105,7 +82,15 @@ function closeDrawer() {
 
 async function handleSubmit() {
   await validate();
+
+  console.log("handleSubmit",model);
   // request
+  if (props.operateType === 'add') {
+    await addUser(model)
+  } else if (props.operateType === 'edit') {
+    await editUser(model)
+  }
+
   window.$message?.success($t('common.updateSuccess'));
   closeDrawer();
   emit('submitted');
@@ -115,7 +100,6 @@ watch(visible, () => {
   if (visible.value) {
     handleInitModel();
     restoreValidation();
-    getRoleOptions();
   }
 });
 </script>
@@ -126,6 +110,9 @@ watch(visible, () => {
       <NForm ref="formRef" :model="model" :rules="rules">
         <NFormItem :label="$t('page.manage.user.userName')" path="username">
           <NInput v-model:value="model.username" :placeholder="$t('page.manage.user.form.userName')" />
+        </NFormItem>
+        <NFormItem v-if="props.operateType === 'add'" :label="$t('page.manage.user.password')" path="password">
+          <NInput v-model:value="model.password" :placeholder="$t('page.manage.user.form.password')" />
         </NFormItem>
         <NFormItem :label="$t('page.manage.user.userGender')" path="gender">
           <NRadioGroup v-model:value="model.gender">
@@ -145,14 +132,6 @@ watch(visible, () => {
           <NRadioGroup v-model:value="model.status">
             <NRadio v-for="item in enableStatusOptions" :key="item.value" :value="item.value" :label="$t(item.label)" />
           </NRadioGroup>
-        </NFormItem>
-        <NFormItem :label="$t('page.manage.user.userRole')" path="roles">
-          <NSelect
-            v-model:value="model.roles"
-            multiple
-            :options="roleOptions"
-            :placeholder="$t('page.manage.user.form.userRole')"
-          />
         </NFormItem>
       </NForm>
       <template #footer>

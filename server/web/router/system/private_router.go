@@ -22,7 +22,8 @@ func (*PrivateRouter) InitRouter(group *gin.RouterGroup) {
 		sysUserGroup.PUT("reset-password", controller.SysUser.ResetPassword)
 		sysUserGroup.DELETE("delete",
 			middleware.RequestContextHandler(&request.QueryIdReq{}, common.BindModeQuery), controller.SysUser.DeleteUser)
-		sysUserGroup.PUT("assign-roles", controller.SysUser.AssignRoles)
+		sysUserGroup.PUT("assign-roles",
+			middleware.RequestContextHandler(&request.SysUserAssignRoleReq{}), controller.SysUser.AssignRoles)
 		sysUserGroup.PUT("update-status", controller.SysUser.UpdateStatus)
 	}
 

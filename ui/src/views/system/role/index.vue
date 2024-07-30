@@ -8,8 +8,13 @@ import { enableStatusRecord } from '@/constants/business';
 import RoleOperateDrawer from './modules/role-operate-drawer.vue';
 import RoleSearch from './modules/role-search.vue';
 import { deleteRole } from '@/service/api';
+import { useBoolean } from "~/packages/hooks";
+import MenuAuthModal from "@/views/system/role/modules/menu-auth-modal.vue";
+import { ref } from "vue";
 
 const appStore = useAppStore();
+const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
+const menuAuthRoleId = ref<number>();
 
 const {
   columns,
@@ -85,9 +90,12 @@ const {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 130,
+      width: 200,
       render: row => (
         <div class="flex-center gap-8px">
+          <NButton type="primary" ghost size="small" onClick={() => handleMenuAuth(row.id)}>
+            { $t('page.manage.role.menuAuth') }
+          </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
           </NButton>
@@ -136,6 +144,11 @@ function handleDelete(id: number) {
 function edit(id: number) {
   handleEdit(id);
 }
+
+function handleMenuAuth(id: number) {
+  menuAuthRoleId.value = id;
+  openMenuAuthModal();
+}
 </script>
 
 <template>
@@ -171,6 +184,7 @@ function edit(id: number) {
         :row-data="editingData"
         @submitted="getDataByPage"
       />
+      <MenuAuthModal v-model:visible="menuAuthVisible" :role-id="menuAuthRoleId"/>
     </NCard>
   </div>
 </template>

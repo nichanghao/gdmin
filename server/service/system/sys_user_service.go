@@ -105,7 +105,7 @@ func (userService *SysUserService) AddUser(req *common.Request) error {
 	}
 	user.Password = password
 
-	return global.GormDB.Create(user).Error
+	return global.GormDB.Create(&user).Error
 }
 
 // EditUser 编辑用户
@@ -159,21 +159,22 @@ func (userService *SysUserService) DeleteUser(req *common.Request) error {
 }
 
 // AssignRoles 分配角色给用户
-func (userService *SysUserService) AssignRoles(req *request.SysUserEditReq) error {
+func (userService *SysUserService) AssignRoles(req *common.Request) error {
+	assignRole := req.Data.(*request.SysUserAssignRoleReq)
 
 	var roles []*model.SysRole
-	for i := range req.RoleIds {
-		roles = append(roles, &model.SysRole{Id: req.RoleIds[i]})
+	for i := range assignRole.RoleIds {
+		roles = append(roles, &model.SysRole{Id: assignRole.RoleIds[i]})
 	}
 
 	return global.GormDB.Transaction(func(tx *gorm.DB) error {
 
 		// 清空用户关联的旧角色数据
-		if err := tx.Model(&model.SysUser{Id: req.Id}).Association("Roles").Clear(); err != nil {
+		if err := tx.Model(&model.SysUser{Id: assignRole.Id}).Association("Roles").Clear(); err != nil {
 			return err
 		}
 		// 删除casbin用户角色
-		if err := CasbinService.ClearRolesForUser(req.Id); err != nil {
+		if err := CasbinService.ClearRolesForUser(assignRole.Id); err != nil {
 			return err
 		}
 
@@ -182,11 +183,11 @@ func (userService *SysUserService) AssignRoles(req *request.SysUserEditReq) erro
 			return nil
 		}
 		// 添加用户关联的角色
-		if err := tx.Model(&model.SysUser{Id: req.Id}).Association("Roles").Append(roles); err != nil {
+		if err := tx.Model(&model.SysUser{Id: assignRole.Id}).Association("Roles").Append(roles); err != nil {
 			return err
 		}
 		// 添加casbin用户角色
-		if err := CasbinService.AddRolesForUser(req.Id, req.RoleIds); err != nil {
+		if err := CasbinService.AddRolesForUser(assignRole.Id, assignRole.RoleIds); err != nil {
 			return err
 		}
 

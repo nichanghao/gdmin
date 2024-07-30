@@ -43,3 +43,8 @@ Content-Type: application/json
   "roleId": 2,
   "menuIds": [4,5,6,7,8]
 }
+
+### 获取角色拥有的菜单
+GET {{host}}/sys/role/all-simple-roles
+Content-Type: application/json
+Authorization: {{token}}

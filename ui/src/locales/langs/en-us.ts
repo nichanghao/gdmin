@@ -170,11 +170,11 @@ const local: App.I18n.Schema = {
     function_request: 'Request',
     'function_toggle-auth': 'Toggle Auth',
     'function_super-page': 'Super Admin Visible',
-    manage: 'System Manage',
-    manage_user: 'User Manage',
-    'manage_user-detail': 'User Detail',
-    manage_role: 'Role Manage',
-    manage_menu: 'Menu Manage',
+    system: 'System Manage',
+    system_user: 'User Manage',
+    'system_user-detail': 'User Detail',
+    system_role: 'Role Manage',
+    system_menu: 'Menu Manage',
     'multi-menu': 'Multi Menu',
     'multi-menu_first': 'Menu One',
     'multi-menu_first_child': 'Menu One Child',
@@ -356,6 +356,7 @@ const local: App.I18n.Schema = {
       user: {
         title: 'User List',
         userName: 'User Name',
+        password: 'Password',
         userGender: 'Gender',
         nickName: 'Nick Name',
         userPhone: 'Phone Number',
@@ -364,6 +365,7 @@ const local: App.I18n.Schema = {
         userRole: 'User Role',
         form: {
           userName: 'Please enter user name',
+          password: 'Please enter password',
           userGender: 'Please select gender',
           nickName: 'Please enter nick name',
           userPhone: 'Please enter phone number',
@@ -376,7 +378,8 @@ const local: App.I18n.Schema = {
         gender: {
           male: 'Male',
           female: 'Female'
-        }
+        },
+        roleAuth: 'Role Auth',
       },
       menu: {
         home: 'Home',

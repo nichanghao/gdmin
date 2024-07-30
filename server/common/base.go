@@ -13,8 +13,8 @@ type BaseDO struct {
 	DeletedAt  gorm.DeletedAt `gorm:"index;comment:删除时间" json:"-"` // gorm逻辑删除
 }
 
-// BeforeUpdate 在更新之前执行
-func (u *BaseDO) BeforeUpdate(tx *gorm.DB) (err error) {
+// BeforeSave 在保存之前执行
+func (u *BaseDO) BeforeSave(tx *gorm.DB) (err error) {
 	ctx := tx.Statement.Context
 
 	if userId := USER_CTX.GetUserId(&ctx); userId != 0 {
@@ -23,8 +23,8 @@ func (u *BaseDO) BeforeUpdate(tx *gorm.DB) (err error) {
 	return nil
 }
 
-// BeforeSave 在保存之前执行
-func (u *BaseDO) BeforeSave(tx *gorm.DB) (err error) {
+// BeforeDelete 在删除之前执行
+func (u *BaseDO) BeforeDelete(tx *gorm.DB) (err error) {
 	ctx := tx.Statement.Context
 
 	if userId := USER_CTX.GetUserId(&ctx); userId != 0 {
