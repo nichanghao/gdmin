@@ -100,6 +100,18 @@ export function assignRoleToUser(roleIds: number[], id: number) {
   });
 }
 
+/** set user password */
+export function resetUserPwd(password: string, id: number) {
+  return request<any>({
+    url: '/sys/user/reset-password',
+    method: 'put',
+    data: {
+      password,
+      id
+    }
+  });
+}
+
 /** get menu list */
 export function fetchGetMenuList() {
   return request<Api.SystemManage.MenuList>({

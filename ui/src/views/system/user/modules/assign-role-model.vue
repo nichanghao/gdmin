@@ -21,7 +21,7 @@ const visible = defineModel<boolean>('visible', {
   default: false
 });
 
-const title = computed(() => $t('common.edit') + $t('page.manage.user.roleAuth'));
+const title = computed(() => $t('page.manage.user.roleAuth'));
 
 
 const roleIds = shallowRef<number[]>([]);

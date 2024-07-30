@@ -40,7 +40,7 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
         const tagMap: Record<Api.SystemManage.MenuType, NaiveUI.ThemeColor> = {
           1: 'default',
           2: 'primary',
-          3: 'info'
+          3: 'warning'
         };
 
         const label = $t(menuTypeRecord[row.type]);
@@ -110,12 +110,6 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
 
         return <NTag type={tagMap[row.status]}>{label}</NTag>;
       }
-    },
-    {
-      key: 'parentId',
-      title: $t('page.manage.menu.parentId'),
-      width: 90,
-      align: 'center'
     },
     {
       key: 'meta',

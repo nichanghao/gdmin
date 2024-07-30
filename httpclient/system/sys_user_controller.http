@@ -49,6 +49,15 @@ DELETE {{host}}/sys/user/delete?id=4
 Content-Type: application/json
 Authorization: {{token}}
 
+### 重置密码
+PUT {{host}}/sys/user/reset-password
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": 3,
+  "password": "13800138000"
+}
 
 ### 分配用户角色
 PUT {{host}}/sys/user/assign-roles

@@ -379,7 +379,8 @@ const local: App.I18n.Schema = {
           male: 'Male',
           female: 'Female'
         },
-        roleAuth: 'Role Auth',
+        roleAuth: 'Assign Role',
+        resetPassWd: 'Reset Password',
       },
       menu: {
         home: 'Home',

@@ -14,7 +14,7 @@ import { ref } from "vue";
 
 const appStore = useAppStore();
 const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
-const menuAuthRoleId = ref<number>();
+const menuAuthRoleId = ref<number>(0);
 
 const {
   columns,
@@ -93,11 +93,11 @@ const {
       width: 200,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => handleMenuAuth(row.id)}>
-            { $t('page.manage.role.menuAuth') }
-          </NButton>
           <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
             {$t('common.edit')}
+          </NButton>
+          <NButton type="primary" ghost size="small" onClick={() => handleMenuAuth(row.id)}>
+            { $t('page.manage.role.menuAuth') }
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
@@ -158,6 +158,7 @@ function handleMenuAuth(id: number) {
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
+          :display-batch-delete-btn="false"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"

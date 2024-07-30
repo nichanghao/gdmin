@@ -560,6 +560,7 @@ declare namespace App {
               female: string;
             };
             roleAuth: string;
+            resetPassWd: string;
           };
           menu: {
             home: string;

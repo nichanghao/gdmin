@@ -342,7 +342,7 @@ const local: App.I18n.Schema = {
         roleCode: '角色编码',
         roleStatus: '角色状态',
         roleDesc: '角色描述',
-        menuAuth: '菜单权限',
+        menuAuth: '分配权限',
         buttonAuth: '按钮权限',
         form: {
           roleName: '请输入角色名称',
@@ -379,7 +379,8 @@ const local: App.I18n.Schema = {
           male: '男',
           female: '女'
         },
-        roleAuth: '角色权限',
+        roleAuth: '分配角色',
+        resetPassWd: '重置密码',
       },
       menu: {
         home: '首页',

@@ -124,14 +124,15 @@ func (userService *SysUserService) EditUser(req *common.Request) error {
 }
 
 // ResetPassword 重置密码
-func (userService *SysUserService) ResetPassword(req *request.SysUserEditReq) error {
+func (userService *SysUserService) ResetPassword(req *common.Request) error {
+	resetPwd := req.Data.(*request.SysUserResetPwdReq)
 
-	password, err := utils.BCRYPT.HashPassword(req.Password)
+	password, err := utils.BCRYPT.HashPassword(resetPwd.Password)
 	if err != nil {
 		return err
 	}
 
-	if err = global.GormDB.Model(&model.SysUser{}).Where("id = ?", req.Id).Update("password", password).Error; err != nil {
+	if err = global.GormDB.WithContext(req.Context).Model(&model.SysUser{}).Where("id = ?", resetPwd.Id).Update("password", password).Error; err != nil {
 		return err
 	}
 

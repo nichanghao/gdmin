@@ -30,8 +30,13 @@ type SysUserEditReq struct {
 }
 
 type SysUserAssignRoleReq struct {
-	Id      uint64   `json:"id" binding:"required"` // 用户ID
-	RoleIds []uint64 `json:"roleIds"`               // 角色ID
+	Id      uint64   `json:"id" binding:"required"`      // 用户ID
+	RoleIds []uint64 `json:"roleIds" binding:"required"` // 角色ID
+}
+
+type SysUserResetPwdReq struct {
+	Id       uint64 `json:"id" binding:"required"`       // 用户ID
+	Password string `json:"password" binding:"required"` // 密码
 }
 
 type SysUserAddReq struct {

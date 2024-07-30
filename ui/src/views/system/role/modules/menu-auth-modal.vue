@@ -22,7 +22,7 @@ function closeModal() {
   visible.value = false;
 }
 
-const title = computed(() => $t('common.edit') + $t('page.manage.role.menuAuth'));
+const title = computed(() => $t('page.manage.role.menuAuth'));
 
 const home = shallowRef('');
 
@@ -87,7 +87,6 @@ function handleSubmit() {
 
 function init() {
   getHome();
-  // getPages();
   getTree();
   getChecks();
 }
@@ -101,10 +100,6 @@ watch(visible, val => {
 
 <template>
   <NModal v-model:show="visible" :title="title" preset="card" class="w-480px">
-    <div class="flex-y-center gap-16px pb-12px">
-      <div>{{ $t('page.manage.menu.home') }}</div>
-      <NSelect :value="home" :options="pageSelectOptions" size="small" class="w-160px" @update:value="updateHome" />
-    </div>
     <NTree
       v-model:checked-keys="checks"
       :data="tree"

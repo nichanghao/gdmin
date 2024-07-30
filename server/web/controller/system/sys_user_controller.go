@@ -92,20 +92,9 @@ func (*SysUserController) EditUser(c *gin.Context) {
 
 // ResetPassword 重置密码
 func (*SysUserController) ResetPassword(c *gin.Context) {
-	var req request.SysUserEditReq
+	_request, _ := c.Get(common.RequestKey)
 
-	// 绑定参数
-	if err := c.ShouldBindJSON(&req); err != nil {
-		_ = c.Error(err)
-		return
-	}
-
-	if req.Password == "" {
-		response.FailWithMessage("密码不能为空！", c)
-		return
-	}
-
-	if err := service.SysUser.ResetPassword(&req); err != nil {
+	if err := service.SysUser.ResetPassword(_request.(*common.Request)); err != nil {
 		_ = c.Error(err)
 	} else {
 		response.Ok(c)

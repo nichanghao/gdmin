@@ -9,6 +9,7 @@ import UserOperateDrawer from './modules/user-operate-drawer.vue';
 import UserSearch from './modules/user-search.vue';
 import { ref } from "vue";
 import AssignRoleModel from "./modules/assign-role-model.vue";
+import ResetPasswdModel from "./modules/reset-passwd-model.vue";
 import { useBoolean } from "~/packages/hooks";
 
 
@@ -119,14 +120,17 @@ const {
       key: 'operate',
       title: $t('common.operate'),
       align: 'center',
-      width: 200,
+      width: 300,
       render: row => (
         <div class="flex-center gap-8px">
+          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+            {$t('common.edit')}
+          </NButton>
           <NButton type="primary" ghost size="small" onClick={() => handleRoleAuth(row.id, row.roles)}>
             {$t('page.manage.user.roleAuth')}
           </NButton>
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
+          <NButton type="primary" ghost size="small" onClick={() => handleResetPwd(row.id)}>
+            {$t('page.manage.user.resetPassWd')}
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
             {{
@@ -173,7 +177,7 @@ function edit(id: number) {
   handleEdit(id);
 }
 
-const roleAuthUserId = ref<number>();
+const roleAuthUserId = ref<number>(0);
 const roleList = ref<Api.SystemManage.Role[]>([]);
 const { bool: roleAuthVisible, setTrue: openRoleAuthModal } = useBoolean();
 function handleRoleAuth(id: number, roles: Api.SystemManage.Role[]) {
@@ -181,6 +185,13 @@ function handleRoleAuth(id: number, roles: Api.SystemManage.Role[]) {
   roleList.value = roles;
   openRoleAuthModal();
 }
+
+const { bool: resetPwdVisible, setTrue: openResetPwdModal } = useBoolean();
+function handleResetPwd(id: number) {
+  roleAuthUserId.value = id;
+  openResetPwdModal();
+}
+
 </script>
 
 <template>
@@ -217,6 +228,7 @@ function handleRoleAuth(id: number, roles: Api.SystemManage.Role[]) {
         @submitted="getDataByPage"
       />
       <AssignRoleModel v-model:visible="roleAuthVisible" :user-id="roleAuthUserId" :roles="roleList" @submitted="getDataByPage"/>
+      <ResetPasswdModel v-model:visible="resetPwdVisible" :user-id="roleAuthUserId" />
     </NCard>
   </div>
 </template>

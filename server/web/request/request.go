@@ -8,6 +8,7 @@ type (
 	SysUserEditReq       = system.SysUserEditReq
 	SysUserAddReq        = system.SysUserAddReq
 	SysUserAssignRoleReq = system.SysUserAssignRoleReq
+	SysUserResetPwdReq   = system.SysUserResetPwdReq
 )
 
 type (
