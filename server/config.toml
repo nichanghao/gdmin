@@ -11,7 +11,7 @@ max-age = 7
 compress = false
 
 [jwt]
-signing-key = "11"
+signing-key = "gdmin"
 expires-time = 360000
 
 [database]

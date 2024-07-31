@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"gitee.com/nichanghao/gdmin/cache"
 	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/utils"
@@ -31,6 +32,13 @@ func JwtAuthHandler() gin.HandlerFunc {
 			_ = c.Error(err)
 			c.Abort()
 		} else {
+			status, _ := cache.SysUserCache.GetSysUserStatus(userClaims.ID)
+			if status != 1 {
+				_ = c.Error(buserr.NewTokenAuthErr("用户状态异常，请联系管理员！"))
+				c.Abort()
+				return
+			}
+
 			c.Set(common.ClaimsKey, userClaims)
 			c.Next()
 		}

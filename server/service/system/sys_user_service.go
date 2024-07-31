@@ -1,6 +1,7 @@
 package system
 
 import (
+	"gitee.com/nichanghao/gdmin/cache"
 	"gitee.com/nichanghao/gdmin/common"
 	"gitee.com/nichanghao/gdmin/common/buserr"
 	"gitee.com/nichanghao/gdmin/global"
@@ -103,24 +104,38 @@ func (userService *SysUserService) AddUser(req *common.Request) error {
 	if err != nil {
 		return err
 	}
-	user.Password = password
 
-	return global.GormDB.Create(&user).Error
+	user.Password = password
+	if err = global.GormDB.Create(&user).Error; err != nil {
+		return err
+	}
+
+	// 更新缓存状态
+	go func() {
+		cache.SysUserCache.SetSysUserStatus(user.Id, user.Status)
+	}()
+
+	return nil
 }
 
 // EditUser 编辑用户
-func (userService *SysUserService) EditUser(req *common.Request) error {
+func (userService *SysUserService) EditUser(req *common.Request) (err error) {
 
 	var user model.SysUser
-	if err := copier.Copy(&user, req.Data); err != nil {
-		return err
+	if err = copier.Copy(&user, req.Data); err != nil {
+		return
 	}
 
-	if err := global.GormDB.Model(&model.SysUser{}).Where("id = ?", user.Id).Updates(&user).Error; err != nil {
-		return err
+	if err = global.GormDB.Model(&model.SysUser{}).Where("id = ?", user.Id).Updates(&user).Error; err != nil {
+		return
 	}
 
-	return nil
+	// 更新缓存状态
+	go func() {
+		cache.SysUserCache.SetSysUserStatus(user.Id, user.Status)
+	}()
+
+	return
 }
 
 // ResetPassword 重置密码
@@ -142,6 +157,11 @@ func (userService *SysUserService) ResetPassword(req *common.Request) error {
 // DeleteUser 删除用户
 func (userService *SysUserService) DeleteUser(req *common.Request) error {
 	userId := req.Data.(*request.QueryIdReq).Id
+
+	// 删除状态
+	go func() {
+		cache.SysUserCache.SetSysUserStatus(userId, 0)
+	}()
 
 	return global.GormDB.Transaction(func(tx *gorm.DB) error {
 
