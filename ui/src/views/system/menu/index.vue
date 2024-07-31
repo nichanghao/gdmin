@@ -10,6 +10,9 @@ import { $t } from '@/locales';
 import { enableStatusRecord, menuTypeRecord } from '@/constants/business';
 import SvgIcon from '@/components/custom/svg-icon.vue';
 import MenuOperateModal, { type OperateType } from './modules/menu-operate-modal.vue';
+import { useAuth } from '@/hooks/business/auth';
+
+const { hasAuth } = useAuth();
 
 const appStore = useAppStore();
 
@@ -127,24 +130,28 @@ const { columns, columnChecks, data, loading, pagination, getData, getDataByPage
       width: 230,
       render: row => (
         <div class="flex-center justify-end gap-8px">
-          {row.type !== 3 && (
+          {hasAuth('sys:menu:add') && row.type !== 3 && (
             <NButton type="primary" ghost size="small" onClick={() => handleAddChildMenu(row)}>
               {$t('page.manage.menu.addChildMenu')}
             </NButton>
           )}
-          <NButton type="primary" ghost size="small" onClick={() => handleEdit(row)}>
-            {$t('common.edit')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('sys:menu:edit') && (
+            <NButton type="primary" ghost size="small" onClick={() => handleEdit(row)}>
+              {$t('common.edit')}
+            </NButton>
+          )}
+          {hasAuth('sys:menu:delete') && (
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => $t('common.confirmDelete'),
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    {$t('common.delete')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </div>
       )
     }
@@ -211,6 +218,7 @@ init();
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
+          :display-add-btn="hasAuth('sys:menu:add')"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"

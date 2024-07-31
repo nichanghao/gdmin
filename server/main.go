@@ -8,8 +8,6 @@ import (
 
 func main() {
 
-	//global.GormDB.AutoMigrate(&model.SysUser{}, &model.SysRole{}, &model.SysMenu{})
-
 	// 启动web服务
 	web.StartServer(global.GinEngine)
 

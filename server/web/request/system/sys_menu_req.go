@@ -4,6 +4,7 @@ import "encoding/json"
 
 type SysMenuAddReq struct {
 	Name       string          `json:"name" binding:"required"`    // 菜单名称
+	RouteName  string          `json:"routeName" `                 // 路由名称
 	Type       int8            `json:"type" binding:"gte=1,lte=3"` // 菜单类型(1:目录,2:菜单,3:按钮)
 	Permission string          `json:"permission"`                 // 权限标识
 	Path       string          `json:"path"`                       // 路由地址

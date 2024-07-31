@@ -1,4 +1,4 @@
-import { computed, ref, shallowRef } from 'vue';
+import {computed, reactive, ref, shallowRef} from 'vue';
 import type { RouteRecordRaw } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useBoolean } from '@sa/hooks';
@@ -182,6 +182,8 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
     resetVueRoutes();
 
+    permissionSet.value.clear();
+
     // after reset store, need to re-init constant route
     await initConstantRoute();
   }
@@ -245,12 +247,16 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     setIsInitAuthRoute(true);
   }
 
+  const permissionSet = ref(new Set<string>())
   /** Init dynamic auth route */
   async function initDynamicAuthRoute() {
     const { data, error } = await fetchGetUserRoutes();
 
     if (!error) {
-      const { routes, home } = data;
+      const { routes, home, permissions } = data;
+
+      permissionSet.value.clear()
+      permissions.forEach(p => permissionSet.value.add(p))
 
       addAuthRoutes(routes);
 
@@ -371,6 +377,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     isInitAuthRoute,
     setIsInitAuthRoute,
     getIsAuthRouteExist,
-    getSelectedMenuKeyPath
+    getSelectedMenuKeyPath,
+    permissionSet
   };
 });

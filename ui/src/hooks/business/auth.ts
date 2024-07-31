@@ -1,7 +1,9 @@
 import { useAuthStore } from '@/store/modules/auth';
+import { useRouteStore } from '@/store/modules/route';
 
 export function useAuth() {
   const authStore = useAuthStore();
+  const routeStore = useRouteStore();
 
   function hasAuth(codes: string | string[]) {
     if (!authStore.isLogin) {
@@ -9,10 +11,10 @@ export function useAuth() {
     }
 
     if (typeof codes === 'string') {
-      return authStore.userInfo.buttons.includes(codes);
+      return routeStore.permissionSet.has(codes);
     }
 
-    return codes.some(code => authStore.userInfo.buttons.includes(code));
+    return codes.some(code => routeStore.permissionSet.has(code));
   }
 
   return {

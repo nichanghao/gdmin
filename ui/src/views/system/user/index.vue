@@ -11,10 +11,10 @@ import { ref } from "vue";
 import AssignRoleModel from "./modules/assign-role-model.vue";
 import ResetPasswdModel from "./modules/reset-passwd-model.vue";
 import { useBoolean } from "~/packages/hooks";
+import { useAuth } from '@/hooks/business/auth';
 
-
+const { hasAuth } = useAuth();
 const appStore = useAppStore();
-
 const {
   columns,
   columnChecks,
@@ -123,25 +123,33 @@ const {
       width: 300,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
-          </NButton>
-          <NButton type="primary" ghost size="small" onClick={() => handleRoleAuth(row.id, row.roles)}>
-            {$t('page.manage.user.roleAuth')}
-          </NButton>
-          <NButton type="primary" ghost size="small" onClick={() => handleResetPwd(row.id)}>
-            {$t('page.manage.user.resetPassWd')}
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('sys:user:edit') && (
+            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+              {$t('common.edit')}
+            </NButton>
+          )}
+          {hasAuth('sys:user:assignRoles') && (
+            <NButton type="primary" ghost size="small" onClick={() => handleRoleAuth(row.id, row.roles)}>
+              {$t('page.manage.user.roleAuth')}
+            </NButton>
+          )}
+          {hasAuth('sys:user:resetPwd') && (
+            <NButton type="primary" ghost size="small" onClick={() => handleResetPwd(row.id)}>
+              {$t('page.manage.user.resetPassWd')}
+            </NButton>
+          )}
+          {hasAuth('sys:user:delete') && (
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => $t('common.confirmDelete'),
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    {$t('common.delete')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </div>
       )
     }
@@ -201,6 +209,7 @@ function handleResetPwd(id: number) {
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
+          :display-add-btn="hasAuth('sys:user:add')"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"
           @add="handleAdd"

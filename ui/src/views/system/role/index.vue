@@ -11,7 +11,9 @@ import { deleteRole } from '@/service/api';
 import { useBoolean } from "~/packages/hooks";
 import MenuAuthModal from "@/views/system/role/modules/menu-auth-modal.vue";
 import { ref } from "vue";
+import { useAuth } from '@/hooks/business/auth';
 
+const { hasAuth } = useAuth();
 const appStore = useAppStore();
 const { bool: menuAuthVisible, setTrue: openMenuAuthModal } = useBoolean();
 const menuAuthRoleId = ref<number>(0);
@@ -93,22 +95,28 @@ const {
       width: 200,
       render: row => (
         <div class="flex-center gap-8px">
-          <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
-            {$t('common.edit')}
-          </NButton>
-          <NButton type="primary" ghost size="small" onClick={() => handleMenuAuth(row.id)}>
-            { $t('page.manage.role.menuAuth') }
-          </NButton>
-          <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
-            {{
-              default: () => $t('common.confirmDelete'),
-              trigger: () => (
-                <NButton type="error" ghost size="small">
-                  {$t('common.delete')}
-                </NButton>
-              )
-            }}
-          </NPopconfirm>
+          {hasAuth('sys:role:edit') && (
+            <NButton type="primary" ghost size="small" onClick={() => edit(row.id)}>
+              {$t('common.edit')}
+            </NButton>
+          )}
+          {hasAuth('sys:role:assignMenus') && (
+            <NButton type="primary" ghost size="small" onClick={() => handleMenuAuth(row.id)}>
+              { $t('page.manage.role.menuAuth') }
+            </NButton>
+          )}
+          {hasAuth('sys:role:delete') && (
+            <NPopconfirm onPositiveClick={() => handleDelete(row.id)}>
+              {{
+                default: () => $t('common.confirmDelete'),
+                trigger: () => (
+                  <NButton type="error" ghost size="small">
+                    {$t('common.delete')}
+                  </NButton>
+                )
+              }}
+            </NPopconfirm>
+          )}
         </div>
       )
     }
@@ -158,6 +166,7 @@ function handleMenuAuth(id: number) {
       <template #header-extra>
         <TableHeaderOperation
           v-model:columns="columnChecks"
+          :display-add-btn="hasAuth('sys:role:add')"
           :display-batch-delete-btn="false"
           :disabled-delete="checkedRowKeys.length === 0"
           :loading="loading"

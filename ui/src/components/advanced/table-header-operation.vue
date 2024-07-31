@@ -9,6 +9,7 @@ interface Props {
   itemAlign?: NaiveUI.Align;
   disabledDelete?: boolean;
   loading?: boolean;
+  displayAddBtn?: boolean;
   displayBatchDeleteBtn?: boolean;
 }
 
@@ -43,7 +44,7 @@ function refresh() {
   <NSpace :align="itemAlign" wrap justify="end" class="lt-sm:w-200px">
     <slot name="prefix"></slot>
     <slot name="default">
-      <NButton size="small" ghost type="primary" @click="add">
+      <NButton v-if="displayAddBtn" size="small" ghost type="primary" @click="add">
         <template #icon>
           <icon-ic-round-plus class="text-icon" />
         </template>
