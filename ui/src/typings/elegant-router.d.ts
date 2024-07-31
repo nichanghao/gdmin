@@ -151,6 +151,7 @@ declare module "@elegant-router/types" {
     | "500"
     | "iframe-page"
     | "login"
+    | "user-center"
     | "about"
     | "function_hide-child_one"
     | "function_hide-child_three"
@@ -179,7 +180,6 @@ declare module "@elegant-router/types" {
     | "system_role"
     | "system_user-detail"
     | "system_user"
-    | "user-center"
   >;
 
   /**

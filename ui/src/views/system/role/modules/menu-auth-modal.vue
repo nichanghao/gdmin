@@ -75,13 +75,14 @@ async function getChecks() {
   checks.value = data || [];
 }
 
-function handleSubmit() {
-  console.log(checks.value, props.roleId);
+async function handleSubmit() {
   // request
-  assignMenuToRole(checks.value, props.roleId)
+  const { error } = await assignMenuToRole(checks.value, props.roleId)
+  if (error) {
+    return;
+  }
 
   window.$message?.success?.($t('common.modifySuccess'));
-
   closeModal();
 }
 

@@ -28,7 +28,7 @@ func InitGin() *gin.Engine {
 	// 私有路由组，需要jwt鉴权和casbin权限控制
 	privateGroup := engine.Group("")
 	privateGroup.Use(middleware.JwtAuthHandler())
-	//privateGroup.Use(middleware.CasbinAuthHandler())
+	privateGroup.Use(middleware.CasbinAuthHandler())
 	router.Private.InitRouter(privateGroup)
 
 	return engine

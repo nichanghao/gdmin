@@ -28,8 +28,10 @@ function closeModal() {
 
 async function handleSubmit() {
   // request
-  await resetUserPwd(password.value, props.userId)
-
+  const { error } = await resetUserPwd(password.value, props.userId)
+  if (error) {
+    return;
+  }
   window.$message?.success?.($t('common.modifySuccess'));
 
   closeModal();
@@ -41,6 +43,7 @@ watch(visible, () => {
   }
 });
 </script>
+
 <template>
   <NModal v-model:show="visible" :title="title" preset="card" class="w-480px">
     <NInput v-model:value="password" :placeholder="$t('page.manage.user.form.password')" />

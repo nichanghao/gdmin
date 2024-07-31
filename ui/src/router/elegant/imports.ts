@@ -20,6 +20,7 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   500: () => import("@/views/_builtin/500/index.vue"),
   "iframe-page": () => import("@/views/_builtin/iframe-page/[url].vue"),
   login: () => import("@/views/_builtin/login/index.vue"),
+  "user-center": () => import("@/views/_builtin/user-center/index.vue"),
   about: () => import("@/views/about/index.vue"),
   "function_hide-child_one": () => import("@/views/function/hide-child/one/index.vue"),
   "function_hide-child_three": () => import("@/views/function/hide-child/three/index.vue"),
@@ -48,5 +49,4 @@ export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<Ro
   system_role: () => import("@/views/system/role/index.vue"),
   "system_user-detail": () => import("@/views/system/user-detail/[id].vue"),
   system_user: () => import("@/views/system/user/index.vue"),
-  "user-center": () => import("@/views/user-center/index.vue"),
 };

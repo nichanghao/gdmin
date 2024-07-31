@@ -142,11 +142,13 @@ async function handleBatchDelete() {
   onBatchDeleted();
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: number) {
   // request
-  deleteRole(id)
-
-  onDeleted();
+  const { error } = await deleteRole(id)
+  if (error) {
+    return;
+  }
+  await onDeleted();
 }
 
 function edit(id: number) {

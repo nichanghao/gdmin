@@ -84,10 +84,16 @@ async function handleSubmit() {
   await validate();
 
   // request
+  let error = null;
   if (props.operateType === 'edit') {
-    await editRole(model);
+    const res = await editRole(model);
+    error = res.error;
   } else if (props.operateType === 'add') {
-    await addRole(model);
+    const res = await addRole(model);
+    error = res.error;
+  }
+  if (error) {
+    return;
   }
 
   window.$message?.success($t('common.updateSuccess'));

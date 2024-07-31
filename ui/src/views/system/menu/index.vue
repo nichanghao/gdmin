@@ -176,7 +176,11 @@ async function handleBatchDelete() {
 
 async function handleDelete(id: number) {
   // request
-  await deleteMenu(id);
+  const { error } = await deleteMenu(id);
+  if (error) {
+    return;
+  }
+
   await onDeleted();
 }
 

@@ -54,10 +54,12 @@ interface Emits {
 const emit = defineEmits<Emits>();
 async function handleSubmit() {
   // request
-  await assignRoleToUser(roleIds.value, props.userId)
+  const { error } = await assignRoleToUser(roleIds.value, props.userId)
+  if (error) {
+    return;
+  }
 
   window.$message?.success?.($t('common.modifySuccess'));
-
   closeModal();
   emit('submitted');
 }

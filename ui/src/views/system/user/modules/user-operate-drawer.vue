@@ -83,17 +83,21 @@ function closeDrawer() {
 async function handleSubmit() {
   await validate();
 
-  console.log("handleSubmit",model);
   // request
+  let error = null;
   if (props.operateType === 'add') {
-    await addUser(model)
+    const res = await addUser(model)
+    error = res.error;
   } else if (props.operateType === 'edit') {
-    await editUser(model)
+    const res = await editUser(model)
+    error = res.error;
   }
 
-  window.$message?.success($t('common.updateSuccess'));
-  closeDrawer();
-  emit('submitted');
+  if (!error) {
+    window.$message?.success($t('common.updateSuccess'));
+    closeDrawer();
+    emit('submitted');
+  }
 }
 
 watch(visible, () => {

@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import type { SelectOption } from 'naive-ui';
 import { useFormRules, useNaiveForm } from '@/hooks/common/form';
 import { $t } from '@/locales';
@@ -8,12 +8,7 @@ import SvgIcon from '@/components/custom/svg-icon.vue';
 import { getLocalIcons } from '@/utils/icon';
 import { addMenu, editMenu } from '@/service/api';
 
-import {
-  getLayoutAndPage,
-  getPathParamFromRoutePath,
-  getRoutePathByRouteName,
-  transformLayoutAndPageToComponent
-} from './shared';
+import { getLayoutAndPage, getPathParamFromRoutePath, getRoutePathByRouteName } from './shared';
 
 defineOptions({
   name: 'MenuOperateModal'
@@ -108,20 +103,7 @@ const localIconOptions = localIcons.map<SelectOption>(item => ({
   value: item
 }));
 
-const showLayout = computed(() => model.parentId === 0);
-
 const showPage = computed(() => model.type === 2 || model.type === 1);
-
-const layoutOptions: CommonType.Option[] = [
-  {
-    label: 'base',
-    value: 'base'
-  },
-  {
-    label: 'blank',
-    value: 'blank'
-  }
-];
 
 function handleInitModel() {
   Object.assign(model, createDefaultModel());
@@ -157,7 +139,6 @@ function handleInitModel() {
     model.buttons = [];
   }
 
-  console.log('model: ', model);
 }
 
 function closeDrawer() {
@@ -182,26 +163,27 @@ function handleUpdateI18nKeyByRouteName() {
 
 function getSubmitParams() {
   const { ...params } = model;
-  const routePath = model.path;
-  params.path = routePath;
+  params.path = model.path;
 
   return params;
 }
 
 async function handleSubmit() {
   await validate();
-
   const params = getSubmitParams();
 
-  console.log('params: ', params);
-
+  let error = null;
   if (props.operateType === 'edit'){
-    await editMenu(params);
+    const res = await editMenu(params);
+    error = res.error;
   } else {
-    await addMenu(params);
+    const res = await addMenu(params);
+    error = res.error;
+  }
+  if (error) {
+    return;
   }
 
-  // request
   window.$message?.success($t('common.updateSuccess'));
   closeDrawer();
   emit('submitted');

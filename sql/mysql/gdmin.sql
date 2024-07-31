@@ -11,7 +11,7 @@
  Target Server Version : 80200 (8.2.0)
  File Encoding         : 65001
 
- Date: 31/07/2024 11:49:36
+ Date: 31/07/2024 13:19:37
 */
 
 SET NAMES utf8mb4;
@@ -32,28 +32,29 @@ CREATE TABLE `casbin_rule`  (
   `v5` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `idx_casbin_rule`(`ptype` ASC, `v0` ASC, `v1` ASC, `v2` ASC, `v3` ASC, `v4` ASC, `v5` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of casbin_rule
 -- ----------------------------
 INSERT INTO `casbin_rule` VALUES (1, 'g', 'u:1', 'r:1', '', '', '', '');
 INSERT INTO `casbin_rule` VALUES (2, 'p', 'r:1', '', '1', '', '', '');
-INSERT INTO `casbin_rule` VALUES (6, 'p', 'r:1', '', '14', '', '', '');
 INSERT INTO `casbin_rule` VALUES (7, 'p', 'r:1', '', '18', '', '', '');
 INSERT INTO `casbin_rule` VALUES (3, 'p', 'r:1', '', '2', '', '', '');
-INSERT INTO `casbin_rule` VALUES (4, 'p', 'r:1', '', '3', '', '', '');
-INSERT INTO `casbin_rule` VALUES (5, 'p', 'r:1', '', '9', '', '', '');
+INSERT INTO `casbin_rule` VALUES (6, 'p', 'r:1', 'sys:menu', '14', '', '', '');
 INSERT INTO `casbin_rule` VALUES (8, 'p', 'r:1', 'sys:menu:add', '15', '', '', '');
 INSERT INTO `casbin_rule` VALUES (9, 'p', 'r:1', 'sys:menu:delete', '17', '', '', '');
 INSERT INTO `casbin_rule` VALUES (10, 'p', 'r:1', 'sys:menu:edit', '16', '', '', '');
+INSERT INTO `casbin_rule` VALUES (5, 'p', 'r:1', 'sys:role', '9', '', '', '');
 INSERT INTO `casbin_rule` VALUES (11, 'p', 'r:1', 'sys:role:add', '10', '', '', '');
 INSERT INTO `casbin_rule` VALUES (12, 'p', 'r:1', 'sys:role:assignMenus', '12', '', '', '');
 INSERT INTO `casbin_rule` VALUES (13, 'p', 'r:1', 'sys:role:delete', '13', '', '', '');
 INSERT INTO `casbin_rule` VALUES (14, 'p', 'r:1', 'sys:role:edit', '11', '', '', '');
+INSERT INTO `casbin_rule` VALUES (4, 'p', 'r:1', 'sys:user', '3', '', '', '');
 INSERT INTO `casbin_rule` VALUES (15, 'p', 'r:1', 'sys:user:add', '4', '', '', '');
 INSERT INTO `casbin_rule` VALUES (16, 'p', 'r:1', 'sys:user:assignRoles', '6', '', '', '');
 INSERT INTO `casbin_rule` VALUES (17, 'p', 'r:1', 'sys:user:delete', '8', '', '', '');
+INSERT INTO `casbin_rule` VALUES (19, 'p', 'r:1', 'sys:user:edit', '5', '', '', '');
 INSERT INTO `casbin_rule` VALUES (18, 'p', 'r:1', 'sys:user:resetPwd', '7', '', '', '');
 
 -- ----------------------------
@@ -83,18 +84,18 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 INSERT INTO `sys_menu` VALUES (1, '首页', 'home', 1, '', '/home', 'layout.base$view.home', 0, 1, '{\"icon\": \"mdi:monitor-dashboard\", \"order\": 1, \"i18nKey\": \"route.home\"}', '2024-07-25 10:47:55.157', '1', NULL);
 INSERT INTO `sys_menu` VALUES (2, '系统管理', 'system', 1, '', '/system', 'layout.base', 0, 1, '{\"icon\": \"carbon:cloud-service-management\", \"order\": 2, \"i18nKey\": \"route.system\"}', '2024-07-25 10:50:04.754', '1', NULL);
-INSERT INTO `sys_menu` VALUES (3, '用户管理', 'system_user', 2, '', '/system/user', 'view.system_user', 2, 1, '{\"icon\": \"ic:round-manage-accounts\", \"order\": 1, \"i18nKey\": \"route.system_user\"}', '2024-07-25 10:52:10.855', '1', NULL);
+INSERT INTO `sys_menu` VALUES (3, '用户管理', 'system_user', 2, 'sys:user', '/system/user', 'view.system_user', 2, 1, '{\"icon\": \"ic:round-manage-accounts\", \"order\": 1, \"i18nKey\": \"route.system_user\"}', '2024-07-31 13:06:24.526', '1', NULL);
 INSERT INTO `sys_menu` VALUES (4, '新增用户', '', 3, 'sys:user:add', '', '', 3, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 16:31:15.887', '1', NULL);
 INSERT INTO `sys_menu` VALUES (5, '编辑用户', '', 3, 'sys:user:edit', '', '', 3, 1, '{\"order\": 1, \"i18nKey\": null}', '2024-07-30 16:58:40.209', '1', NULL);
 INSERT INTO `sys_menu` VALUES (6, '分配角色', '', 3, 'sys:user:assignRoles', '', '', 3, 1, '{\"order\": 2, \"i18nKey\": null}', '2024-07-30 17:02:26.964', '1', NULL);
 INSERT INTO `sys_menu` VALUES (7, '重置密码', '', 3, 'sys:user:resetPwd', '', '', 3, 1, '{\"order\": 4, \"i18nKey\": null}', '2024-07-30 17:04:57.943', '1', NULL);
 INSERT INTO `sys_menu` VALUES (8, '删除用户', '', 3, 'sys:user:delete', '', '', 3, 1, '{\"order\": 5, \"i18nKey\": null}', '2024-07-30 17:05:44.823', '1', NULL);
-INSERT INTO `sys_menu` VALUES (9, '角色管理', 'system_role', 2, '', '/system/role', 'view.system_role', 2, 1, '{\"icon\": \"carbon:user-role\", \"order\": 2, \"i18nKey\": \"route.system_role\"}', '2024-07-25 10:54:00.997', '1', NULL);
+INSERT INTO `sys_menu` VALUES (9, '角色管理', 'system_role', 2, 'sys:role', '/system/role', 'view.system_role', 2, 1, '{\"icon\": \"carbon:user-role\", \"order\": 2, \"i18nKey\": \"route.system_role\"}', '2024-07-31 13:12:02.585', '1', NULL);
 INSERT INTO `sys_menu` VALUES (10, '新增角色', '', 3, 'sys:role:add', '', '', 9, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 17:14:30.884', '1', NULL);
 INSERT INTO `sys_menu` VALUES (11, '编辑角色', '', 3, 'sys:role:edit', '', '', 9, 1, '{\"order\": 1, \"i18nKey\": null}', '2024-07-30 17:15:13.891', '1', NULL);
 INSERT INTO `sys_menu` VALUES (12, '分配权限', '', 3, 'sys:role:assignMenus', '', '', 9, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 17:17:27.685', '1', NULL);
 INSERT INTO `sys_menu` VALUES (13, '删除角色', '', 3, 'sys:role:delete', '', '', 9, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 17:18:07.425', '1', NULL);
-INSERT INTO `sys_menu` VALUES (14, '菜单管理', 'system_menu', 2, '', '/system/menu', 'view.system_menu', 2, 1, '{\"icon\": \"material-symbols:route\", \"order\": 3, \"i18nKey\": \"route.system_menu\"}', '2024-07-25 10:55:10.461', '1', NULL);
+INSERT INTO `sys_menu` VALUES (14, '菜单管理', 'system_menu', 2, 'sys:menu', '/system/menu', 'view.system_menu', 2, 1, '{\"icon\": \"material-symbols:route\", \"order\": 3, \"i18nKey\": \"route.system_menu\"}', '2024-07-31 13:04:19.701', '1', NULL);
 INSERT INTO `sys_menu` VALUES (15, '新增菜单', '', 3, 'sys:menu:add', '', '', 14, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 17:19:10.776', '1', NULL);
 INSERT INTO `sys_menu` VALUES (16, '编辑菜单', '', 3, 'sys:menu:edit', '', '', 14, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 17:19:35.597', '1', NULL);
 INSERT INTO `sys_menu` VALUES (17, '删除菜单', '', 3, 'sys:menu:delete', '', '', 14, 1, '{\"order\": 0, \"i18nKey\": null}', '2024-07-30 17:19:58.259', '1', NULL);
