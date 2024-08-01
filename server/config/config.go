@@ -2,7 +2,7 @@ package config
 
 type Config struct {
 	JWT
-	Server
+	Gin
 	Database
 	Redis
 	Zap

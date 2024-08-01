@@ -1,18 +1,21 @@
 package initialize
 
 import (
+	"gitee.com/nichanghao/gdmin/global"
 	"gitee.com/nichanghao/gdmin/middleware"
 	"gitee.com/nichanghao/gdmin/web/router"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func InitGin() *gin.Engine {
 
+	gin.SetMode(global.Config.Gin.Mode)
 	engine := gin.New()
-
 	engine.Use(middleware.GlobalErrorHandler())
+	engine.Use(middleware.GinZapLogger(zap.L()))
 	// panic 处理
-	engine.Use(gin.Recovery())
+	engine.Use(middleware.GinRecovery(zap.L()))
 	// 跨域
 	engine.Use(middleware.CorsHandler())
 

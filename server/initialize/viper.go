@@ -18,7 +18,7 @@ func InitViper() {
 
 	// 设置配置文件名
 	if env == "" {
-		viper.SetConfigName("config")
+		viper.SetConfigName("config.dev")
 	} else {
 		viper.SetConfigName("config." + env)
 	}

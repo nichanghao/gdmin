@@ -1,5 +1,6 @@
-[server]
+[gin]
 address = ":8000"
+mode = "debug"
 
 [zap]
 level = "debug"

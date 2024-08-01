@@ -8,7 +8,7 @@ import (
 
 func StartServer(engine *gin.Engine) {
 
-	err := engine.Run(global.Config.Server.Address)
+	err := engine.Run(global.Config.Gin.Address)
 	if err != nil {
 		log.Fatalf("gin run error: %v", err)
 	}

@@ -1,0 +1,32 @@
+[gin]
+address = ":8000"
+mode = "test"
+
+[zap]
+level = "debug"
+path = "logs"
+filename = "server.log"
+max-size = 100
+max-backups = 50
+max-age = 7
+compress = false
+
+[jwt]
+signing-key = "gdmin"
+expires-time = 360000
+
+[database]
+driver = "mysql"
+[database.mysql]
+dsn = "root:root@tcp(localhost:3306)/gdmin?charset=utf8&parseTime=True&loc=Local&timeout=5000ms"
+table-prefix = ""
+singular-table = true
+max-idle-count = 2
+max-open-conns = 8
+
+[redis]
+addr = "localhost:6379"
+db = 0
+max-active-conns = 200
+min-idle-conns = 2
+max-idle-conns = 10

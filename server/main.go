@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	// 启动web服务
 	web.StartServer(global.GinEngine)
 }

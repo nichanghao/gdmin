@@ -2,10 +2,13 @@ package initialize
 
 import (
 	"gitee.com/nichanghao/gdmin/global"
+	"gitee.com/nichanghao/gdmin/initialize/_logger"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"log"
+	"time"
 )
 
 func InitGorm() *gorm.DB {
@@ -28,11 +31,13 @@ func initGormMysql() *gorm.DB {
 		SkipInitializeWithVersion: true,
 	}
 
-	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{NamingStrategy: schema.NamingStrategy{
-		TablePrefix: m.TablePrefix,
-		// 单数表名
-		SingularTable: m.SingularTable,
-	}}); err != nil {
+	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{
+		Logger: _logger.NewZapGormLogger(zap.L(), 200*time.Millisecond),
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix: m.TablePrefix,
+			// 单数表名
+			SingularTable: m.SingularTable,
+		}}); err != nil {
 		log.Fatalf("failed to connect database, the error is %v", err)
 		return nil
 	} else {
