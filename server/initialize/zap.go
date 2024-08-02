@@ -6,7 +6,6 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"time"
 )
 
 // InitZap 初始化日志组件
@@ -35,7 +34,7 @@ func InitZap() {
 func getLogWriter() zapcore.WriteSyncer {
 	zapCfg := global.Config.Zap
 
-	filename := fmt.Sprint(zapCfg.Path, "/", time.Now().Format(time.DateOnly), "/", zapCfg.Filename)
+	filename := fmt.Sprint(zapCfg.Path, "/", zapCfg.Filename)
 
 	// 配置 Lumberjack 日志轮转
 	return zapcore.AddSync(&lumberjack.Logger{
@@ -44,6 +43,7 @@ func getLogWriter() zapcore.WriteSyncer {
 		MaxBackups: zapCfg.MaxBackups, // 保留旧日志文件个数
 		MaxAge:     zapCfg.MaxAge,     // 日志保留的天数
 		Compress:   zapCfg.Compress,   // 是否压缩/归档旧日志文件
+		LocalTime:  true,              // 记录日志的时间是否使用本地时间
 	})
 
 }
